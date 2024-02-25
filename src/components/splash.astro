@@ -24,8 +24,17 @@ const sizes = "(min-width: 640px) 42vw, 67vw";
       >
         Elahe
         <br /> and,
-        <br /> Parham.
+        <br /> Parham
         <br />
+        <astro-count-down>
+          <span id="days">0</span>
+          :
+          <span id="hours">0</span>
+          :
+          <span id="minutes">0</span>
+          :
+          <span id="seconds">0</span>
+        </astro-count-down>
       </div>
     </h2>
     </div>
@@ -39,6 +48,40 @@ const sizes = "(min-width: 640px) 42vw, 67vw";
     }
   </style>
 </noscript>
+
+<script>
+class AstroCountDown extends HTMLElement {
+  constructor() {
+    super();
+
+    const weddingDate = new Date("Jun 17, 2024 00:00:00").getTime();
+
+    this.days = -1;
+    this.hours = 0;
+    this.minutes = 0;
+    this.seconds = 0;
+
+    setInterval(() => {
+      let now = new Date().getTime();
+
+      let until = weddingDate - now;
+
+      if (until > 0) {
+        this.days = Math.floor(until / (1000 * 60 * 60 * 24));
+        this.hours = Math.floor((until % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        this.minutes = Math.floor((until % (1000 * 60 * 60)) / (1000 * 60));
+        this.seconds = Math.floor((until % (1000 * 60)) / 1000);
+
+        this.querySelector('span#days').textContent = this.days;
+        this.querySelector('span#hours').textContent = this.hours;
+        this.querySelector('span#minutes').textContent = this.minutes;
+        this.querySelector('span#seconds').textContent = this.seconds;
+      }
+    }, 1000);
+  }
+}
+customElements.define('astro-count-down', AstroCountDown);
+</script>
 
 <style>
   @keyframes float {
