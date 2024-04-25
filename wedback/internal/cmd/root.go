@@ -7,6 +7,9 @@ import (
 	"os"
 	"runtime/debug"
 
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/serve"
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 	"github.com/urfave/cli/v3"
 )
 
@@ -17,6 +20,19 @@ func Execute() {
 		Authors: []any{
 			"Parham Alvani <parham.alvani@gmail.com>",
 			"Elahe Dastan <elahe.dstn@gmail.com>",
+		},
+		Before: func(_ context.Context, _ *cli.Command) error {
+			pterm.DefaultCenter.Println("Elahe and Parham's Wedding")
+
+			s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("Wedding")).Srender()
+			pterm.DefaultCenter.Println(s)
+
+			pterm.DefaultCenter.WithCenterEachLineSeparately().Println("Parham Alvani\nApril 2024")
+
+			return nil
+		},
+		Commands: []*cli.Command{
+			serve.Register(),
 		},
 		Version: func() string {
 			revision := ""
