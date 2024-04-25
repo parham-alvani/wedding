@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/labstack/echo/v4"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -21,6 +22,7 @@ func Register() *cli.Command {
 		Description: "Run server to serve the requests",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
+				fx.Provide(logger.Provide),
 				fx.Invoke(main),
 			).Run()
 
