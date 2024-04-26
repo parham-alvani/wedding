@@ -24,6 +24,7 @@ func Register() *cli.Command {
 		Description: "Run server to serve the requests",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
+				fx.NopLogger,
 				fx.Provide(config.Provide),
 				fx.Provide(logger.Provide),
 				fx.Provide(server.Provide),

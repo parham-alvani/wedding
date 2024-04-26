@@ -103,6 +103,7 @@ func Register() *cli.Command {
 		Description: "Insert a new guest",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
+				fx.NopLogger,
 				fx.Provide(config.Provide),
 				fx.Provide(logger.Provide),
 				fx.Provide(db.Provide),

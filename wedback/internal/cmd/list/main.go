@@ -65,6 +65,10 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
+		case tea.KeyDelete, tea.KeyBackspace:
+			return m, tea.Batch(
+				tea.Printf("Let's not having %s!", m.table.SelectedRow()[0]),
+			)
 		}
 	case guestsListMsg:
 		rows := make([]table.Row, len(msg.guests))
@@ -136,6 +140,7 @@ func Register() *cli.Command {
 		Description: "List all guests",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
+				fx.NopLogger,
 				fx.Provide(config.Provide),
 				fx.Provide(logger.Provide),
 				fx.Provide(db.Provide),
