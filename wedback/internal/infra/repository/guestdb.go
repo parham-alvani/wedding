@@ -55,6 +55,18 @@ func (r *GuestDB) Get(ctx context.Context, id string) (model.Guest, error) {
 	return guest, nil
 }
 
+func (r *GuestDB) List(ctx context.Context) ([]model.Guest, error) {
+	var guests []model.Guest
+
+	if err := r.db.DB.WithContext(ctx).Find(&guests).Error; err != nil {
+		r.logger.Error("fetching guests from database failed", zap.Error(err), zap.String(logtag.Operation, "list"))
+
+		return nil, fmt.Errorf("fetching guests from database failed %w", err)
+	}
+
+	return guests, nil
+}
+
 func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
 	if err := r.db.DB.WithContext(ctx).Save(guest).Error; err != nil {
 		r.logger.Error("updating guest failed", zap.Error(err), zap.String(logtag.Operation, "update"))

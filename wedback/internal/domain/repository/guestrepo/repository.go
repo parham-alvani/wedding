@@ -16,5 +16,6 @@ type Repository interface {
 	Create(ctx context.Context, guest model.Guest) error
 	Update(ctx context.Context, guest model.Guest) error
 	Get(ctx context.Context, id string) (model.Guest, error)
+	List(ctx context.Context) ([]model.Guest, error)
 	Answer(ctx context.Context, id string, aswer model.Answer) error
 }

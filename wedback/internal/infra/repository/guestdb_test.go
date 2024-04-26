@@ -79,6 +79,24 @@ func (s *GuestDBTestSuite) TestCreate() {
 	require.Equal("Ali Irani", guest.Name)
 }
 
+func (s *GuestDBTestSuite) TestList() {
+	require := s.Require()
+
+	// nolint: exhaustruct
+	for i := range 10 {
+		require.NoError(s.repo.Create(context.Background(), model.Guest{
+			ID:     fmt.Sprintf("unique %d", i),
+			Name:   fmt.Sprintf("Ali Irani %d", i),
+			Answer: nil,
+		}))
+	}
+
+	guests, err := s.repo.List(context.Background())
+	require.NoError(err)
+
+	require.Len(guests, 10)
+}
+
 func TestGuestDB(t *testing.T) {
 	t.Parallel()
 
