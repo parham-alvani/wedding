@@ -10,6 +10,7 @@ import (
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/tidwall/pretty"
 	"go.uber.org/fx"
@@ -17,14 +18,15 @@ import (
 
 const (
 	// prefix indicates environment variables prefix.
-	prefix = "saf_"
+	prefix = "wedback_"
 )
 
 // Config holds all configurations.
 type Config struct {
 	fx.Out
 
-	Logger logger.Config `json:"logger,omitempty"    koanf:"logger"`
+	Logger   logger.Config `json:"logger,omitempty" koanf:"logger"`
+	Database db.Config     `json:"database,omitempty"  koanf:"database"`
 }
 
 func Provide() Config {

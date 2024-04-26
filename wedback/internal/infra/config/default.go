@@ -1,6 +1,11 @@
 package config
 
-import "github.com/parham-alvani/wedding/wedback/internal/infra/logger"
+import (
+	"time"
+
+	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
+)
 
 // Default return default configuration.
 func Default() Config {
@@ -8,6 +13,14 @@ func Default() Config {
 	return Config{
 		Logger: logger.Config{
 			Level: "debug",
+		},
+		Database: db.Config{
+			DSN:             "postgresql://tinyurl:secret@localhost/tinyurl",
+			Debug:           true,
+			MaxIdelConns:    10,
+			MaxOpenConns:    10,
+			ConnMaxIdleTime: 10 * time.Second,
+			ConnMaxLifetime: 10 * time.Second,
 		},
 	}
 }
