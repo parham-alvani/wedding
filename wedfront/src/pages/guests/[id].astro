@@ -19,56 +19,76 @@ interface Guest {
 const guest: Guest = await resp.json();
 ---
 
-<h1>Hi {guest.name}</h1>
-<fieldset>
-  <legend>Questions</legend>
-  <div>
-    <input
-      type="checkbox"
-      id="coming"
-      name="coming"
-      checked={guest.answer?.coming === true}
-    />
-    <label for="coming">Coming or not?</label>
-  </div>
+<!doctype html>
+<html lang="en" class="h-full motion-safe:scroll-smooth" data-theme="dark">
+  <head>
+    <title>{guest.name}</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div class="container mx-auto">
+      <h1 class="text-center text-4xl">Hi dear "{guest.name}" 👋</h1>
+      <p>
+        We (Elahe and Parham) are glad to invite you, into our wedding ceremony.
+      </p>
+      <fieldset>
+        <legend>Questions</legend>
+        <div>
+          <input
+            type="checkbox"
+            id="coming"
+            name="coming"
+            checked={guest.answer?.coming === true}
+          />
+          <label for="coming">Coming or not?</label>
+        </div>
 
-  <div>
-    <input
-      type="checkbox"
-      id="plus_one"
-      name="plus_one"
-      checked={guest.answer?.plus_one === true}
-    />
-    <label for="plus_one">Plus-one?</label>
-  </div>
-</fieldset>
-<button data-id={guest.id} id="submit" disabled={guest.answer != null}
-  >Submit</button
->
+        <div>
+          <input
+            type="checkbox"
+            id="plus_one"
+            name="plus_one"
+            checked={guest.answer?.plus_one === true}
+          />
+          <label for="plus_one">Plus-one?</label>
+        </div>
+      </fieldset>
+      <button
+        data-id={guest.id}
+        id="submit"
+        disabled={guest.answer != null}
+        class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-md shadow-sm opacity-100">Submit</button
+      >
+    </div>
 
-<script>
-  const submitBtn = document.getElementById("submit");
-  if (submitBtn != null) {
-    const id = submitBtn.getAttribute("data-id");
+    <script>
+      const submitBtn = document.getElementById("submit");
+      if (submitBtn != null) {
+        const id = submitBtn.getAttribute("data-id");
 
-    const submit = () => {
-      const comingChk = document.getElementById("coming") as HTMLInputElement;
-      const plusOneChk = document.getElementById(
-        "plus_one"
-      ) as HTMLInputElement;
+        const submit = () => {
+          const comingChk = document.getElementById(
+            "coming"
+          ) as HTMLInputElement;
+          const plusOneChk = document.getElementById(
+            "plus_one"
+          ) as HTMLInputElement;
 
-      fetch(`http://127.0.0.1:1378/guest/${id}/answer`, {
-        method: "POST",
-        body: JSON.stringify({
-          coming: comingChk.value === "on",
-          plus_one: plusOneChk.value === "on",
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    };
+          fetch(`http://127.0.0.1:1378/guest/${id}/answer`, {
+            method: "POST",
+            body: JSON.stringify({
+              coming: comingChk.value === "on",
+              plus_one: plusOneChk.value === "on",
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        };
 
-    submitBtn.onclick = submit;
-  }
-</script>
+        submitBtn.onclick = submit;
+      }
+    </script>
+  </body>
+</html>
