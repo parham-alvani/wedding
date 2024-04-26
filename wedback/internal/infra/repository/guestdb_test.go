@@ -112,6 +112,15 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	require.Equal(true, guest.PlusOne())
 }
 
+func (s *GuestDBTestSuite) TestCreateWithAnswerButWithoutGuest() {
+	require := s.Require()
+
+	require.Error(s.repo.Answer(context.Background(), "not-found", model.Answer{
+		PlusOne: true,
+		Coming:  true,
+	}))
+}
+
 func (s *GuestDBTestSuite) TestList() {
 	require := s.Require()
 

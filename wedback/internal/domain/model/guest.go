@@ -4,7 +4,7 @@ package model
 type Guest struct {
 	ID     string  `gorm:"primaryKey;notnull" json:"id"`
 	Name   string  `gorm:"uniqueIndex" json:"name"`
-	Answer *Answer `gorm:"foreignKey:ID" json:"answer"`
+	Answer *Answer `gorm:"foreignKey:GuestID" json:"answer"`
 }
 
 func (g Guest) Coming() bool {

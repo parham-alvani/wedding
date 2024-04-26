@@ -81,20 +81,19 @@ func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
 func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) error {
 	answer.ID = rand.Int64()
 
-	if err := r.db.DB.WithContext(ctx).Create(&answer).Error; err != nil {
+	guest, err := r.Get(ctx, id)
+	if err != nil {
+		r.logger.Error("guest fetching failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
+
+		return fmt.Errorf("guest fetching failed %w", err)
+	}
+
+	guest.Answer = &answer
+
+	if err := r.db.DB.WithContext(ctx).Updates(&guest).Error; err != nil {
 		r.logger.Error("answer creation failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
 
 		return fmt.Errorf("answer creation failed %w", err)
-	}
-
-	if err := r.db.DB.WithContext(ctx).Model(new(model.Guest)).Where("id = ?", id).Update("Answer", answer.ID).Error; err != nil {
-		r.logger.Error("updating guest from database failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
-
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return guestrepo.ErrGuestNotFound
-		}
-
-		return fmt.Errorf("update guest from database failed %w", err)
 	}
 
 	return nil
