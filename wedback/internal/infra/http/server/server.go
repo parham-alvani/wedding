@@ -6,16 +6,22 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/handler"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
-func Provide(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
+func Provide(lc fx.Lifecycle, logger *zap.Logger, repo guestrepo.Repository) *echo.Echo {
 	app := echo.New()
 
 	handler.Healthz{
 		Logger: logger.Named("handler").Named("healthz"),
+	}.Register(app.Group(""))
+
+	handler.Guest{
+		Logger:     logger.Named("handler").Named("guest"),
+		Repository: repo,
 	}.Register(app.Group(""))
 
 	lc.Append(fx.Hook{
