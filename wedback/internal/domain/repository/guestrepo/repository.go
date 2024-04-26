@@ -1,4 +1,4 @@
-package urlrepo
+package guestrepo
 
 import (
 	"context"
