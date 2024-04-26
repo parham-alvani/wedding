@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -18,7 +19,7 @@ type DB struct {
 
 const PingTimeout = 10 * time.Second
 
-func Provide(cfg Config, logger *zap.Logger) (*DB, error) {
+func Provide(lc fx.Lifecycle, cfg Config, logger *zap.Logger) (*DB, error) {
 	// nolint: exhaustruct
 	db, err := gorm.Open(sqlite.Open(cfg.DSN), &gorm.Config{
 		// enable prepared statements and caching them globally
@@ -55,6 +56,17 @@ func Provide(cfg Config, logger *zap.Logger) (*DB, error) {
 	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
 	sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
 	sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
+
+	lc.Append(
+		fx.Hook{
+			OnStart: func(context.Context) error {
+				return db.AutoMigrate()
+			},
+			OnStop: func(_ context.Context) error {
+				return sqlDB.Close()
+			},
+		},
+	)
 
 	return &DB{DB: db, SQL: sqlDB}, nil
 }
