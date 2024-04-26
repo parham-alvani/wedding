@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime/debug"
 
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/insert"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/list"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/serve"
 	"github.com/pterm/pterm"
@@ -35,6 +36,7 @@ func Execute() {
 		Commands: []*cli.Command{
 			serve.Register(),
 			list.Register(),
+			insert.Register(),
 		},
 		Version: func() string {
 			revision := ""
