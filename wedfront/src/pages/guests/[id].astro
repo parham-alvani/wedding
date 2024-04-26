@@ -20,7 +20,6 @@ const guest: Guest = await resp.json();
 ---
 
 <h1>Hi {guest.name}</h1>
-{guest.answer?.coming}
 <fieldset>
   <legend>Questions</legend>
   <div>
@@ -28,7 +27,7 @@ const guest: Guest = await resp.json();
       type="checkbox"
       id="coming"
       name="coming"
-      :checked={guest.answer?.coming === true}
+      checked={guest.answer?.coming === true}
     />
     <label for="coming">Coming or not?</label>
   </div>
@@ -38,12 +37,14 @@ const guest: Guest = await resp.json();
       type="checkbox"
       id="plus_one"
       name="plus_one"
-      checked{guest.answer?.plus_one === true}
+      checked={guest.answer?.plus_one === true}
     />
     <label for="plus_one">Plus-one?</label>
   </div>
 </fieldset>
-<button data-id={guest.id} id="submit" disabled={guest.answer != null}>Submit</button>
+<button data-id={guest.id} id="submit" disabled={guest.answer != null}
+  >Submit</button
+>
 
 <script>
   const submitBtn = document.getElementById("submit");
@@ -59,12 +60,12 @@ const guest: Guest = await resp.json();
       fetch(`http://127.0.0.1:1378/guest/${id}/answer`, {
         method: "POST",
         body: JSON.stringify({
-          coming: comingChk.value === 'on',
-          plus_one: plusOneChk.value === 'on',
+          coming: comingChk.value === "on",
+          plus_one: plusOneChk.value === "on",
         }),
         headers: {
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
     };
 
