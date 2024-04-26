@@ -1,14 +1,9 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
-
-// Guest represents a wedding guest that may also has partner.
+// Guest represents a wedding guest.
 type Guest struct {
-	gorm.Model
-	ID     string  `gorm:"primaryKey" json:"id"`
-	Name   string  `json:"name"`
+	ID     string  `gorm:"primaryKey;notnull" json:"id"`
+	Name   string  `gorm:"uniqueIndex" json:"name"`
 	Answer *Answer `gorm:"foreignKey:ID" json:"answer"`
 }
 

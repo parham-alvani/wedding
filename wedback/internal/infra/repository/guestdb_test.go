@@ -46,10 +46,19 @@ func (s *GuestDBTestSuite) TearDownTest() {
 
 	// nolint: exhaustruct
 	stmt := &gorm.Statement{DB: s.db.DB}
-	require.NoError(stmt.Parse(new(model.Guest)))
+	{
+		require.NoError(stmt.Parse(new(model.Guest)))
 
-	tx := s.db.DB.Exec(fmt.Sprintf("DELETE FROM %s;", stmt.Schema.Table))
-	require.NoError(tx.Error)
+		tx := s.db.DB.Exec(fmt.Sprintf("DELETE FROM %s;", stmt.Schema.Table))
+		require.NoError(tx.Error)
+	}
+
+	{
+		require.NoError(stmt.Parse(new(model.Answer)))
+
+		tx := s.db.DB.Exec(fmt.Sprintf("DELETE FROM %s;", stmt.Schema.Table))
+		require.NoError(tx.Error)
+	}
 }
 
 func (s *GuestDBTestSuite) TearDownSuite() {
@@ -77,6 +86,30 @@ func (s *GuestDBTestSuite) TestCreate() {
 	require.NoError(err)
 
 	require.Equal("Ali Irani", guest.Name)
+}
+
+func (s *GuestDBTestSuite) TestCreateWithAnswer() {
+	require := s.Require()
+
+	// nolint: exhaustruct
+	require.NoError(s.repo.Create(context.Background(), model.Guest{
+		ID:     "unique",
+		Name:   "Ali Irani",
+		Answer: nil,
+	}))
+
+	require.NoError(s.repo.Answer(context.Background(), "unique", model.Answer{
+		PlusOne: true,
+		Coming:  true,
+	}))
+
+	guest, err := s.repo.Get(context.Background(), "unique")
+	require.NoError(err)
+
+	require.Equal("Ali Irani", guest.Name)
+	require.NotNil(guest.Answer)
+	require.Equal(true, guest.Coming())
+	require.Equal(true, guest.PlusOne())
 }
 
 func (s *GuestDBTestSuite) TestList() {

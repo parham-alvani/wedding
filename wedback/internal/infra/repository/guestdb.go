@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math/rand/v2"
 
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
@@ -42,7 +43,7 @@ func (r *GuestDB) Create(ctx context.Context, guest model.Guest) error {
 func (r *GuestDB) Get(ctx context.Context, id string) (model.Guest, error) {
 	var guest model.Guest
 
-	if err := r.db.DB.WithContext(ctx).Where("id = ?", id).First(&guest).Error; err != nil {
+	if err := r.db.DB.WithContext(ctx).Where("guests.id = ?", id).Joins("Answer").First(&guest).Error; err != nil {
 		r.logger.Error("fetching guest from database failed", zap.Error(err), zap.String(logtag.Operation, "get"))
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -58,7 +59,7 @@ func (r *GuestDB) Get(ctx context.Context, id string) (model.Guest, error) {
 func (r *GuestDB) List(ctx context.Context) ([]model.Guest, error) {
 	var guests []model.Guest
 
-	if err := r.db.DB.WithContext(ctx).Find(&guests).Error; err != nil {
+	if err := r.db.DB.WithContext(ctx).Joins("Answer").Find(&guests).Error; err != nil {
 		r.logger.Error("fetching guests from database failed", zap.Error(err), zap.String(logtag.Operation, "list"))
 
 		return nil, fmt.Errorf("fetching guests from database failed %w", err)
@@ -78,7 +79,15 @@ func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
 }
 
 func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) error {
-	if err := r.db.DB.WithContext(ctx).Where("id = ?", id).Update("answer", answer).Error; err != nil {
+	answer.ID = rand.Int64()
+
+	if err := r.db.DB.WithContext(ctx).Create(&answer).Error; err != nil {
+		r.logger.Error("answer creation failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
+
+		return fmt.Errorf("answer creation failed %w", err)
+	}
+
+	if err := r.db.DB.WithContext(ctx).Model(new(model.Guest)).Where("id = ?", id).Update("Answer", answer.ID).Error; err != nil {
 		r.logger.Error("updating guest from database failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
