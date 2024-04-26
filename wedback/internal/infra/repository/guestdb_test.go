@@ -2,95 +2,85 @@ package repository_test
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"testing"
-	"time"
 
-	"github.com/1995parham-teaching/tinyurl/internal/domain/model/url"
-	"github.com/1995parham-teaching/tinyurl/internal/domain/repository/urlrepo"
-	"github.com/1995parham-teaching/tinyurl/internal/infra/config"
-	"github.com/1995parham-teaching/tinyurl/internal/infra/db"
-	"github.com/1995parham-teaching/tinyurl/internal/infra/logger"
-	"github.com/1995parham-teaching/tinyurl/internal/infra/repository"
-	"github.com/1995parham-teaching/tinyurl/internal/infra/telemetry"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxtest"
 	"gorm.io/gorm"
 )
 
-type URLDBTestSuite struct {
+type GuestDBTestSuite struct {
 	suite.Suite
 
-	repo urlrepo.Repository
+	repo guestrepo.Repository
 	db   *db.DB
 
 	app *fxtest.App
 }
 
-func (s *URLDBTestSuite) SetupSuite() {
+func (s *GuestDBTestSuite) SetupSuite() {
 	s.app = fxtest.New(s.T(),
 		fx.Provide(config.Provide),
 		fx.Provide(logger.Provide),
 		fx.Provide(db.Provide),
-		fx.Provide(telemetry.ProvideNull),
 		fx.Provide(
-			fx.Annotate(repository.ProvideURLDB, fx.As(new(urlrepo.Repository))),
+			fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
 		),
-		fx.Invoke(func(repo urlrepo.Repository, db *db.DB) {
+		fx.Invoke(func(repo guestrepo.Repository, db *db.DB) {
 			s.db = db
 			s.repo = repo
 		}),
 	).RequireStart()
 }
 
-func (s *URLDBTestSuite) TearDownTest() {
+func (s *GuestDBTestSuite) TearDownTest() {
 	require := s.Require()
 
 	// nolint: exhaustruct
 	stmt := &gorm.Statement{DB: s.db.DB}
-	require.NoError(stmt.Parse(new(url.URL)))
+	require.NoError(stmt.Parse(new(model.Guest)))
 
-	tx := s.db.DB.Exec(fmt.Sprintf("TRUNCATE TABLE %s;", stmt.Schema.Table))
+	tx := s.db.DB.Exec(fmt.Sprintf("DELETE FROM %s;", stmt.Schema.Table))
 	require.NoError(tx.Error)
 }
 
-func (s *URLDBTestSuite) TearDownSuite() {
+func (s *GuestDBTestSuite) TearDownSuite() {
 	s.app.RequireStop()
 }
 
-func (s *URLDBTestSuite) TestNotFound() {
+func (s *GuestDBTestSuite) TestNotFound() {
 	require := s.Require()
 
-	_, err := s.repo.FromShortURL(context.Background(), "static_random")
-	require.ErrorIs(urlrepo.ErrURLNotFound, err)
+	_, err := s.repo.Get(context.Background(), "static_random")
+	require.ErrorIs(guestrepo.ErrGuestNotFound, err)
 }
 
-func (s *URLDBTestSuite) TestCreate() {
+func (s *GuestDBTestSuite) TestCreate() {
 	require := s.Require()
 
 	// nolint: exhaustruct
-	require.NoError(s.repo.Create(context.Background(), url.URL{
-		Key:    "static_random",
-		URL:    "https://github.com",
-		Visits: 0,
-		Expire: sql.NullTime{
-			Time:  time.Now(),
-			Valid: false,
-		},
+	require.NoError(s.repo.Create(context.Background(), model.Guest{
+		ID:     "unique",
+		Name:   "Ali Irani",
+		Answer: nil,
 	}))
 
-	// nolint: exhaustruct
-	url, err := s.repo.FromShortURL(context.Background(), "static_random")
+	guest, err := s.repo.Get(context.Background(), "unique")
 	require.NoError(err)
 
-	require.Equal("https://github.com", url.URL)
-	require.False(url.Expire.Valid)
+	require.Equal("Ali Irani", guest.Name)
 }
 
-func TestURLDB(t *testing.T) {
+func TestGuestDB(t *testing.T) {
 	t.Parallel()
 
-	suite.Run(t, new(URLDBTestSuite))
+	suite.Run(t, new(GuestDBTestSuite))
 }

@@ -64,3 +64,17 @@ func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
 
 	return nil
 }
+
+func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) error {
+	if err := r.db.DB.WithContext(ctx).Where("id = ?", id).Update("answer", answer).Error; err != nil {
+		r.logger.Error("updating guest from database failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return guestrepo.ErrGuestNotFound
+		}
+
+		return fmt.Errorf("update guest from database failed %w", err)
+	}
+
+	return nil
+}

@@ -15,7 +15,7 @@ func Default() Config {
 			Level: "debug",
 		},
 		Database: db.Config{
-			DSN:             "sqlite://wedding.db",
+			DSN:             "wedding.db",
 			Debug:           true,
 			MaxIdelConns:    10,
 			MaxOpenConns:    10,

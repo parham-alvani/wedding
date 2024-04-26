@@ -1,13 +1,13 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+)
 
 // Guest represents a wedding guest that may also has partner.
 type Guest struct {
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	ID        string    `gorm:"primaryKey" json:"id"`
-	Name      string    `json:"name"`
-	Partner   *Guest    `json:"partner"`
-	Answer    *Answer   `json:"answer"`
+	gorm.Model
+	ID     string  `gorm:"primaryKey" json:"id"`
+	Name   string  `json:"name"`
+	Answer *Answer `gorm:"foreignKey:ID" json:"answer"`
 }

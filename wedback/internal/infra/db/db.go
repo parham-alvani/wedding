@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
@@ -60,7 +61,7 @@ func Provide(lc fx.Lifecycle, cfg Config, logger *zap.Logger) (*DB, error) {
 	lc.Append(
 		fx.Hook{
 			OnStart: func(context.Context) error {
-				return db.AutoMigrate()
+				return db.AutoMigrate(new(model.Guest), new(model.Answer))
 			},
 			OnStop: func(_ context.Context) error {
 				return sqlDB.Close()
