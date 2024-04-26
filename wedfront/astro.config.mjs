@@ -5,5 +5,6 @@ import { defineConfig } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   site: "https://parham-alvani.github.com/wedding",
+  output: 'server',
   integrations: [tailwind(), icon()],
 });

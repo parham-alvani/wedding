@@ -1,0 +1,13 @@
+---
+const { id } = Astro.params;
+
+let resp = await fetch(`http://127.0.0.1:1378/guest/${id}`)
+if (resp.status != 200) {
+  return Astro.redirect('/');
+}
+
+let guest = await resp.json()
+
+---
+
+<h1>Hi {guest.name}</h1>
