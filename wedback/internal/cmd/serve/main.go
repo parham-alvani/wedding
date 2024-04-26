@@ -16,7 +16,7 @@ func main(logger *zap.Logger, _ *echo.Echo) {
 	logger.Info("welcome to our server")
 }
 
-// Register server command.
+// Register serve command.
 func Register() *cli.Command {
 	//nolint: exhaustruct
 	return &cli.Command{

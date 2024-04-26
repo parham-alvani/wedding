@@ -3,20 +3,19 @@ package serve
 import (
 	"context"
 
-	"github.com/labstack/echo/v4"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
-func main(logger *zap.Logger, _ *echo.Echo) {
-	logger.Info("welcome to our server")
+func main() {
 }
 
-// Register server command.
+// Register insert command.
 func Register() *cli.Command {
 	//nolint: exhaustruct
 	return &cli.Command{
@@ -27,6 +26,9 @@ func Register() *cli.Command {
 				fx.Provide(config.Provide),
 				fx.Provide(logger.Provide),
 				fx.Provide(db.Provide),
+				fx.Provide(
+					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
+				),
 				fx.Invoke(main),
 			).Run()
 
