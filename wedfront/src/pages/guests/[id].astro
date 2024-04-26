@@ -1,13 +1,73 @@
 ---
 const { id } = Astro.params;
 
-let resp = await fetch(`http://127.0.0.1:1378/guest/${id}`)
+let resp = await fetch(`http://127.0.0.1:1378/guest/${id}`);
 if (resp.status != 200) {
-  return Astro.redirect('/');
+  return Astro.redirect("/");
 }
 
-let guest = await resp.json()
+interface Answer {
+  coming: boolean;
+  plus_one: boolean;
+}
+interface Guest {
+  name: string;
+  id: string;
+  answer?: Answer;
+}
 
+const guest: Guest = await resp.json();
 ---
 
 <h1>Hi {guest.name}</h1>
+{guest.answer?.coming}
+<fieldset>
+  <legend>Questions</legend>
+  <div>
+    <input
+      type="checkbox"
+      id="coming"
+      name="coming"
+      :checked={guest.answer?.coming === true}
+    />
+    <label for="coming">Coming or not?</label>
+  </div>
+
+  <div>
+    <input
+      type="checkbox"
+      id="plus_one"
+      name="plus_one"
+      checked{guest.answer?.plus_one === true}
+    />
+    <label for="plus_one">Plus-one?</label>
+  </div>
+</fieldset>
+<button data-id={guest.id} id="submit" disabled={guest.answer != null}>Submit</button>
+
+<script>
+  const submitBtn = document.getElementById("submit");
+  if (submitBtn != null) {
+    const id = submitBtn.getAttribute("data-id");
+
+    const submit = () => {
+      const comingChk = document.getElementById("coming") as HTMLInputElement;
+      const plusOneChk = document.getElementById(
+        "plus_one"
+      ) as HTMLInputElement;
+
+      fetch(`http://127.0.0.1:1378/guest/${id}/answer`, {
+        method: "POST",
+        body: JSON.stringify({
+          coming: comingChk.value === 'on',
+          plus_one: plusOneChk.value === 'on',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+    };
+
+    submitBtn.onclick = submit;
+  }
+</script>
