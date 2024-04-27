@@ -11,6 +11,11 @@
 We (Elahe and Parham) are going to get married.
 This repository will provide the invitation card and details of the ceremony.
 
+## How does it happen?
+
+- Bridal Salon: Mina Rad
+- Bridal Mezon: Hasti
+
 ## Commands
 
 | Command                | Action                                            |
