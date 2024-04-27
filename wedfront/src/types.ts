@@ -20,3 +20,13 @@ export interface NavItem {
   title: string;
   url: string;
 }
+
+export interface Answer {
+  coming: boolean;
+  plus_one: boolean;
+}
+export interface Guest {
+  name: string;
+  id: string;
+  answer?: Answer;
+}

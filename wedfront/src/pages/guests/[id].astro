@@ -1,4 +1,12 @@
 ---
+import "@fontsource-variable/inter";
+import Footer from "~/components/footer.astro";
+import Intro from "~/components/intro.astro";
+import Splash from "~/components/splash.astro";
+import GuestSection from "~/components/guest.astro";
+import "~/styles/index.css";
+import { type Guest } from "~/types";
+
 const { id } = Astro.params;
 
 let resp = await fetch(`http://127.0.0.1:1378/guest/${id}`);
@@ -6,89 +14,40 @@ if (resp.status != 200) {
   return Astro.redirect("/");
 }
 
-interface Answer {
-  coming: boolean;
-  plus_one: boolean;
-}
-interface Guest {
-  name: string;
-  id: string;
-  answer?: Answer;
-}
-
 const guest: Guest = await resp.json();
+const { generator, site } = Astro;
+const image = new URL("social.jpg", site);
+const description =
+  "Build fast websites, faster. Astro is a new kind of site builder for the modern web. Lightning-fast performance meets powerful developer experience.";
 ---
 
 <!doctype html>
 <html lang="en" class="h-full motion-safe:scroll-smooth" data-theme="dark">
   <head>
-    <title>{guest.name}</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="generator" content={generator} />
+
+    <title>{guest.name}</title>
+    <meta name="description" content={description} />
+
+    <!-- social media -->
+    <meta property="og:title" content="Astro" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:url" content={site} />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body>
-    <div class="container mx-auto">
-      <h1 class="text-center text-4xl">Hi dear "{guest.name}" 👋</h1>
-      <p>
-        We (Elahe and Parham) are glad to invite you, into our wedding ceremony.
-      </p>
-      <fieldset>
-        <legend>Questions</legend>
-        <div>
-          <input
-            type="checkbox"
-            id="coming"
-            name="coming"
-            checked={guest.answer?.coming === true}
-          />
-          <label for="coming">Coming or not?</label>
-        </div>
-
-        <div>
-          <input
-            type="checkbox"
-            id="plus_one"
-            name="plus_one"
-            checked={guest.answer?.plus_one === true}
-          />
-          <label for="plus_one">Plus-one?</label>
-        </div>
-      </fieldset>
-      <button
-        data-id={guest.id}
-        id="submit"
-        disabled={guest.answer != null}
-        class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-md shadow-sm opacity-100">Submit</button
-      >
+  <body
+    class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
+  >
+    <Splash />
+    <div class="columns-2 space-y-24 px-8 py-32">
+      <Intro class="" />
+      <GuestSection guest={guest} />
     </div>
-
-    <script>
-      const submitBtn = document.getElementById("submit");
-      if (submitBtn != null) {
-        const id = submitBtn.getAttribute("data-id");
-
-        const submit = () => {
-          const comingChk = document.getElementById(
-            "coming"
-          ) as HTMLInputElement;
-          const plusOneChk = document.getElementById(
-            "plus_one"
-          ) as HTMLInputElement;
-
-          fetch(`http://127.0.0.1:1378/guest/${id}/answer`, {
-            method: "POST",
-            body: JSON.stringify({
-              coming: comingChk.value === "on",
-              plus_one: plusOneChk.value === "on",
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-        };
-
-        submitBtn.onclick = submit;
-      }
-    </script>
+    <Footer />
   </body>
 </html>

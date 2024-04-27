@@ -1,0 +1,85 @@
+---
+import { Icon } from "astro-icon/components";
+import ContentSection from "~/components/content-section.astro";
+import { type Guest } from "~/types";
+
+export interface Props {
+  guest: Guest;
+}
+
+const { guest } = Astro.props;
+---
+
+<ContentSection title={`Hi dear "${guest.name}" 👋`} id="guest">
+  <Fragment slot="lead">
+    We are glad to <span class="text-primary">invite you</span>, into our
+    wedding ceremony.
+    <fieldset class="flex flex-row w-4/6 text-lg">
+      <div class="basis-1/2 text-center">
+        <input
+          type="checkbox"
+          id="coming"
+          name="coming"
+          checked={guest.answer?.coming === true}
+        />
+        <label for="coming" class="text-secondary">Coming or not?</label>
+      </div>
+
+      <div class="basis-1/2 text-center">
+        <input
+          type="checkbox"
+          id="plus_one"
+          name="plus_one"
+          checked={guest.answer?.plus_one === true}
+        />
+        <label for="plus_one" class="text-secondary">Plus-one?</label>
+      </div>
+    </fieldset>
+    <button
+      data-id={guest.id}
+      id="submit"
+      disabled={guest.answer != null}
+      class="flex items-center justify-center gap-3 border-2 border-current px-6 py-4"
+    >
+      {
+        guest.answer == null ?
+        "Submit"
+        :
+        "Already submitted"
+      }
+      {
+        guest.answer == null ?
+        <Icon name="mdi:love-letter-open" class="size-12" />
+        :
+        <Icon name="mdi:love-letter" class="size-12" />
+      }
+    </button>
+  </Fragment>
+</ContentSection>
+
+<script>
+  const submitBtn = document.getElementById("submit");
+  if (submitBtn != null) {
+    const id = submitBtn.getAttribute("data-id");
+
+    const submit = () => {
+      const comingChk = document.getElementById("coming") as HTMLInputElement;
+      const plusOneChk = document.getElementById(
+        "plus_one"
+      ) as HTMLInputElement;
+
+      fetch(`http://127.0.0.1:1378/guest/${id}/answer`, {
+        method: "POST",
+        body: JSON.stringify({
+          coming: comingChk.value === "on",
+          plus_one: plusOneChk.value === "on",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    };
+
+    submitBtn.onclick = submit;
+  }
+</script>
