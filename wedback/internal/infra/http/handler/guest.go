@@ -5,15 +5,15 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/request"
 	"go.uber.org/zap"
 )
 
 type Guest struct {
-	Repository guestrepo.Repository
-	Logger     *zap.Logger
+	Service service.GuestSvc
+	Logger  *zap.Logger
 }
 
 func (h Guest) Page(c echo.Context) error {
@@ -21,7 +21,7 @@ func (h Guest) Page(c echo.Context) error {
 
 	id := c.Param("id")
 
-	guest, err := h.Repository.Get(ctx, id)
+	guest, err := h.Service.Get(ctx, id)
 	if err != nil {
 		h.Logger.Error("failed to fetch a guest from repository", zap.Error(err), zap.String("id", id))
 
@@ -46,11 +46,12 @@ func (h Guest) Answer(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	if err := h.Repository.Answer(ctx, id, model.Answer{
-		PlusOne: req.PlusOne,
-		Coming:  req.Coming,
-	}); err != nil {
-
+	if err := h.Service.Answer(
+		ctx,
+		id,
+		req.PlusOne,
+		req.Coming,
+	); err != nil {
 		h.Logger.Error("failed to add an answer to a guest from repository", zap.Error(err), zap.String("id", id))
 
 		if errors.Is(err, guestrepo.ErrGuestNotFound) {

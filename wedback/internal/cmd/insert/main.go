@@ -3,14 +3,14 @@ package insert
 import (
 	"context"
 	"fmt"
-	"math/rand/v2"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/pterm/pterm"
@@ -18,19 +18,9 @@ import (
 	"go.uber.org/fx"
 )
 
-var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-func RandStringRunes(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[rand.IntN(len(letterRunes))]
-	}
-	return string(b)
-}
-
 type guestModel struct {
-	repository guestrepo.Repository
-	input      textinput.Model
+	service service.GuestSvc
+	input   textinput.Model
 }
 
 func (m guestModel) Init() tea.Cmd {
@@ -40,16 +30,13 @@ func (m guestModel) Init() tea.Cmd {
 func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	if msg, ok := msg.(tea.KeyMsg); ok {
+		// nolint: exhaustive
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return m, tea.Quit
 		case tea.KeyEnter:
-			if err := m.repository.Create(context.Background(), model.Guest{
-				Name: m.input.Value(),
-				ID:   RandStringRunes(10),
-			}); err != nil {
+			if _, err := m.service.New(context.Background(), m.input.Value()); err != nil {
 				pterm.Error.Printfln("failed to create the guest %s", err)
 			}
 
@@ -70,7 +57,7 @@ func (m guestModel) View() string {
 	) + "\n"
 }
 
-func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
+func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 	ti := textinput.New()
 	ti.Placeholder = "Name"
 	ti.Focus()
@@ -78,19 +65,23 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 	ti.Width = 20
 
 	m := guestModel{
-		repository: repository,
-		input:      ti,
+		service: svc,
+		input:   ti,
 	}
 
 	p := tea.NewProgram(m)
 
 	lc.Append(
 		fx.StartHook(func(_ context.Context) error {
-			if _, err := p.Run(); err != nil {
-				return err
-			}
+			go func() {
+				if _, err := p.Run(); err != nil {
+					pterm.Fatal.Printfln("execution failed %s", err)
+				}
 
-			return shutdowner.Shutdown()
+				_ = shutdowner.Shutdown()
+			}()
+
+			return nil
 		}),
 	)
 }
@@ -103,13 +94,14 @@ func Register() *cli.Command {
 		Description: "Insert a new guest",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
-				fx.NopLogger,
 				fx.Provide(config.Provide),
 				fx.Provide(logger.Provide),
 				fx.Provide(db.Provide),
 				fx.Provide(
 					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
 				),
+				fx.Provide(generator.Provide),
+				fx.Provide(service.ProvideGuestSvc),
 				fx.Invoke(main),
 			).Run()
 

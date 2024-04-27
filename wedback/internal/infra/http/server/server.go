@@ -7,13 +7,13 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/handler"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
-func Provide(lc fx.Lifecycle, logger *zap.Logger, repo guestrepo.Repository) *echo.Echo {
+func Provide(lc fx.Lifecycle, logger *zap.Logger, svc service.GuestSvc) *echo.Echo {
 	app := echo.New()
 
 	app.Use(middleware.CORS())
@@ -23,8 +23,8 @@ func Provide(lc fx.Lifecycle, logger *zap.Logger, repo guestrepo.Repository) *ec
 	}.Register(app.Group(""))
 
 	handler.Guest{
-		Logger:     logger.Named("handler").Named("guest"),
-		Repository: repo,
+		Logger:  logger.Named("handler").Named("guest"),
+		Service: svc,
 	}.Register(app.Group(""))
 
 	lc.Append(fx.Hook{

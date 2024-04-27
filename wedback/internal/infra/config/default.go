@@ -4,12 +4,13 @@ import (
 	"time"
 
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 )
 
 // Default return default configuration.
 func Default() Config {
-	// nolint: exhaustruct
+	// nolint: exhaustruct, gomnd
 	return Config{
 		Logger: logger.Config{
 			Level: "debug",
@@ -21,6 +22,9 @@ func Default() Config {
 			MaxOpenConns:    10,
 			ConnMaxIdleTime: 10 * time.Second,
 			ConnMaxLifetime: 10 * time.Second,
+		},
+		Generator: generator.Config{
+			Type: "simple",
 		},
 	}
 }

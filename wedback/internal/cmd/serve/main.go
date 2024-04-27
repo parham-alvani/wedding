@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/server"
@@ -34,6 +35,7 @@ func Register() *cli.Command {
 				fx.Provide(
 					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
 				),
+				fx.Provide(service.ProvideGuestSvc),
 				fx.Provide(server.Provide),
 				fx.Invoke(main),
 			).Run()

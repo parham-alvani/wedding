@@ -34,3 +34,34 @@ func (svc GuestSvc) New(ctx context.Context, name string) (model.Guest, error) {
 
 	return guest, nil
 }
+
+func (svc GuestSvc) Answer(ctx context.Context, id string, coming bool, plusOne bool) error {
+	if err := svc.repository.Answer(ctx, id, model.Answer{
+		ID:      0,
+		Coming:  coming,
+		PlusOne: plusOne,
+		GuestID: "",
+	}); err != nil {
+		return fmt.Errorf("answer creation failed %w", err)
+	}
+
+	return nil
+}
+
+func (svc GuestSvc) Get(ctx context.Context, id string) (model.Guest, error) {
+	guest, err := svc.repository.Get(ctx, id)
+	if err != nil {
+		return guest, fmt.Errorf("guest fetching failed %w", err)
+	}
+
+	return guest, nil
+}
+
+func (svc GuestSvc) List(ctx context.Context) ([]model.Guest, error) {
+	guests, err := svc.repository.List(ctx)
+	if err != nil {
+		return guests, fmt.Errorf("guests fetching failed %w", err)
+	}
+
+	return guests, nil
+}

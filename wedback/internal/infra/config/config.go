@@ -11,6 +11,7 @@ import (
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/tidwall/pretty"
 	"go.uber.org/fx"
@@ -25,8 +26,9 @@ const (
 type Config struct {
 	fx.Out
 
-	Logger   logger.Config `json:"logger,omitempty" koanf:"logger"`
-	Database db.Config     `json:"database,omitempty"  koanf:"database"`
+	Logger    logger.Config    `json:"logger,omitempty"    koanf:"logger"`
+	Database  db.Config        `json:"database,omitempty"  koanf:"database"`
+	Generator generator.Config `json:"generator,omitempty" koanf:"generator"`
 }
 
 func Provide() Config {
