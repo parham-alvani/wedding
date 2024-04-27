@@ -112,6 +112,23 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	require.Equal(true, guest.PlusOne())
 }
 
+func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
+	require := s.Require()
+
+	// nolint: exhaustruct
+	require.NoError(s.repo.Create(context.Background(), model.Guest{
+		ID:     "unique",
+		Name:   "Ali Irani",
+		Answer: nil,
+	}))
+
+	require.ErrorIs(s.repo.Create(context.Background(), model.Guest{
+		ID:     "not-unique",
+		Name:   "Ali Irani",
+		Answer: nil,
+	}), guestrepo.ErrDuplicateGuestByName)
+}
+
 func (s *GuestDBTestSuite) TestCreateWithAnswerButWithoutGuest() {
 	require := s.Require()
 

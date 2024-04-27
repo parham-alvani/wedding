@@ -28,6 +28,7 @@ func Provide(lc fx.Lifecycle, cfg Config, logger *zap.Logger) (*DB, error) {
 		// gorm performs write operations insides a transaction to ensure data consistency.
 		// which is bad for performance.
 		SkipDefaultTransaction: false,
+		TranslateError:         true,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("cannot open connection to the database %w", err)
