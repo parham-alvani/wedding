@@ -1,0 +1,29 @@
+package generator
+
+import (
+	"crypto/rand"
+	"math/big"
+)
+
+// Simple is an easy to use random key generator.
+type Simple struct{}
+
+// ID generates a random key from the source characters.
+func (Simple) ID() string {
+	const (
+		length = 10
+		source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+	)
+
+	b := make([]byte, length)
+	for i := range b {
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(source))))
+		if err != nil {
+			panic(err)
+		}
+
+		b[i] = source[n.Int64()]
+	}
+
+	return string(b)
+}
