@@ -3,25 +3,23 @@ package list
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
 )
-
-var baseStyle = lipgloss.NewStyle().
-	BorderStyle(lipgloss.NormalBorder()).
-	BorderForeground(lipgloss.Color("240"))
 
 type guestsModel struct {
 	repository guestrepo.Repository
@@ -62,6 +60,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		// nolint: exhaustive
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
@@ -76,8 +75,8 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			rows[i] = table.Row{
 				guest.Name,
 				guest.ID,
-				fmt.Sprintf("%t", guest.PlusOne()),
-				fmt.Sprintf("%t", guest.Coming()),
+				strconv.FormatBool(guest.PlusOne()),
+				strconv.FormatBool(guest.Coming()),
 			}
 		}
 
@@ -95,7 +94,7 @@ func (m guestsModel) View() string {
 		return fmt.Sprintf("\n\n   %s Loading from database...\n\n", m.spinner.View())
 	}
 
-	return baseStyle.Render(m.table.View()) + "\n"
+	return m.table.View() + "\n"
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
@@ -123,11 +122,15 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 
 	lc.Append(
 		fx.StartHook(func(_ context.Context) error {
-			if _, err := p.Run(); err != nil {
-				return err
-			}
+			go func() {
+				if _, err := p.Run(); err != nil {
+					pterm.Fatal.Printfln("execution failed %s", err)
+				}
 
-			return shutdowner.Shutdown()
+				_ = shutdowner.Shutdown()
+			}()
+
+			return nil
 		}),
 	)
 }
@@ -147,6 +150,8 @@ func Register() *cli.Command {
 				fx.Provide(
 					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
 				),
+				fx.Provide(generator.Provide),
+				fx.Provide(service.ProvideGuestSvc),
 				fx.Invoke(main),
 			).Run()
 
