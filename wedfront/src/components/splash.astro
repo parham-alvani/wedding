@@ -1,24 +1,21 @@
 ---
 import { Icon } from "astro-icon/components";
 import HeroImage from "~/components/hero-image.astro";
-import GitHubCorner from "./github-corner.astro";
 
-import '@fontsource/dancing-script';
-
-const widths = [450, 800];
-const sizes = "(min-width: 640px) 42vw, 67vw";
+import "@fontsource/dancing-script";
 ---
 
 <section class="relative h-full bg-black">
-  <GitHubCorner />
-  <div id="splash-bg-fallback" class="absolute inset-0 opacity-20">
+  <div id="splash-bg-fallback" class="absolute inset-0 w-full opacity-20">
     <HeroImage />
   </div>
-  <div class="relative grid h-full place-items-center">
-    <h2
-      class="flex flex-col items-center self-auto"
-    >
-      <Icon name="wpf:wedding-cake" class="size-24 md:size-32" style="color: orange" />
+  <div class="relative h-full flex items-center justify-center">
+    <h2 class="flex flex-col items-center self-auto">
+      <Icon
+        name="wpf:wedding-cake"
+        class="size-24 md:size-32"
+        style="color: orange"
+      />
       <div
         class="gradient-text text-center font-extrabold tracking-tighter text-8xl"
         style="font-family: 'Dancing Script'"
@@ -28,11 +25,10 @@ const sizes = "(min-width: 640px) 42vw, 67vw";
         <br /> Parham
         <br />
         <astro-count-down>
-          <span></span>
+          <span>Loading...</span>
         </astro-count-down>
       </div>
     </h2>
-    </div>
   </div>
 </section>
 
@@ -45,42 +41,44 @@ const sizes = "(min-width: 640px) 42vw, 67vw";
 </noscript>
 
 <script>
-class AstroCountDown extends HTMLElement {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
+  class AstroCountDown extends HTMLElement {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
 
-  constructor() {
-    super();
+    constructor() {
+      super();
 
-    const weddingDate = new Date("Jun 16, 2024 00:00:00").getTime();
+      const weddingDate = new Date("Jun 16, 2024 00:00:00").getTime();
 
-    this.days = -1;
-    this.hours = 0;
-    this.minutes = 0;
-    this.seconds = 0;
+      this.days = -1;
+      this.hours = 0;
+      this.minutes = 0;
+      this.seconds = 0;
 
-    setInterval(() => {
-      let now = new Date().getTime();
+      setInterval(() => {
+        let now = new Date().getTime();
 
-      let until = weddingDate - now;
+        let until = weddingDate - now;
 
-      if (until > 0) {
-        this.days = Math.floor(until / (1000 * 60 * 60 * 24));
-        this.hours = Math.floor((until % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        this.minutes = Math.floor((until % (1000 * 60 * 60)) / (1000 * 60));
-        this.seconds = Math.floor((until % (1000 * 60)) / 1000);
+        if (until > 0) {
+          this.days = Math.floor(until / (1000 * 60 * 60 * 24));
+          this.hours = Math.floor(
+            (until % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          this.minutes = Math.floor((until % (1000 * 60 * 60)) / (1000 * 60));
+          this.seconds = Math.floor((until % (1000 * 60)) / 1000);
 
-        const counter = this.querySelector('span')
-        if (counter != null) {
-          counter.textContent = `${this.days}:${this.hours}:${this.minutes}:${this.seconds}`;
+          const counter = this.querySelector("span");
+          if (counter != null) {
+            counter.textContent = `${this.days}:${this.hours}:${this.minutes}:${this.seconds}`;
+          }
         }
-      }
-    }, 1000);
+      }, 1000);
+    }
   }
-}
-customElements.define('astro-count-down', AstroCountDown);
+  customElements.define("astro-count-down", AstroCountDown);
 </script>
 
 <style>
