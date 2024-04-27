@@ -33,7 +33,7 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		// nolint: exhaustive
 		switch msg.Type {
-		case tea.KeyCtrlC:
+		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
 		case tea.KeyEnter:
 			if _, err := m.service.New(context.Background(), m.input.Value()); err != nil {
@@ -59,7 +59,7 @@ func (m guestModel) View() string {
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 	ti := textinput.New()
-	ti.Placeholder = "Name"
+	ti.Placeholder = "Ali Irani & Maryam Akhyani"
 	ti.Focus()
 	ti.CharLimit = 156
 	ti.Width = 20
@@ -94,6 +94,7 @@ func Register() *cli.Command {
 		Description: "Insert a new guest",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
+				fx.NopLogger,
 				fx.Provide(config.Provide),
 				fx.Provide(logger.Provide),
 				fx.Provide(db.Provide),
