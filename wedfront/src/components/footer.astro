@@ -7,25 +7,25 @@ const parhamLinks: Array<FooterLink> = [
   {
     url: "https://github.com/elahe-dastan",
     description: "Parham Alvani's Github",
-    icon: "mdi:github",
+    icon: "skill-icons:github-light",
   },
   {
     url: "https://instagram.com/1995parham",
     description: "Parham Alvani's Instagram",
-    icon: "fa-brands:instagram",
+    icon: "skill-icons:instagram",
   },
 ];
 
 const elaheLinks: Array<FooterLink> = [
   {
     url: "https://github.com/elahe-dastan",
-    description: "Parham Alvani's Github",
-    icon: "mdi:github",
+    description: "Elahe Dastan's Github",
+    icon: "skill-icons:github-light",
   },
   {
     url: "https://instagram.com/elahe.dstn",
     description: "Elahe Dastan's Instagram",
-    icon: "fa-brands:instagram",
+    icon: "skill-icons:instagram",
   },
 ];
 ---
@@ -34,12 +34,20 @@ const elaheLinks: Array<FooterLink> = [
   <div class="absolute inset-0 overflow-hidden opacity-40">
     <HeroImage choice="none"/>
   </div>
-  <ul class="relative grid grid-cols-2 gap-4">
+  <ul class="relative grid grid-cols-3 gap-4">
+      <li class="m-auto">
+        <span
+          class="flex items-center justify-center text-center"
+        >
+          Parham<br />
+          🐼
+      </span>
+      </li>
     {
       parhamLinks.map((link) => (
         <li>
           <a
-            class="flex size-16 items-center justify-center rounded-full border-2 border-current p-4"
+            class="flex size-16 items-center justify-center"
             href={link.url}
           >
             <span class="sr-only">{link.description}</span>
@@ -50,12 +58,20 @@ const elaheLinks: Array<FooterLink> = [
     }
   </ul>
   <div class="grid grid-cols-2 gap-40"></div>
-  <ul class="relative grid grid-cols-2 gap-4">
+  <ul class="relative grid grid-cols-3 gap-4">
+      <li class="m-auto">
+        <span
+          class="flex items-center justify-center text-center"
+        >
+          Elahe<br />
+          🌰
+      </span>
+      </li>
     {
       elaheLinks.map((link) => (
         <li>
           <a
-            class="flex size-16 items-center justify-center rounded-full border-2 border-current p-4"
+            class="flex size-16 items-center justify-center"
             href={link.url}
           >
             <span class="sr-only">{link.description}</span>
