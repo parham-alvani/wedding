@@ -2,14 +2,35 @@
 import { Image } from "astro:assets";
 import weImage from "~/assets/wedding.jpg";
 
+export interface Props {
+  choice?: string;
+}
+
+const { choice } = Astro.props;
+
+let image: ImageMetadata | null
+switch (choice) {
+  case "wedding":
+    image = weImage
+    break
+  case "none":
+    image = null
+    break
+  default:
+    image = weImage
+}
+
 const widths = [450, 800, 1200];
 const sizes = "100vw";
 ---
 
+{ image ?
 <Image
   class="h-full w-full object-cover"
-  src={weImage}
+  src={image}
   widths={widths}
   sizes={sizes}
   alt="Wedding"
 />
+: ""
+}
