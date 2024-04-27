@@ -1,19 +1,44 @@
 ---
 import { Icon } from "astro-icon/components";
-
-
 ---
 
-<div class="rounded fixed bottom-0 left-0 size-20 bg-white z-10">
-    <button>
-        <Icon name="mdi:pause"></Icon>
-    </button>
+<div
+  class="fixed bottom-0 left-0 w-3/12 h-1/6 flex items-center justify-center rounded bg-transparent opacity-50"
+>
+  <button id="pause" class="size-1/4 text-orange-400">
+    <Icon class="size-full" name="mdi:pause" />
+  </button>
+  <button id="play" class="size-1/4 text-orange-400">
+    <Icon class="size-full" name="mdi:play" />
+  </button>
+  <span id="author" class="size-1/2 text-center mx-auto" style="font-size: 10px;"></span>
 </div>
 
 <script>
-  const clip = new Audio('/queen.m4a');
-  clip.load()
-  clip.onload = () => clip.play()
-  clip.loop = true
-  clip.autoplay = true
+  const clip = new Audio("/queen.m4a");
+  clip.load();
+  clip.onload = () => clip.play();
+  clip.loop = true;
+  clip.autoplay = true;
+
+  const authorEl = document.getElementById("author") as HTMLSpanElement;
+  authorEl.textContent = "Catch a Grenade By Elahe Dastan";
+
+  const pauseBtn = document.getElementById("pause") as HTMLButtonElement;
+  pauseBtn.disabled = false
+  pauseBtn.onclick = () => {
+    clip.pause();
+    pauseBtn.disabled = true
+    playBtn.disabled = false
+    authorEl.textContent = ""
+  };
+
+  const playBtn = document.getElementById("play") as HTMLButtonElement;
+  playBtn.disabled = true
+  playBtn.onclick = () => {
+    clip.play();
+    pauseBtn.disabled = false
+    playBtn.disabled = true
+    authorEl.textContent = "Catch a Grenade By Elahe Dastan"
+  };
 </script>

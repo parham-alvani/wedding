@@ -1,14 +1,11 @@
 ---
 import "@fontsource-variable/inter";
-import Footer from "~/components/footer.astro";
 import Intro from "~/components/intro.astro";
 import Splash from "~/components/splash.astro";
-import Badge from "~/components/badge.astro";
 import GuestSection from "~/components/guest.astro";
 import Showcase from "~/components/showcase.astro";
 import "~/styles/index.css";
 import { type Guest } from "~/types";
-import type Showcase from "~/components/showcase.astro";
 
 const { id } = Astro.params;
 
@@ -45,12 +42,10 @@ const description =
     class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
   >
     <Splash />
-    <Badge />
     <div class="columns-1 space-y-24 px-8 py-32">
       <GuestSection guest={guest} />
       <Intro />
       <Showcase />
     </div>
-    <Footer />
   </body>
 </html>
