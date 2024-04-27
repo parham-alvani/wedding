@@ -1,10 +1,8 @@
 package generator
 
-type Generator interface {
-	ID() string
-}
+import "github.com/parham-alvani/wedding/wedback/internal/domain/generator"
 
-func Provide(cfg Config) Generator {
+func Provide(cfg Config) generator.Generator {
 	// nolint: gocritic
 	switch cfg.Type {
 	case "simple":
