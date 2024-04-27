@@ -99,6 +99,8 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	}))
 
 	require.NoError(s.repo.Answer(context.Background(), "unique", model.Answer{
+		ID:      0,
+		GuestID: "",
 		PlusOne: true,
 		Coming:  true,
 	}))
@@ -108,8 +110,8 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 
 	require.Equal("Ali Irani", guest.Name)
 	require.NotNil(guest.Answer)
-	require.Equal(true, guest.Coming())
-	require.Equal(true, guest.PlusOne())
+	require.True(guest.Coming())
+	require.True(guest.PlusOne())
 }
 
 func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
@@ -133,6 +135,8 @@ func (s *GuestDBTestSuite) TestCreateWithAnswerButWithoutGuest() {
 	require := s.Require()
 
 	require.Error(s.repo.Answer(context.Background(), "not-found", model.Answer{
+		ID:      0,
+		GuestID: "",
 		PlusOne: true,
 		Coming:  true,
 	}))
