@@ -6,11 +6,11 @@ import GuestSection from "~/components/guest.astro";
 import Showcase from "~/components/showcase.astro";
 import "~/styles/index.css";
 import { type Guest } from "~/types";
-import { backend_url } from "astro.config.mjs";
+import { config } from "astro.config";
 
 const { id } = Astro.params;
 
-let resp = await fetch(`${backend_url}/guest/${id}`);
+let resp = await fetch(`${config.backend_url}/guest/${id}`);
 if (resp.status != 200) {
   return Astro.redirect("/");
 }
