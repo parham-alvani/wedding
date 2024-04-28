@@ -22,6 +22,7 @@ const { guest } = Astro.props;
           id="coming"
           name="coming"
           checked={guest.answer?.coming === true}
+          disabled={guest.answer != null}
         />
         <label for="coming" class="text-secondary">Coming or not?</label>
       </div>
@@ -32,6 +33,7 @@ const { guest } = Astro.props;
           id="plus_one"
           name="plus_one"
           checked={guest.answer?.plus_one === true}
+          disabled={guest.answer != null}
         />
         <label for="plus_one" class="text-secondary">Plus-one?</label>
       </div>
