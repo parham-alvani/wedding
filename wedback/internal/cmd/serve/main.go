@@ -8,6 +8,7 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/server"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
@@ -35,6 +36,7 @@ func Register() *cli.Command {
 				fx.Provide(
 					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
 				),
+				fx.Provide(generator.Provide),
 				fx.Provide(service.ProvideGuestSvc),
 				fx.Provide(server.Provide),
 				fx.Invoke(main),
