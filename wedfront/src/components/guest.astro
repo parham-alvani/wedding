@@ -13,18 +13,16 @@ const { guest } = Astro.props;
 
 <ContentSection title="" id="guest">
   <Fragment slot="lead">
-    <p
-      class="text-3xl"
-    >
-    Dear {guest.name},<br />
-    <br />
-    We've planned the most special day of our life and we'd be thrilled to see
-    you in our ceremony where we want to celebrate love<br />
-    <br />
-    Best, <br />
-    Elahe & Parham
+    <p class="letter-pocket text-3xl">
+      Dear {guest.name},<br />
+      <br />
+      We've planned the most special day of our life and we'd be thrilled to see
+      you in our ceremony where we want to celebrate love<br />
+      <br />
+      Best, <br />
+      Elahe & Parham
     </p>
-    <h3 class="text-left text-3xl text-primary">RSVP</h3>
+    <h3 class="text-left text-primary text-3xl">RSVP</h3>
     <h6 style="margin-top: -20px;">please kindly reply by Khordad 5th</h6>
     <fieldset class="flex w-4/6 flex-row text-lg">
       <div class="basis-1/2 text-center">
@@ -46,7 +44,9 @@ const { guest } = Astro.props;
           checked={guest.answer?.coming === false}
           disabled={guest.answer != null}
         />
-        <label for="not-coming" class="text-secondary">Decline with regret</label>
+        <label for="not-coming" class="text-secondary"
+          >Decline with regret</label
+        >
       </div>
 
       <div class="basis-1/2 text-center">

@@ -10,3 +10,15 @@ a,
   @apply bg-clip-text text-transparent;
   @apply bg-gradient-to-br from-pink-300 via-pink-200 to-gray-300;
 }
+
+* {
+  font-family: 'Dancing Script';
+}
+
+.letter-pocket {
+  padding: 15px;
+  background-color: #f6eee3;
+  border: 2px solid #888;
+  border-radius: 10px;
+  position: relative;
+}
