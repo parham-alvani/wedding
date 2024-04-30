@@ -4,6 +4,7 @@ package model
 type Guest struct {
 	ID     string  `gorm:"primaryKey;notnull" json:"id"`
 	Name   string  `gorm:"uniqueIndex"        json:"name"`
+	Spouse string  `json:"spouse"`
 	Answer *Answer `gorm:"foreignKey:GuestID" json:"answer"`
 }
 
