@@ -11,7 +11,7 @@ export interface Props {
 const { guest } = Astro.props;
 ---
 
-<ContentSection title="" id="guest">
+<ContentSection id="guest">
   <Fragment slot="lead">
     <p class="letter-pocket text-3xl">
       Dear {guest.name},<br />
@@ -22,7 +22,11 @@ const { guest } = Astro.props;
       Best, <br />
       Elahe & Parham
     </p>
-    <h3 class="text-left text-primary text-3xl">RSVP</h3>
+    <h2
+      class="gradient-text text-center font-extrabold tracking-tight text-3xl"
+    >
+      RSVP
+    </h2>
     <h6 style="margin-top: -20px;">please kindly reply by Khordad 5th</h6>
     <fieldset class="flex w-4/6 flex-row text-lg">
       <div class="basis-1/2 text-center">
