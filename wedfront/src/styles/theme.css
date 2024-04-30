@@ -1,5 +1,5 @@
 [data-theme="light"] {
-  --color-primary: theme("colors.pink.500");
+  --color-primary: theme("colors.pink.300");
   --color-secondary: theme("colors.gray.500");
   --color-text: theme("colors.gray.900");
   --color-text-offset: theme("colors.gray.600");

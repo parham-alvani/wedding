@@ -11,20 +11,42 @@ export interface Props {
 const { guest } = Astro.props;
 ---
 
-<ContentSection title={`Hi dear "${guest.name}" 👋`} id="guest">
+<ContentSection title="" id="guest">
   <Fragment slot="lead">
-    We are glad to <span class="text-primary">invite you</span>, into our
-    wedding ceremony.
-    <fieldset class="flex flex-row w-4/6 text-lg">
+    <p
+      class="text-3xl"
+    >
+    Dear {guest.name},<br />
+    <br />
+    We've planned the most special day of our life and we'd be thrilled to see
+    you in our ceremony where we want to celebrate love<br />
+    <br />
+    Best, <br />
+    Elahe & Parham
+    </p>
+    <h3 class="text-left text-3xl text-primary">RSVP</h3>
+    <h6 style="margin-top: -20px;">please kindly reply by Khordad 5th</h6>
+    <fieldset class="flex w-4/6 flex-row text-lg">
       <div class="basis-1/2 text-center">
         <input
-          type="checkbox"
+          type="radio"
           id="coming"
           name="coming"
+          value="true"
           checked={guest.answer?.coming === true}
           disabled={guest.answer != null}
         />
-        <label for="coming" class="text-secondary">Coming or not?</label>
+        <label for="coming" class="text-secondary">Accept with pleasure</label>
+        <br />
+        <input
+          type="radio"
+          value="false"
+          name="coming"
+          id="not-coming"
+          checked={guest.answer?.coming === false}
+          disabled={guest.answer != null}
+        />
+        <label for="not-coming" class="text-secondary">Decline with regret</label>
       </div>
 
       <div class="basis-1/2 text-center">
@@ -35,7 +57,7 @@ const { guest } = Astro.props;
           checked={guest.answer?.plus_one === true}
           disabled={guest.answer != null}
         />
-        <label for="plus_one" class="text-secondary">Plus-one?</label>
+        <label for="plus_one" class="text-secondary">Plus 1 adult</label>
       </div>
     </fieldset>
     <button
@@ -45,17 +67,13 @@ const { guest } = Astro.props;
       disabled={guest.answer != null}
       class="flex items-center justify-center gap-3"
     >
+      {guest.answer == null ? "Respond to invitation" : "Already responded"}
       {
-        guest.answer == null ?
-        "Submit"
-        :
-        "Already submitted"
-      }
-      {
-        guest.answer == null ?
-        <Icon name="mdi:love-letter-open" class="size-12" />
-        :
-        <Icon name="mdi:love-letter" class="size-12" />
+        guest.answer == null ? (
+          <Icon name="mdi:love-letter-open" class="size-12" />
+        ) : (
+          <Icon name="mdi:love-letter" class="size-12" />
+        )
       }
     </button>
   </Fragment>
