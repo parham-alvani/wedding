@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/handler"
 	"go.uber.org/fx"
@@ -15,8 +14,6 @@ import (
 
 func Provide(lc fx.Lifecycle, logger *zap.Logger, svc service.GuestSvc) *echo.Echo {
 	app := echo.New()
-
-	app.Use(middleware.CORS())
 
 	handler.Healthz{
 		Logger: logger.Named("handler").Named("healthz"),
