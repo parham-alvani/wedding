@@ -6,9 +6,15 @@ a,
   @apply focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:ring-offset-transparent;
 }
 
+.from-queen-brown {
+  --tw-gradient-from: #ab8b57 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(120 53 15 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
 .gradient-text {
   @apply bg-clip-text text-transparent;
-  @apply bg-gradient-to-br from-pink-300 via-pink-200 to-gray-300;
+  @apply bg-gradient-to-br from-queen-brown  via-pink-200 to-gray-300;
 }
 
 * {
@@ -16,8 +22,9 @@ a,
 }
 
 .letter-pocket {
+  width: 70%;
   padding: 15px;
-  background-color: #f6eee3;
+  background-color: rgba(190, 161, 113, 0.5);
   border: 2px solid #888;
   border-radius: 10px;
   position: relative;

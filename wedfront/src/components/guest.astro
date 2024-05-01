@@ -16,7 +16,7 @@ const { guest } = Astro.props;
     <p class="letter-pocket text-3xl">
       Dear {guest.name},<br />
       <br />
-      We've planned the most special day of our life and we'd be thrilled to see
+      &nbsp; We've planned the most special day of our life and we'd be thrilled to see
       you in our ceremony where we want to celebrate love<br />
       <br />
       Best, <br />
@@ -25,13 +25,13 @@ const { guest } = Astro.props;
   </Fragment>
   <Fragment slot="lead">
     <h2
-      class="gradient-text text-center font-extrabold tracking-tight text-3xl"
+      class="gradient-text text-center font-extrabold tracking-tight text-8xl"
     >
       RSVP
     </h2>
-    <h6 class="text-sm text-secondary">please kindly reply by Khordad 5th</h6>
+    <h6 class="text-base text-secondary" style="padding-left: 10%;">please kindly reply by Khordad 5th</h6>
     <fieldset class="flex w-4/6 flex-row text-lg mx-auto my-5">
-      <div class="basis-1/2 text-center">
+      <div class="basis-1/2 text-center text-xl">
         <input
           type="radio"
           id="coming"
