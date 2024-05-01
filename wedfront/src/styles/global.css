@@ -14,7 +14,7 @@ a,
 
 .gradient-text {
   @apply bg-clip-text text-transparent;
-  @apply bg-gradient-to-br from-queen-brown  via-pink-200 to-gray-300;
+  @apply bg-gradient-to-br from-queen-brown via-pink-200 to-gray-300;
 }
 
 * {
@@ -24,8 +24,22 @@ a,
 .letter-pocket {
   width: 80%;
   padding: 15px;
-  background-color: rgba(190, 161, 113, 0.5);
-  border: 2px solid #888;
   border-radius: 10px;
+  background-color: rgba(190, 161, 113, 0.5);
   position: relative;
+}
+
+.letter-pocket::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-style: solid;
+  border-width: 1.5rem;
+  border-color: #e5e1d8 #e5e1d8 rgba(190, 161, 113, 0.5) rgba(190, 161, 113, 0.5);
+  transition: all 3s;
+}
+
+.letter-pocket:hover::after {
+  border-width: 3rem;
 }
