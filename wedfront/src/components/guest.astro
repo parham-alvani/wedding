@@ -12,7 +12,7 @@ const { guest } = Astro.props;
 ---
 
 <ContentSection id="guest">
-  <Fragment slot="lead">
+  <Fragment slot="pre-content">
     <p class="letter-pocket text-3xl">
       Dear {guest.name},<br />
       <br />
@@ -22,13 +22,15 @@ const { guest } = Astro.props;
       Best, <br />
       Elahe & Parham
     </p>
+  </Fragment>
+  <Fragment slot="lead">
     <h2
       class="gradient-text text-center font-extrabold tracking-tight text-3xl"
     >
       RSVP
     </h2>
-    <h6 style="margin-top: -20px;">please kindly reply by Khordad 5th</h6>
-    <fieldset class="flex w-4/6 flex-row text-lg">
+    <h6 class="text-sm text-secondary">please kindly reply by Khordad 5th</h6>
+    <fieldset class="flex w-4/6 flex-row text-lg mx-auto my-5">
       <div class="basis-1/2 text-center">
         <input
           type="radio"
@@ -38,7 +40,7 @@ const { guest } = Astro.props;
           checked={guest.answer?.coming === true}
           disabled={guest.answer != null}
         />
-        <label for="coming" class="text-secondary">Accept with pleasure</label>
+        <label for="coming">Accept with pleasure</label>
         <br />
         <input
           type="radio"
@@ -48,7 +50,7 @@ const { guest } = Astro.props;
           checked={guest.answer?.coming === false}
           disabled={guest.answer != null}
         />
-        <label for="not-coming" class="text-secondary"
+        <label for="not-coming"
           >Decline with regret</label
         >
       </div>
@@ -61,7 +63,7 @@ const { guest } = Astro.props;
           checked={guest.answer?.plus_one === true}
           disabled={guest.answer != null}
         />
-        <label for="plus_one" class="text-secondary">Plus 1 adult</label>
+        <label for="plus_one">Plus 1 adult</label>
       </div>
     </fieldset>
     <button
@@ -69,14 +71,14 @@ const { guest } = Astro.props;
       data-url={config.backend_public_url}
       id="submit"
       disabled={guest.answer != null}
-      class="flex items-center justify-center gap-3"
+      class="text-center w-1/2"
     >
       {guest.answer == null ? "Respond to invitation" : "Already responded"}
       {
         guest.answer == null ? (
-          <Icon name="mdi:love-letter-open" class="size-12" />
+          <Icon name="mdi:love-letter-open" class="size-12 inline" />
         ) : (
-          <Icon name="mdi:love-letter" class="size-12" />
+          <Icon name="mdi:love-letter" class="size-12 inline" />
         )
       }
     </button>
@@ -98,13 +100,13 @@ const { guest } = Astro.props;
       fetch(`${url}/guest/${id}/answer`, {
         method: "POST",
         body: JSON.stringify({
-          coming: comingChk.value === "on",
-          plus_one: plusOneChk.value === "on",
+          coming: comingChk.checked,
+          plus_one: plusOneChk.checked,
         }),
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      }).then(() => window.location.reload())
     };
 
     submitBtn.onclick = submit;
