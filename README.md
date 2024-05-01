@@ -1,4 +1,4 @@
-# Wedding Landing Page
+# Wedding RSVP Website
 
 <div align="center">
 
