@@ -2,7 +2,6 @@
 import { Icon } from "astro-icon/components";
 import ContentSection from "~/components/content-section.astro";
 import { type Guest } from "~/types";
-import { config } from "astro.config";
 
 export interface Props {
   guest: Guest;
@@ -68,7 +67,6 @@ const { guest } = Astro.props;
     </fieldset>
     <button
       data-id={guest.id}
-      data-url={config.backend_public_url}
       id="submit"
       disabled={guest.answer != null}
       class="text-center w-1/2"
@@ -89,7 +87,6 @@ const { guest } = Astro.props;
   const submitBtn = document.getElementById("submit");
   if (submitBtn != null) {
     const id = submitBtn.getAttribute("data-id");
-    const url = submitBtn.getAttribute("data-url");
 
     const submit = () => {
       const comingChk = document.getElementById("coming") as HTMLInputElement;
@@ -97,7 +94,7 @@ const { guest } = Astro.props;
         "plus_one"
       ) as HTMLInputElement;
 
-      fetch(`${url}/guest/${id}/answer`, {
+      fetch(`/api/guest/${id}/answer`, {
         method: "POST",
         body: JSON.stringify({
           coming: comingChk.checked,
