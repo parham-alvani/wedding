@@ -7,3 +7,13 @@
   --color-background-offset: theme("colors.gray.100");
   --color-border: theme("colors.gray.900" / 10%);
 }
+
+[data-theme="dark"] {
+  --color-primary: theme("colors.pink.300");
+  --color-secondary: theme("colors.gray.500");
+  --color-text: theme("colors.gray.900");
+  --color-text-offset: theme("colors.gray.600");
+  --color-background: #e5e1d8;
+  --color-background-offset: theme("colors.gray.100");
+  --color-border: theme("colors.gray.900" / 10%);
+}
