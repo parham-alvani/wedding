@@ -32,10 +32,6 @@ input[type="radio"] {
     height: .8rem;
 }
 
-input[type="radio"]:hover {
-    outline-color: #ab8b57;
-}
-
 input[type="radio"]:checked {
     outline-color: #ab8b57;
     background-color: #ab8b57;
