@@ -21,33 +21,6 @@ a,
   font-family: 'Dancing Script';
 }
 
-input[type="radio"] {
-  appearance: none;
-  background-color: #fff;
-  margin: 0;
-  font: inherit;
-  color: currentColor;
-  width: 1.15em;
-  height: 1.15em;
-  border: 0.15em solid currentColor;
-  border-radius: 50%;
-  transform: translateY(-0.075em);
-}
-
-input[type="radio"]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  border-radius: 50%;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em var(--background-color);
-}
-
-input[type="radio"]:checked::before {
-  transform: scale(1);
-}
-
 .letter-pocket {
   width: 80%;
   padding: 15px;

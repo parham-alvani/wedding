@@ -29,8 +29,8 @@ const { guest } = Astro.props;
       RSVP
     </h2>
     <h6 class="text-base text-secondary" style="padding-left: 10%;">please kindly reply by Khordad 5th</h6>
-    <fieldset class="flex w-4/6 flex-row text-lg mx-auto my-5">
-      <div class="basis-1/2 text-center text-xl">
+    <fieldset class="flex w-5/6 flex-row mx-auto my-5">
+      <div class="basis-1/2 text-center">
         <input
           type="radio"
           id="coming"
@@ -39,7 +39,7 @@ const { guest } = Astro.props;
           checked={guest.answer?.coming === true}
           disabled={guest.answer != null}
         />
-        <label for="coming">Accept with pleasure</label>
+        <label for="coming"></label>Accept with pleasure</label>
         <br />
         <input
           type="radio"
