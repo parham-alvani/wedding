@@ -20,7 +20,7 @@
     "astro": "^4.7.1",
     "astro-icon": "^1.0.2",
     "prettier": "^3.1.1",
-    "prettier-plugin-astro": "^0.12.3",
+    "prettier-plugin-astro": "^0.13.0",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "rimraf": "^5.0.5",
     "tailwindcss-fluid-type": "^2.0.3"
