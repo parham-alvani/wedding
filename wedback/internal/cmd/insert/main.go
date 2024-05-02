@@ -36,6 +36,10 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
+		case tea.KeyTab:
+			m.index = (m.index + 1) % len(m.inputs)
+		case tea.KeyShiftTab:
+			m.index = (m.index - 1) % len(m.inputs)
 		case tea.KeyEnter:
 			if m.index == 0 {
 				m.index++
@@ -46,6 +50,14 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 				return m, tea.Quit
 			}
+		}
+	}
+
+	for i := range len(m.inputs) {
+		if i == m.index {
+			m.inputs[i].Focus()
+		} else {
+			m.inputs[i].Blur()
 		}
 	}
 
