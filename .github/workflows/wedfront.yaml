@@ -3,6 +3,18 @@ on:
   - push
 
 jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./wedfront
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm install
+      - run: npm run format
+      - run: '[[ -z $(git status -s) ]]'
   build:
     name: build
     runs-on: ubuntu-latest

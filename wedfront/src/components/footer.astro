@@ -32,24 +32,19 @@ const elaheLinks: Array<FooterLink> = [
 
 <footer class="relative flex h-64 items-center justify-center">
   <div class="absolute inset-0 overflow-hidden opacity-40">
-    <HeroImage choice="none"/>
+    <HeroImage choice="none" />
   </div>
   <ul class="relative grid grid-cols-3 gap-4">
-      <li class="m-auto">
-        <span
-          class="flex items-center justify-center text-center"
-        >
-          Parham<br />
-          🐼
+    <li class="m-auto">
+      <span class="flex items-center justify-center text-center">
+        Parham<br />
+        🐼
       </span>
-      </li>
+    </li>
     {
       parhamLinks.map((link) => (
         <li>
-          <a
-            class="flex size-16 items-center justify-center"
-            href={link.url}
-          >
+          <a class="flex size-16 items-center justify-center" href={link.url}>
             <span class="sr-only">{link.description}</span>
             <Icon class="size-full" name={link.icon} />
           </a>
@@ -59,21 +54,16 @@ const elaheLinks: Array<FooterLink> = [
   </ul>
   <div class="grid grid-cols-2 gap-40"></div>
   <ul class="relative grid grid-cols-3 gap-4">
-      <li class="m-auto">
-        <span
-          class="flex items-center justify-center text-center"
-        >
-          Elahe<br />
-          🌰
+    <li class="m-auto">
+      <span class="flex items-center justify-center text-center">
+        Elahe<br />
+        🌰
       </span>
-      </li>
+    </li>
     {
       elaheLinks.map((link) => (
         <li>
-          <a
-            class="flex size-16 items-center justify-center"
-            href={link.url}
-          >
+          <a class="flex size-16 items-center justify-center" href={link.url}>
             <span class="sr-only">{link.description}</span>
             <Icon class="size-full" name={link.icon} />
           </a>

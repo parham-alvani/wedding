@@ -105,7 +105,7 @@ const { guest } = Astro.props;
     const submit = () => {
       const comingChk = document.getElementById("coming") as HTMLInputElement;
       const plusOneChk = document.getElementById(
-        "plus_one"
+        "plus_one",
       ) as HTMLInputElement;
 
       fetch(`/api/guest/${id}/answer`, {

@@ -14,64 +14,64 @@ a,
 
 .gradient-text {
   @apply bg-clip-text text-transparent;
-  @apply bg-gradient-to-br from-queen-brown via-pink-200 to-gray-300;
+  @apply from-queen-brown bg-gradient-to-br via-pink-200 to-gray-300;
 }
 
 * {
-  font-family: 'Dancing Script';
+  font-family: "Dancing Script";
 }
 
 input[type="checkbox"] {
-    -webkit-appearance: none;
-    appearance: none;
-    border: 0.1rem solid #fff;
-    background-color: #e5e1d8;
-    outline: 3px solid #ab8b57;
-    width: .8rem;
-    height: .8rem;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0.1rem solid #fff;
+  background-color: #e5e1d8;
+  outline: 3px solid #ab8b57;
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 input[type="checkbox"]:checked {
-    outline-color: #ab8b57;
-    background-color: #ab8b57;
+  outline-color: #ab8b57;
+  background-color: #ab8b57;
 
-    animation: outline-checked;
-    animation-duration: 0.1s;
-    animation-iteration-count: 4;
-    animation-direction: alternate;
-    animation-timing-function: linear;
+  animation: outline-checked;
+  animation-duration: 0.1s;
+  animation-iteration-count: 4;
+  animation-direction: alternate;
+  animation-timing-function: linear;
 }
 
 input[type="radio"] {
-    -webkit-appearance: none;
-    appearance: none;
-    border: 0.1rem solid #fff;
-    background-color: #e5e1d8;
-    border-radius: 50%;
-    outline: 3px solid #ab8b57;
-    width: .8rem;
-    height: .8rem;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0.1rem solid #fff;
+  background-color: #e5e1d8;
+  border-radius: 50%;
+  outline: 3px solid #ab8b57;
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 input[type="radio"]:checked {
-    outline-color: #ab8b57;
-    background-color: #ab8b57;
+  outline-color: #ab8b57;
+  background-color: #ab8b57;
 
-    animation: outline-checked;
-    animation-duration: 0.1s;
-    animation-iteration-count: 4;
-    animation-direction: alternate;
-    animation-timing-function: linear;
+  animation: outline-checked;
+  animation-duration: 0.1s;
+  animation-iteration-count: 4;
+  animation-direction: alternate;
+  animation-timing-function: linear;
 }
 
 @keyframes outline-checked {
-    0% {
-        outline-offset: 0;
-    }
+  0% {
+    outline-offset: 0;
+  }
 
-    100% {
-        outline-offset: -0.2rem;
-    }
+  100% {
+    outline-offset: -0.2rem;
+  }
 }
 
 .letter-pocket {
@@ -89,7 +89,8 @@ input[type="radio"]:checked {
   top: 0;
   border-style: solid;
   border-width: 1.5rem;
-  border-color: #e5e1d8 #e5e1d8 rgba(190, 161, 113, 0.5) rgba(190, 161, 113, 0.5);
+  border-color: #e5e1d8 #e5e1d8 rgba(190, 161, 113, 0.5)
+    rgba(190, 161, 113, 0.5);
   transition: all 3s;
 }
 

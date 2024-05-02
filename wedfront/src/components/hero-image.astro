@@ -8,29 +8,32 @@ export interface Props {
 
 const { choice } = Astro.props;
 
-let image: ImageMetadata | null
+let image: ImageMetadata | null;
 switch (choice) {
   case "wedding":
-    image = weImage
-    break
+    image = weImage;
+    break;
   case "none":
-    image = null
-    break
+    image = null;
+    break;
   default:
-    image = weImage
+    image = weImage;
 }
 
 const widths = [450, 800, 1200];
 const sizes = "100vw";
 ---
 
-{ image ?
-<Image
-  class="h-full w-full object-cover"
-  src={image}
-  widths={widths}
-  sizes={sizes}
-  alt="Wedding"
-/>
-: ""
+{
+  image ? (
+    <Image
+      class="h-full w-full object-cover"
+      src={image}
+      widths={widths}
+      sizes={sizes}
+      alt="Wedding"
+    />
+  ) : (
+    ""
+  )
 }
