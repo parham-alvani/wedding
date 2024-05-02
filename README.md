@@ -9,7 +9,8 @@ This repository will provide the invitation card and details of the ceremony.
 
 - Bridal Salon: Mina Rad
 - Bridal Mezon: Hasti
-- Bridal check: Shemiranat health and treatment network
+- Bridal Check: Shemiranat health and treatment network
+- Groom Barber: Farzad Ahmadi
 
 
 ## Wedding Frontend (WedFront)
