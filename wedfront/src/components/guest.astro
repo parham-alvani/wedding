@@ -13,7 +13,12 @@ const { guest } = Astro.props;
 <ContentSection id="guest">
   <Fragment slot="pre-content">
     <p class="letter-pocket text-3xl">
-      Dear {guest.name},<br />
+      {
+        guest.spouse == ""
+          ? `Dear ${guest.name},`
+          : `Dear ${guest.name} & ${guest.spouse}`
+      }
+      <br />
       <br />
       &nbsp; We've planned the most special day of our life and we'd be thrilled
       to see you in our ceremony where we want to celebrate love<br />
@@ -31,8 +36,8 @@ const { guest } = Astro.props;
     <h6 class="text-secondary text-base" style="padding-left: 10%;">
       please kindly reply by Khordad 5th
     </h6>
-    <fieldset class="mx-auto my-5 flex w-5/6 flex-row">
-      <div class="mx-5 flex basis-1/2 flex-col text-left gap-5">
+    <fieldset class="mx-auto my-5 flex w-5/6 flex-row justify-center">
+      <div class="mx-5 flex basis-1/2 flex-col gap-5 text-left">
         <label>
           <input
             type="radio"
@@ -57,16 +62,22 @@ const { guest } = Astro.props;
         >
       </div>
 
-      <div class="mx-5 basis-1/2 text-right">
-        <input
-          type="checkbox"
-          id="plus_one"
-          name="plus_one"
-          checked={guest.answer?.plus_one === true}
-          disabled={guest.answer != null}
-        />
-        <label for="plus_one">Plus 1 adult</label>
-      </div>
+      {
+        guest.spouse == "" ? (
+          <div class="mx-5 basis-1/2 text-right">
+            <input
+              type="checkbox"
+              id="plus_one"
+              name="plus_one"
+              checked={guest.answer?.plus_one === true}
+              disabled={guest.answer != null}
+            />
+            <label for="plus_one">Plus 1 adult</label>
+          </div>
+        ) : (
+          ""
+        )
+      }
     </fieldset>
     <button
       data-id={guest.id}

@@ -28,5 +28,6 @@ export interface Answer {
 export interface Guest {
   name: string;
   id: string;
+  spouse: string;
   answer?: Answer;
 }
