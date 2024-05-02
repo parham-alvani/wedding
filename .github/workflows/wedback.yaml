@@ -17,6 +17,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v5
         with:
+          working-directory: ./wedback
           version: latest
           args: --enable-all --timeout=30m
 
