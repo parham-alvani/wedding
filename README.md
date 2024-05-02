@@ -12,7 +12,7 @@ This repository will provide the invitation card and details of the ceremony.
 - Bridal check: Shemiranat health and treatment network
 
 
-## WedFront
+## Wedding Frontend (WedFront)
 
 <div align="center">
 
