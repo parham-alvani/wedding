@@ -1,11 +1,5 @@
 # Wedding RSVP Website
 
-<div align="center">
-
-[![Built with Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build)
-
-</div>
-
 ## Introduction
 
 We (Elahe and Parham) are going to get married.
@@ -15,8 +9,20 @@ This repository will provide the invitation card and details of the ceremony.
 
 - Bridal Salon: Mina Rad
 - Bridal Mezon: Hasti
+- Bridal check: Shemiranat health and treatment network
 
-## Commands
+
+## WedFront
+
+<div align="center">
+
+[![Built with Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build)
+
+</div>
+
+Frontend of our wedding website.
+
+### Commands
 
 | Command                | Action                                            |
 | :--------------------- | :------------------------------------------------ |
