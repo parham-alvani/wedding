@@ -127,6 +127,7 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 	require.ErrorIs(s.repo.Create(context.Background(), model.Guest{
 		ID:     "not-unique",
 		Name:   "Ali Irani",
+		Spouse: "",
 		Answer: nil,
 	}), guestrepo.ErrDuplicateGuestByName)
 }
