@@ -15,8 +15,8 @@ const { guest } = Astro.props;
     <p class="letter-pocket text-3xl">
       Dear {guest.name},<br />
       <br />
-      &nbsp; We've planned the most special day of our life and we'd be thrilled to see
-      you in our ceremony where we want to celebrate love<br />
+      &nbsp; We've planned the most special day of our life and we'd be thrilled
+      to see you in our ceremony where we want to celebrate love<br />
       <br />
       Best, <br />
       Elahe & Parham
@@ -28,33 +28,36 @@ const { guest } = Astro.props;
     >
       RSVP
     </h2>
-    <h6 class="text-base text-secondary" style="padding-left: 10%;">please kindly reply by Khordad 5th</h6>
-    <fieldset class="flex w-5/6 flex-row mx-auto my-5">
-      <div class="basis-1/2 text-center">
-        <input
-          type="radio"
-          id="coming"
-          name="coming"
-          value="true"
-          checked={guest.answer?.coming === true}
-          disabled={guest.answer != null}
-        />
-        <label for="coming"></label>Accept with pleasure</label>
-        <br />
-        <input
-          type="radio"
-          value="false"
-          name="coming"
-          id="not-coming"
-          checked={guest.answer?.coming === false}
-          disabled={guest.answer != null}
-        />
-        <label for="not-coming"
-          >Decline with regret</label
+    <h6 class="text-secondary text-base" style="padding-left: 10%;">
+      please kindly reply by Khordad 5th
+    </h6>
+    <fieldset class="mx-auto my-5 flex w-5/6 flex-row">
+      <div class="mx-5 flex basis-1/2 flex-col text-left gap-5">
+        <label>
+          <input
+            type="radio"
+            id="coming"
+            name="coming"
+            value="true"
+            checked={guest.answer?.coming === true}
+            disabled={guest.answer != null}
+          />
+          Accept with pleasure
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="false"
+            name="coming"
+            id="not-coming"
+            checked={guest.answer?.coming === false}
+            disabled={guest.answer != null}
+          />
+          Decline with regret</label
         >
       </div>
 
-      <div class="basis-1/2 text-center">
+      <div class="mx-5 basis-1/2 text-left">
         <input
           type="checkbox"
           id="plus_one"
@@ -69,14 +72,14 @@ const { guest } = Astro.props;
       data-id={guest.id}
       id="submit"
       disabled={guest.answer != null}
-      class="text-center w-1/2"
+      class="w-1/2 text-center"
     >
       {guest.answer == null ? "Respond to invitation" : "Already responded"}
       {
         guest.answer == null ? (
-          <Icon name="mdi:love-letter-open" class="size-12 inline" />
+          <Icon name="mdi:love-letter-open" class="inline size-12" />
         ) : (
-          <Icon name="mdi:love-letter" class="size-12 inline" />
+          <Icon name="mdi:love-letter" class="inline size-12" />
         )
       }
     </button>
@@ -103,7 +106,7 @@ const { guest } = Astro.props;
         headers: {
           "Content-Type": "application/json",
         },
-      }).then(() => window.location.reload())
+      }).then(() => window.location.reload());
     };
 
     submitBtn.onclick = submit;
