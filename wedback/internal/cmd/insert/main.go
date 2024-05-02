@@ -20,7 +20,8 @@ import (
 
 type guestModel struct {
 	service service.GuestSvc
-	input   textinput.Model
+	inputs  []textinput.Model
+	index   int
 }
 
 func (m guestModel) Init() tea.Cmd {
@@ -36,37 +37,49 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
 		case tea.KeyEnter:
-			if _, err := m.service.New(context.Background(), m.input.Value()); err != nil {
-				pterm.Error.Printfln("failed to create the guest %s", err)
-			}
+			if m.index == 0 {
+				m.index++
+			} else {
+				if _, err := m.service.New(context.Background(), m.inputs[0].Value(), m.inputs[1].Value()); err != nil {
+					pterm.Error.Printfln("failed to create the guest %s", err)
+				}
 
-			return m, tea.Quit
+				return m, tea.Quit
+			}
 		}
 	}
 
-	m.input, cmd = m.input.Update(msg)
+	m.inputs[m.index], cmd = m.inputs[m.index].Update(msg)
 
 	return m, cmd
 }
 
 func (m guestModel) View() string {
 	return fmt.Sprintf(
-		"What is your guest name?\n\n%s\n\n%s",
-		m.input.View(),
+		"What is your guest name?\n\n%s\n\nWhat is his/her partner name (Leave empty if there isn't any)?\n\n%s\n\n%s",
+		m.inputs[0].View(),
+		m.inputs[1].View(),
 		"(esc to quit)",
 	) + "\n"
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
-	ti := textinput.New()
-	ti.Placeholder = "Ali Irani & Maryam Akhyani"
-	ti.Focus()
-	ti.CharLimit = 156
-	ti.Width = 20
+	iName := textinput.New()
+	iName.Placeholder = "Ali Irani"
+	iName.Focus()
+	iName.CharLimit = 128
+	iName.Width = 20
+
+	iPartner := textinput.New()
+	iPartner.Placeholder = "Maryam Akhyani"
+	iPartner.Focus()
+	iPartner.CharLimit = 128
+	iPartner.Width = 20
 
 	m := guestModel{
 		service: svc,
-		input:   ti,
+		inputs:  []textinput.Model{iName, iPartner},
+		index:   0,
 	}
 
 	p := tea.NewProgram(m)

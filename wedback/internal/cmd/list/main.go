@@ -74,6 +74,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		for i, guest := range msg.guests {
 			rows[i] = table.Row{
 				guest.Name,
+				guest.Spouse,
 				guest.ID,
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
@@ -101,6 +102,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 	// nolint: gomnd
 	columns := []table.Column{
 		{Title: "Name", Width: 30},
+		{Title: "Partner", Width: 30},
 		{Title: "ID", Width: 10},
 		{Title: "PlusOne", Width: 10},
 		{Title: "Coming", Width: 10},
