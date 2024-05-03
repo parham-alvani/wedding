@@ -107,7 +107,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		{Title: "ID", Width: 10},
 		{Title: "PlusOne", Width: 10},
 		{Title: "Coming", Width: 10},
-		{Title: "Link", Width: 45},
+		{Title: "Link", Width: 50},
 	}
 
 	// nolint: gomnd
