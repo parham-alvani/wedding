@@ -77,15 +77,18 @@ func (s *GuestDBTestSuite) TestCreate() {
 
 	// nolint: exhaustruct
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
-		ID:     "unique",
-		Name:   "Ali Irani",
-		Answer: nil,
+		ID:              "unique",
+		FirstName:       "Ali",
+		LastName:        "Irani",
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		Answer:          nil,
 	}))
 
 	guest, err := s.repo.Get(context.Background(), "unique")
 	require.NoError(err)
 
-	require.Equal("Ali Irani", guest.Name)
+	require.Equal("Ali Irani", guest.FirstName+" "+guest.LastName)
 }
 
 func (s *GuestDBTestSuite) TestCreateWithAnswer() {
@@ -93,9 +96,12 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 
 	// nolint: exhaustruct
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
-		ID:     "unique",
-		Name:   "Ali Irani",
-		Answer: nil,
+		ID:              "unique",
+		FirstName:       "Ali",
+		LastName:        "Irani",
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		Answer:          nil,
 	}))
 
 	require.NoError(s.repo.Answer(context.Background(), "unique", model.Answer{
@@ -108,7 +114,7 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	guest, err := s.repo.Get(context.Background(), "unique")
 	require.NoError(err)
 
-	require.Equal("Ali Irani", guest.Name)
+	require.Equal("Ali Irani", guest.FirstName+" "+guest.LastName)
 	require.NotNil(guest.Answer)
 	require.True(guest.Coming())
 	require.True(guest.PlusOne())
@@ -119,16 +125,21 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 
 	// nolint: exhaustruct
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
-		ID:     "unique",
-		Name:   "Ali Irani",
-		Answer: nil,
+		ID:              "unique",
+		FirstName:       "Ali",
+		LastName:        "Irani",
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		Answer:          nil,
 	}))
 
 	require.ErrorIs(s.repo.Create(context.Background(), model.Guest{
-		ID:     "not-unique",
-		Name:   "Ali Irani",
-		Spouse: "",
-		Answer: nil,
+		ID:              "not-unique",
+		FirstName:       "Ali",
+		LastName:        "Irani",
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		Answer:          nil,
 	}), guestrepo.ErrDuplicateGuestByName)
 }
 
@@ -149,9 +160,10 @@ func (s *GuestDBTestSuite) TestList() {
 	// nolint: exhaustruct
 	for i := range 10 {
 		require.NoError(s.repo.Create(context.Background(), model.Guest{
-			ID:     fmt.Sprintf("unique %d", i),
-			Name:   fmt.Sprintf("Ali Irani %d", i),
-			Answer: nil,
+			ID:        fmt.Sprintf("unique %d", i),
+			FirstName: "Ali",
+			LastName:  fmt.Sprintf("Irani %d", i),
+			Answer:    nil,
 		}))
 	}
 

@@ -21,12 +21,20 @@ func ProvideGuestSvc(repo guestrepo.Repository, gen generator.Generator) GuestSv
 	}
 }
 
-func (svc GuestSvc) New(ctx context.Context, name string, partner string) (model.Guest, error) {
+func (svc GuestSvc) New(
+	ctx context.Context,
+	fname string,
+	lname string,
+	partnerFname string,
+	partnerLname string,
+) (model.Guest, error) {
 	guest := model.Guest{
-		ID:     svc.generator.ID(),
-		Name:   name,
-		Spouse: partner,
-		Answer: nil,
+		ID:              svc.generator.ID(),
+		FirstName:       fname,
+		LastName:        lname,
+		SpouseFirstName: partnerFname,
+		SpouseLastName:  partnerLname,
+		Answer:          nil,
 	}
 
 	if err := svc.repository.Create(ctx, guest); err != nil {
