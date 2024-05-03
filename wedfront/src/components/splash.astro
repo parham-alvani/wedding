@@ -1,6 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
 import HeroImage from "~/components/hero-image.astro";
+
+export interface Props {
+  since: string;
+}
+
+const { since } = Astro.props;
 ---
 
 <section class="relative h-full">
@@ -17,8 +23,8 @@ import HeroImage from "~/components/hero-image.astro";
         <br /> and,
         <br /> Parham
         <br />
-        <astro-count-down>
-          <span>Loading...</span>
+        <astro-count-down data-since={since}>
+          <span></span>
         </astro-count-down>
       </div>
     </h2>
@@ -39,67 +45,46 @@ import HeroImage from "~/components/hero-image.astro";
     hours: number;
     minutes: number;
     seconds: number;
+    weddingDate: number;
+
+    private since() {
+      let now = new Date().getTime();
+
+      let until = this.weddingDate - now;
+
+      if (until > 0) {
+        this.days = Math.floor(until / (1000 * 60 * 60 * 24));
+        this.hours = Math.floor(
+          (until % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        this.minutes = Math.floor((until % (1000 * 60 * 60)) / (1000 * 60));
+        this.seconds = Math.floor((until % (1000 * 60)) / 1000);
+
+        const counter = this.querySelector("span");
+        if (counter != null) {
+          counter.textContent = `${this.days.toString().padStart(2, "0")}:${this.hours.toString().padStart(2, "0")}:${this.minutes.toString().padStart(2, "0")}:${this.seconds.toString().padStart(2, "0")}`;
+        }
+      }
+    }
 
     constructor() {
       super();
 
-      const weddingDate = new Date("Jun 16, 2024 18:30:00+03:30").getTime();
+      const since = this.getAttribute("data-since");
 
       this.days = -1;
       this.hours = 0;
       this.minutes = 0;
       this.seconds = 0;
+      this.weddingDate = 0;
 
-      setInterval(() => {
-        let now = new Date().getTime();
+      if (since != null) {
+        this.weddingDate = new Date(since).getTime();
 
-        let until = weddingDate - now;
-
-        if (until > 0) {
-          this.days = Math.floor(until / (1000 * 60 * 60 * 24));
-          this.hours = Math.floor(
-            (until % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-          );
-          this.minutes = Math.floor((until % (1000 * 60 * 60)) / (1000 * 60));
-          this.seconds = Math.floor((until % (1000 * 60)) / 1000);
-
-          const counter = this.querySelector("span");
-          if (counter != null) {
-            counter.textContent = `${this.days}:${this.hours}:${this.minutes}:${this.seconds}`;
-          }
-        }
-      }, 1000);
+        this.since();
+        setInterval(() => this.since(), 1000);
+      }
     }
   }
   customElements.define("astro-count-down", AstroCountDown);
 </script>
-
-<style>
-  @keyframes float {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-
-    100% {
-      transform: translate3d(0, 30px, 0);
-    }
-  }
-
-  #astronaut {
-    animation: float linear 2.5s infinite alternate;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #astronaut {
-      @apply animate-none;
-    }
-
-    :global(#starfield) {
-      @apply hidden;
-    }
-
-    #splash-bg-fallback {
-      @apply block;
-    }
-  }
-</style>
