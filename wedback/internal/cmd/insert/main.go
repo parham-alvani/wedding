@@ -21,6 +21,7 @@ import (
 type guestModel struct {
 	service service.GuestSvc
 	inputs  []textinput.Model
+	prompts []string
 	index   int
 }
 
@@ -41,10 +42,16 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyShiftTab:
 			m.index = (m.index - 1) % len(m.inputs)
 		case tea.KeyEnter:
-			if m.index == 0 {
+			if m.index != len(m.inputs) {
 				m.index++
 			} else {
-				if _, err := m.service.New(context.Background(), m.inputs[0].Value(), m.inputs[1].Value()); err != nil {
+				if _, err := m.service.New(
+					context.Background(),
+					m.inputs[0].Value(),
+					m.inputs[1].Value(),
+					m.inputs[2].Value(),
+					m.inputs[3].Value(),
+				); err != nil {
 					pterm.Error.Printfln("failed to create the guest %s", err)
 				}
 
@@ -67,30 +74,47 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m guestModel) View() string {
-	return fmt.Sprintf(
-		"What is your guest name?\n\n%s\n\nWhat is his/her partner name (Leave empty if there isn't any)?\n\n%s\n\n%s",
-		m.inputs[0].View(),
-		m.inputs[1].View(),
-		"(esc to quit)",
-	) + "\n"
+	view := ""
+
+	for i := range len(m.inputs) {
+		view += fmt.Sprintf(
+			"%s\n\n%s\n\n",
+			m.prompts[i],
+			m.inputs[i].View(),
+		) + "\n"
+	}
+
+	view += "(esc to quit)"
+
+	return view + "\n"
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
-	iName := textinput.New()
-	iName.Placeholder = "Ali Irani"
-	iName.Focus()
-	iName.CharLimit = 128
-	iName.Width = 20
+	fName := textinput.New()
+	fName.Placeholder = "Ali"
+	fName.Focus()
+	fName.CharLimit = 20
+	fName.Width = 20
 
-	iPartner := textinput.New()
-	iPartner.Placeholder = "Maryam Akhyani"
-	iPartner.Focus()
-	iPartner.CharLimit = 128
-	iPartner.Width = 20
+	lName := textinput.New()
+	lName.Placeholder = "Irani"
+	lName.CharLimit = 20
+	lName.Width = 20
+
+	fPartner := textinput.New()
+	fPartner.Placeholder = "Maryam"
+	fPartner.CharLimit = 20
+	fPartner.Width = 20
+
+	lPartner := textinput.New()
+	lPartner.Placeholder = "Akhyani"
+	lPartner.CharLimit = 20
+	lPartner.Width = 20
 
 	m := guestModel{
 		service: svc,
-		inputs:  []textinput.Model{iName, iPartner},
+		inputs:  []textinput.Model{fName, lName, fPartner, lPartner},
+		prompts: []string{"First Name", "Last Name", "Partner's First Name", "Partner's Last Name"},
 		index:   0,
 	}
 

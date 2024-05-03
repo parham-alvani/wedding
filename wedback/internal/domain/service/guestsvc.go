@@ -2,11 +2,18 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/parham-alvani/wedding/wedback/internal/domain/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+)
+
+var (
+	ErrGuestNameRequired   = errors.New("first name and last name are required for a guest")
+	ErrPartnerNameRequired = errors.New("first name and last name are required for a guest's partner")
 )
 
 type GuestSvc struct {
@@ -28,13 +35,30 @@ func (svc GuestSvc) New(
 	partnerFname string,
 	partnerLname string,
 ) (model.Guest, error) {
+	fname = strings.TrimSpace(fname)
+	lname = strings.TrimSpace(lname)
+
+	if len(lname) == 0 || len(fname) == 0 {
+		return model.Guest{}, ErrGuestNameRequired
+	}
+
 	guest := model.Guest{
 		ID:              svc.generator.ID(),
 		FirstName:       fname,
 		LastName:        lname,
-		SpouseFirstName: partnerFname,
-		SpouseLastName:  partnerLname,
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
 		Answer:          nil,
+	}
+
+	partnerFname = strings.TrimSpace(partnerFname)
+	partnerLname = strings.TrimSpace(partnerLname)
+
+	if (len(partnerFname) != 0) && (len(partnerLname) != 0) {
+		guest.SpouseFirstName = &partnerFname
+		guest.SpouseLastName = &partnerLname
+	} else if (len(partnerFname) != 0) || (len(partnerLname) != 0) {
+		return model.Guest{}, ErrPartnerNameRequired
 	}
 
 	if err := svc.repository.Create(ctx, guest); err != nil {

@@ -71,10 +71,23 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case guestsListMsg:
 		rows := make([]table.Row, len(msg.guests))
+
 		for i, guest := range msg.guests {
+			spouseFirstName := ""
+			if guest.SpouseFirstName != nil {
+				spouseFirstName = *guest.SpouseFirstName
+			}
+
+			spouseLastName := ""
+			if guest.SpouseLastName != nil {
+				spouseLastName = *guest.SpouseLastName
+			}
+
 			rows[i] = table.Row{
-				guest.Name,
-				guest.Spouse,
+				guest.FirstName,
+				guest.LastName,
+				spouseFirstName,
+				spouseLastName,
 				guest.ID,
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
@@ -102,8 +115,10 @@ func (m guestsModel) View() string {
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
 	// nolint: gomnd
 	columns := []table.Column{
-		{Title: "Name", Width: 30},
-		{Title: "Partner", Width: 30},
+		{Title: "First Name", Width: 15},
+		{Title: "Last Name", Width: 15},
+		{Title: "Partner's First Name", Width: 15},
+		{Title: "Partner's Last Name", Width: 15},
 		{Title: "ID", Width: 10},
 		{Title: "PlusOne", Width: 10},
 		{Title: "Coming", Width: 10},
