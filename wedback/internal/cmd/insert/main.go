@@ -42,7 +42,7 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyShiftTab:
 			m.index = (m.index - 1) % len(m.inputs)
 		case tea.KeyEnter:
-			if m.index != len(m.inputs) {
+			if m.index < len(m.inputs)-1 {
 				m.index++
 			} else {
 				if _, err := m.service.New(
