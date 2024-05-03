@@ -26,8 +26,10 @@ export interface Answer {
   plus_one: boolean;
 }
 export interface Guest {
-  name: string;
+  first_name: string;
+  last_name: string;
   id: string;
-  spouse: string;
+  spouse_first_name?: string;
+  spouse_last_name?: string;
   answer?: Answer;
 }

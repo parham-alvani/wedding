@@ -14,9 +14,9 @@ const { guest } = Astro.props;
   <Fragment slot="pre-content">
     <p class="letter-pocket text-3xl">
       {
-        guest.spouse == ""
-          ? `Dear ${guest.name},`
-          : `Dear ${guest.name} & ${guest.spouse}`
+        guest.spouse_first_name == null
+          ? `Dear ${guest.first_name},`
+          : `Dear ${guest.first_name} & ${guest.spouse_first_name}`
       }
       <br />
       <br />
@@ -63,7 +63,7 @@ const { guest } = Astro.props;
       </div>
 
       {
-        guest.spouse == "" ? (
+        guest.spouse_first_name == null ? (
           <div class="mx-5 basis-1/2 text-right">
             <input
               type="checkbox"
