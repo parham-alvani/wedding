@@ -118,7 +118,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 		index:   0,
 	}
 
-	p := tea.NewProgram(m)
+	p := tea.NewProgram(m, tea.WithAltScreen())
 
 	lc.Append(
 		fx.StartHook(func(_ context.Context) error {

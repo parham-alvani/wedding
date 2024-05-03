@@ -137,7 +137,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		),
 	}
 
-	p := tea.NewProgram(dm)
+	p := tea.NewProgram(dm, tea.WithAltScreen())
 
 	lc.Append(
 		fx.StartHook(func(_ context.Context) error {

@@ -5,8 +5,8 @@ type Guest struct {
 	ID              string  `gorm:"primaryKey;notnull"    json:"id"`
 	FirstName       string  `gorm:"uniqueIndex:idx_name"  json:"first_name"`
 	LastName        string  `gorm:"uniqueIndex:idx_name"  json:"last_name"`
-	SpouseFirstName *string `gorm:"uniqueIndex:idx_sname" json:"spouse_first_name,omit_empty"`
-	SpouseLastName  *string `gorm:"uniqueIndex:idx_sname" json:"spouse_last_name,omit_empty"`
+	SpouseFirstName *string `gorm:"uniqueIndex:idx_sname" json:"spouse_first_name,omitempty"`
+	SpouseLastName  *string `gorm:"uniqueIndex:idx_sname" json:"spouse_last_name,omitempty"`
 	Answer          *Answer `gorm:"foreignKey:GuestID"    json:"answer"`
 }
 
