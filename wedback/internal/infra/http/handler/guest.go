@@ -49,8 +49,8 @@ func (h Guest) Answer(c echo.Context) error {
 	if err := h.Service.Answer(
 		ctx,
 		id,
-		req.PlusOne,
 		req.Coming,
+		req.PlusOne,
 	); err != nil {
 		h.Logger.Error("failed to add an answer to a guest from repository", zap.Error(err), zap.String("id", id))
 
