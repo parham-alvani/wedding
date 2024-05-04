@@ -3,7 +3,7 @@ import { Icon } from "astro-icon/components";
 ---
 
 <div
-  class="fixed bottom-0 left-0 flex h-1/6 w-3/12 lg:w-1/12 items-center justify-center rounded bg-transparent opacity-50"
+  class="fixed bottom-0 left-0 flex h-1/6 w-3/12 items-center justify-center rounded bg-transparent opacity-50 lg:w-1/12"
 >
   <button id="pause" class="size-1/4 text-orange-400">
     <Icon class="size-full" name="mdi:pause" />
@@ -13,12 +13,14 @@ import { Icon } from "astro-icon/components";
   </button>
   <p
     id="author"
-    class="size-1/2 text-center flex flex-col justify-around my-auto"
-    style="font-size: 10px;"></p>
+    class="my-auto flex size-1/2 flex-col justify-around text-center"
+    style="font-size: 10px;"
+  >
+  </p>
 </div>
 
 <script>
-  const song = "<span>Maher Zain</span><span>For The Rest Of My Life</span>"
+  const song = "<span>Maher Zain</span><span>For The Rest Of My Life</span>";
 
   const clip = new Audio("/For-the-Rest-of-My-Life.mp3");
   clip.load();
