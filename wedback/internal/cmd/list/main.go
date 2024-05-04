@@ -125,7 +125,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		{Title: "Link", Width: 50},
 	}
 
-	// nolint: gomnd
+	// nolint: mnd
 	dm := guestsModel{
 		repository: repository,
 		isLoading:  true,
