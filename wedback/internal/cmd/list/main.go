@@ -113,7 +113,7 @@ func (m guestsModel) View() string {
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
-	// nolint: gomnd
+	// nolint: mnd
 	columns := []table.Column{
 		{Title: "First Name", Width: 15},
 		{Title: "Last Name", Width: 15},
