@@ -7,6 +7,7 @@ import Showcase from "~/components/showcase.astro";
 import "~/styles/index.css";
 import { type Guest } from "~/types";
 import { config } from "astro.config";
+import Player from "~/components/player.astro";
 
 const { id } = Astro.params;
 
@@ -42,6 +43,7 @@ const description = "Elahe & Parham Wedding";
     class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
   >
     <Splash since="Jun 16, 2024 18:30:00+03:30" />
+    <Player />
     <div class="columns-1 px-8 py-8">
       <GuestSection guest={guest} />
       <Baran />
