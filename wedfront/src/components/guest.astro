@@ -83,7 +83,7 @@ const { guest } = Astro.props;
       data-id={guest.id}
       id="submit"
       disabled={guest.answer != null}
-      class="w-1/2 lg:w-1/4 text-center"
+      class="w-5/6 lg:w-1/4 text-center"
     >
       {guest.answer == null ? "Respond to invitation" : "Already responded"}
       {
@@ -127,7 +127,7 @@ const { guest } = Astro.props;
 <style>
   #submit {
     background-color: rgba(190, 161, 113, 0.5);
-  padding: 15px;
+  padding: 0.5rem;
   border-radius: 10px;
   }
 </style>
