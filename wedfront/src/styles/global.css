@@ -17,10 +17,6 @@ a,
   @apply from-queen-brown bg-gradient-to-br via-pink-200 to-gray-300;
 }
 
-* {
-  font-family: "Dancing Script";
-}
-
 input[type="checkbox"] {
   -webkit-appearance: none;
   appearance: none;

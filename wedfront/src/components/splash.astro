@@ -4,9 +4,10 @@ import HeroImage from "~/components/hero-image.astro";
 
 export interface Props {
   since: string;
+  lang?: string;
 }
 
-const { since } = Astro.props;
+const { since, lang } = Astro.props;
 ---
 
 <section class="relative h-full">
@@ -19,9 +20,22 @@ const { since } = Astro.props;
       <div
         class="gradient-text text-center font-extrabold tracking-tighter text-8xl"
       >
-        Elahe
-        <br /> and,
-        <br /> Parham
+        {
+          lang === "fa" ? (
+            <Fragment>
+              الهه
+              <br /> و
+              <br /> پرهام
+            </Fragment>
+          ) : (
+            <Fragment>
+              Elahe
+              <br /> and,
+              <br /> Parham
+            </Fragment>
+          )
+        }
+        <br />
         <br />
         <astro-count-down data-since={since}>
           <span></span>
