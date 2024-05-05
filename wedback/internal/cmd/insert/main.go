@@ -140,6 +140,7 @@ func Register() *cli.Command {
 	//nolint: exhaustruct
 	return &cli.Command{
 		Name:        "insert",
+		Aliases:     []string{"new"},
 		Description: "Insert a new guest",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			fx.New(
