@@ -2,14 +2,14 @@
 import { Icon } from "astro-icon/components";
 
 interface Props {
-  music: string
+  music: string;
 }
 
-const { music } = Astro.props
+const { music } = Astro.props;
 ---
 
 <div
-  class="fixed bottom-0 left-0 flex w-1/12 lg:w-12 items-center justify-center rounded bg-transparent opacity-50"
+  class="fixed bottom-0 left-0 flex w-1/12 items-center justify-center rounded bg-transparent opacity-50 lg:w-12"
 >
   <audio id="main" autoplay loop>
     <source src=`/${music}` />
