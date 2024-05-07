@@ -17,7 +17,7 @@ Here MT abbrivates million toman.
 - Farzad Ahmadi (11,400 MT) ✅
 - Rozzet Studio (55,000/86,000 MT) ❌
 - Noghreh Wedding (46,900 MT) ✅
-- Wedding Registration (3,000 MT) ✅
+- Rajian (3,100 MT) ✅
 - Boho Floral Design Studio - 1 (2,835/5,670 MT) ❌
 - Kourosh Ceremonial Services (100,000/416,000 MT) ❌
 - Aida Mokhtary ()
