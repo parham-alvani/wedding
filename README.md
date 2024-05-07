@@ -25,6 +25,7 @@ Here MT abbrivates million toman.
 - Makan Mansion (12,000 MT) ✅
 - Parastoo Mezon (2,000/8,500 MT) ❌
 - Saadat Rent - 1 (2,000/5,600) ❌
+- Saadat Rent - 2
 
 ## Wedding Frontend (WedFront)
 
