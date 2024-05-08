@@ -23,7 +23,7 @@ Here MT abbrivates million toman.
 - Aida Mokhtary ()
 - Ajoodaniyeh Mansion (10,000/12,000 MT) ❌
 - Makan Mansion (12,000 MT) ✅
-- Parastoo Mezon (2,000/8,500 MT) ❌
+- Parastoo Mezon (8,500 MT) ✅
 - Saadat Rent - 1 (2,000/5,600) ❌
 - Saadat Rent - 2
 
