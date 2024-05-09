@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	ErrGuestNameRequired   = errors.New("first name and last name are required for a guest")
-	ErrPartnerNameRequired = errors.New("first name and last name are required for a guest's partner")
+	ErrGuestNameRequired        = errors.New("first name and last name are required for a guest")
+	ErrPartnerNameRequired      = errors.New("first name and last name are required for a guest's partner")
+	ErrComingRequiredForPlusOne = errors.New("guest should come to have plus one")
 )
 
 type GuestSvc struct {
@@ -69,6 +70,10 @@ func (svc GuestSvc) New(
 }
 
 func (svc GuestSvc) Answer(ctx context.Context, id string, coming bool, plusOne bool) error {
+	if !coming && plusOne {
+		return ErrComingRequiredForPlusOne
+	}
+
 	if err := svc.repository.Answer(ctx, id, model.Answer{
 		ID:      0,
 		Coming:  coming,
