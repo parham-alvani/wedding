@@ -10,7 +10,7 @@ This repository will provide the invitation card and details of the ceremony.
 The following are the tasks and things we are doing for our wedding with their prices.
 Here MT abbrivates million toman.
 
-- Mina Rad - 1 (1,500/9,000 MT) ❌
+- Mina Rad - 1 (6,000/9,000 MT) ❌
 - Mina Rad - 2 (5,000/22,000 MT) ❌
 - Hasti Mezon ()
 - Shemiranat health and treatment network ✅
@@ -20,7 +20,7 @@ Here MT abbrivates million toman.
 - Rajian (3,100 MT) ✅
 - Boho Floral Design Studio - 1 (2,835/5,670 MT) ❌
 - Kourosh Ceremonial Services (100,000/416,000 MT) ❌
-- Aida Mokhtary ()
+- Aida Mokhtary (11,660 MT) ✅
 - Ajoodaniyeh Mansion (10,000/12,000 MT) ❌
 - Makan Mansion (12,000 MT) ✅
 - Parastoo Mezon (8,500 MT) ✅
