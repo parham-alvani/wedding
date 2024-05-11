@@ -121,8 +121,9 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.table.SetRows(rows)
 
 		m.text.SetValue(
-			fmt.Sprintf("- Not Answered: %d\n- Coming (includes their plus one adult): %d\n- Not Coming: %d\n",
+			fmt.Sprintf("- Not Answered: %d / %d\n- Coming (includes their plus one adult): %d\n- Not Coming: %d\n",
 				notAnsweredGuests,
+				len(msg.guests),
 				comingGuests,
 				notComingGuests,
 			),
@@ -139,7 +140,7 @@ func (m guestsModel) View() string {
 		return fmt.Sprintf("\n\n   %s Loading from database...\n\n", m.spinner.View())
 	}
 
-	return m.table.View() + "\n" + m.text.View() + "\n"
+	return m.table.View() + "\n\n\n" + m.text.View() + "\n"
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
