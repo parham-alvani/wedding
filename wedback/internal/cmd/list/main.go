@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/table"
+	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
@@ -28,6 +29,7 @@ type guestsModel struct {
 
 	table   table.Model
 	spinner spinner.Model
+	text    textarea.Model
 }
 
 type guestsListMsg struct {
@@ -51,6 +53,7 @@ func (m guestsModel) Init() tea.Cmd {
 	return m.List
 }
 
+// nolint: funlen, cyclop
 func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
@@ -72,6 +75,10 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case guestsListMsg:
 		rows := make([]table.Row, len(msg.guests))
 
+		comingGuests := 0
+		notComingGuests := 0
+		notAnsweredGuests := 0
+
 		for i, guest := range msg.guests {
 			spouseFirstName := ""
 			if guest.SpouseFirstName != nil {
@@ -81,6 +88,21 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			spouseLastName := ""
 			if guest.SpouseLastName != nil {
 				spouseLastName = *guest.SpouseLastName
+			}
+
+			// nolint: nestif
+			if guest.Answer == nil {
+				notAnsweredGuests++
+			} else {
+				if guest.Answer.Coming {
+					if guest.Answer.PlusOne {
+						comingGuests += 2
+					} else {
+						comingGuests++
+					}
+				} else {
+					notComingGuests++
+				}
 			}
 
 			rows[i] = table.Row{
@@ -97,6 +119,14 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		m.isLoading = false
 		m.table.SetRows(rows)
+
+		m.text.SetValue(
+			fmt.Sprintf("- Not Answered: %d\n- Coming (includes their plus one adult): %d\n- Not Coming: %d\n",
+				notAnsweredGuests,
+				comingGuests,
+				notComingGuests,
+			),
+		)
 	}
 
 	m.table, cmd = m.table.Update(msg)
@@ -109,7 +139,7 @@ func (m guestsModel) View() string {
 		return fmt.Sprintf("\n\n   %s Loading from database...\n\n", m.spinner.View())
 	}
 
-	return m.table.View() + "\n"
+	return m.table.View() + "\n" + m.text.View() + "\n"
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
@@ -133,9 +163,13 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		table: table.New(
 			table.WithColumns(columns),
 			table.WithFocused(true),
-			table.WithHeight(7),
+			table.WithHeight(50),
 		),
+		text: textarea.New(),
 	}
+
+	dm.text.SetWidth(150)
+	dm.text.ShowLineNumbers = false
 
 	p := tea.NewProgram(dm, tea.WithAltScreen())
 
