@@ -10,7 +10,7 @@ This repository will provide the invitation card and details of the ceremony.
 The following are the tasks and things we are doing for our wedding with their prices.
 Here MT abbrivates million toman.
 
-- Mina Rad - 1 (6,000/9,000 MT) ❌
+- Mina Rad - 1 (7,500/9,000 MT) ❌
 - Mina Rad - 2 (5,000/22,000 MT) ❌
 - Hasti Mezon ()
 - Shemiranat health and treatment network ✅
