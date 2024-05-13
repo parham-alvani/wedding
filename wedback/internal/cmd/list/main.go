@@ -91,7 +91,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			// nolint: nestif, mnd
-			if guest.Answer == nil {
+			if !guest.IsFamily && guest.Answer == nil {
 				notAnsweredGuests++
 			} else {
 				if guest.Coming() {
