@@ -126,7 +126,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			fmt.Sprintf(`
 - Not Answered: %d / %d
 - Coming (includes their plus one adult and their children): %d
-- Not Coming: %d\n`,
+- Not Coming: %d`,
 				notAnsweredGuests,
 				len(msg.guests),
 				comingGuests,

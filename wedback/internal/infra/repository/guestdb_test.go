@@ -130,7 +130,7 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		IsFamily:        false,
-		Childeren:       0,
+		Children:        0,
 		Answer:          nil,
 	}))
 
@@ -141,7 +141,7 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		IsFamily:        false,
-		Childeren:       0,
+		Children:        0,
 		Answer:          nil,
 	}), guestrepo.ErrDuplicateGuestByName)
 }
