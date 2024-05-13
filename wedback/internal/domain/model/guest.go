@@ -13,6 +13,10 @@ type Guest struct {
 }
 
 func (g Guest) Coming() bool {
+	if g.IsFamily {
+		return true
+	}
+
 	if g.Answer != nil {
 		return g.Answer.Coming
 	}
@@ -21,6 +25,10 @@ func (g Guest) Coming() bool {
 }
 
 func (g Guest) PlusOne() bool {
+	if g.IsFamily && g.SpouseFirstName != nil {
+		return true
+	}
+
 	if g.Answer != nil {
 		return g.Answer.PlusOne
 	}
