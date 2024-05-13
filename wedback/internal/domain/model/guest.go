@@ -8,7 +8,7 @@ type Guest struct {
 	SpouseFirstName *string `gorm:"uniqueIndex:idx_sname" json:"spouse_first_name,omitempty"`
 	SpouseLastName  *string `gorm:"uniqueIndex:idx_sname" json:"spouse_last_name,omitempty"`
 	IsFamily        bool    `json:"is_family,omitempty"`
-	Childeren       int     `json:"childeren,omitempty"`
+	Children        int     `json:"childeren,omitempty"`
 	Answer          *Answer `gorm:"foreignKey:GuestID"    json:"answer,omitempty"`
 }
 

@@ -96,7 +96,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				if guest.Answer.Coming {
 					if guest.Answer.PlusOne {
-						comingGuests += (2 + guest.Childeren)
+						comingGuests += (2 + guest.Children)
 					} else {
 						comingGuests++
 					}
@@ -111,7 +111,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				spouseFirstName,
 				spouseLastName,
 				strconv.FormatBool(guest.IsFamily),
-				strconv.Itoa(guest.Childeren),
+				strconv.Itoa(guest.Children),
 				guest.ID,
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
