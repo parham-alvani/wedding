@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
-          cache-dependency-path: "package-lock.json"
+          cache-dependency-path: "./wedfront/package-lock.json"
       - run: npm install
       - run: npm run format
       - run: '[[ -z $(git status -s) ]]'
@@ -31,6 +31,6 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
-          cache-dependency-path: "package-lock.json"
+          cache-dependency-path: "./wedfront/package-lock.json"
       - run: npm install
       - run: npm run build
