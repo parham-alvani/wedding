@@ -35,6 +35,8 @@ func (svc GuestSvc) New(
 	lname string,
 	partnerFname string,
 	partnerLname string,
+	isFamily bool,
+	childeren int,
 ) (model.Guest, error) {
 	fname = strings.TrimSpace(fname)
 	lname = strings.TrimSpace(lname)
@@ -50,6 +52,8 @@ func (svc GuestSvc) New(
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
+		IsFamily:        isFamily,
+		Childeren:       childeren,
 	}
 
 	partnerFname = strings.TrimSpace(partnerFname)

@@ -90,13 +90,13 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				spouseLastName = *guest.SpouseLastName
 			}
 
-			// nolint: nestif
+			// nolint: nestif, mnd
 			if guest.Answer == nil {
 				notAnsweredGuests++
 			} else {
 				if guest.Answer.Coming {
 					if guest.Answer.PlusOne {
-						comingGuests += 2
+						comingGuests += (2 + guest.Childeren)
 					} else {
 						comingGuests++
 					}
@@ -110,6 +110,8 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				guest.LastName,
 				spouseFirstName,
 				spouseLastName,
+				strconv.FormatBool(guest.IsFamily),
+				strconv.Itoa(guest.Childeren),
 				guest.ID,
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
@@ -150,6 +152,8 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		{Title: "Last Name", Width: 15},
 		{Title: "Partner's First Name", Width: 15},
 		{Title: "Partner's Last Name", Width: 15},
+		{Title: "Family", Width: 10},
+		{Title: "Children", Width: 10},
 		{Title: "ID", Width: 10},
 		{Title: "PlusOne", Width: 10},
 		{Title: "Coming", Width: 10},
@@ -169,6 +173,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		text: textarea.New(),
 	}
 
+	// nolint: mnd
 	dm.text.SetWidth(150)
 	dm.text.ShowLineNumbers = false
 

@@ -123,13 +123,14 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 	require := s.Require()
 
-	// nolint: exhaustruct
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
 		ID:              "unique",
 		FirstName:       "Ali",
 		LastName:        "Irani",
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
+		IsFamily:        false,
+		Childeren:       0,
 		Answer:          nil,
 	}))
 
@@ -139,6 +140,8 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 		LastName:        "Irani",
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
+		IsFamily:        false,
+		Childeren:       0,
 		Answer:          nil,
 	}), guestrepo.ErrDuplicateGuestByName)
 }

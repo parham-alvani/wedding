@@ -3,6 +3,8 @@ package insert
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -29,6 +31,7 @@ func (m guestModel) Init() tea.Cmd {
 	return textinput.Blink
 }
 
+// nolint: cyclop, nestif, funlen
 func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
@@ -45,14 +48,38 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.index < len(m.inputs)-1 {
 				m.index++
 			} else {
+				children, err := strconv.Atoi(m.inputs[5].Value())
+				if err != nil {
+					pterm.Error.Printfln("failed to parse number of children %s", err)
+
+					return m, tea.Quit
+				}
+
+				var isFamily bool
+
+				switch strings.ToLower(m.inputs[4].Value()) {
+				case "true":
+					isFamily = true
+				case "false":
+					isFamily = false
+				default:
+					pterm.Error.Println("failed to parse is family")
+
+					return m, tea.Quit
+				}
+
 				if _, err := m.service.New(
 					context.Background(),
 					m.inputs[0].Value(),
 					m.inputs[1].Value(),
 					m.inputs[2].Value(),
 					m.inputs[3].Value(),
+					isFamily,
+					children,
 				); err != nil {
 					pterm.Error.Printfln("failed to create the guest %s", err)
+
+					return m, tea.Quit
 				}
 
 				return m, tea.Quit
@@ -111,10 +138,21 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 	lPartner.CharLimit = 20
 	lPartner.Width = 20
 
+	isFamily := textinput.New()
+	isFamily.SetSuggestions([]string{"true", "false"})
+	isFamily.ShowSuggestions = true
+	isFamily.CharLimit = 5
+	isFamily.Width = 5
+
+	children := textinput.New()
+	children.Placeholder = "0"
+	children.CharLimit = 5
+	children.Width = 5
+
 	m := guestModel{
 		service: svc,
-		inputs:  []textinput.Model{fName, lName, fPartner, lPartner},
-		prompts: []string{"First Name", "Last Name", "Partner's First Name", "Partner's Last Name"},
+		inputs:  []textinput.Model{fName, lName, fPartner, lPartner, isFamily, children},
+		prompts: []string{"First Name", "Last Name", "Partner's First Name", "Partner's Last Name", "Is Family?", "Children"},
 		index:   0,
 	}
 

@@ -21,6 +21,7 @@ linters:
     - deadcode
     - structcheck
     - gomnd
+    - execinquery
 
 linters-settings:
   wrapcheck:

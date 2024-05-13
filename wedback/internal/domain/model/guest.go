@@ -2,12 +2,14 @@ package model
 
 // Guest represents a wedding guest.
 type Guest struct {
-	ID              string  `gorm:"primaryKey;notnull"    json:"id"`
-	FirstName       string  `gorm:"uniqueIndex:idx_name"  json:"first_name"`
-	LastName        string  `gorm:"uniqueIndex:idx_name"  json:"last_name"`
+	ID              string  `gorm:"primaryKey;notnull"    json:"id,omitempty"`
+	FirstName       string  `gorm:"uniqueIndex:idx_name"  json:"first_name,omitempty"`
+	LastName        string  `gorm:"uniqueIndex:idx_name"  json:"last_name,omitempty"`
 	SpouseFirstName *string `gorm:"uniqueIndex:idx_sname" json:"spouse_first_name,omitempty"`
 	SpouseLastName  *string `gorm:"uniqueIndex:idx_sname" json:"spouse_last_name,omitempty"`
-	Answer          *Answer `gorm:"foreignKey:GuestID"    json:"answer"`
+	IsFamily        bool    `json:"is_family,omitempty"`
+	Childeren       int     `json:"childeren,omitempty"`
+	Answer          *Answer `gorm:"foreignKey:GuestID"    json:"answer,omitempty"`
 }
 
 func (g Guest) Coming() bool {
