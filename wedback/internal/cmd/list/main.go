@@ -123,7 +123,10 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.table.SetRows(rows)
 
 		m.text.SetValue(
-			fmt.Sprintf("- Not Answered: %d / %d\n- Coming (includes their plus one adult): %d\n- Not Coming: %d\n",
+			fmt.Sprintf(`
+- Not Answered: %d / %d
+- Coming (includes their plus one adult and their children): %d
+- Not Coming: %d\n`,
 				notAnsweredGuests,
 				len(msg.guests),
 				comingGuests,
@@ -174,7 +177,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 	}
 
 	// nolint: mnd
-	dm.text.SetWidth(150)
+	dm.text.SetWidth(200)
 	dm.text.ShowLineNumbers = false
 
 	p := tea.NewProgram(dm, tea.WithAltScreen())
