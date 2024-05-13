@@ -27,74 +27,74 @@ const { guest } = Astro.props;
       Elahe & Parham
     </p>
   </Fragment>
-  <Fragment slot="lead">
-    <h2
-      class="gradient-text text-center font-extrabold tracking-tight text-8xl"
-    >
-      RSVP
-    </h2>
-    <h6 class="text-secondary text-base" style="padding-left: 10%;">
-      please kindly reply by Khordad 5th
-    </h6>
-    <fieldset class="mx-auto my-5 flex w-5/6 flex-row justify-center">
-      <div class="mx-5 flex basis-1/2 flex-col gap-5 text-left">
-        <label>
-          <input
-            type="radio"
-            id="coming"
-            name="coming"
-            value="true"
-            checked={guest.answer?.coming === true}
-            disabled={guest.answer != null}
-          />
-          Accept with pleasure
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="false"
-            name="coming"
-            id="not-coming"
-            checked={guest.answer?.coming === false}
-            disabled={guest.answer != null}
-          />
-          Decline with regret</label
-        >
-      </div>
-
-      {
-        guest.spouse_first_name == null ? (
-          <div class="mx-5 basis-1/2 text-right">
-            <input
-              type="checkbox"
-              id="plus_one"
-              name="plus_one"
-              checked={guest.answer?.plus_one === true}
-              disabled={guest.answer != null}
-            />
-            <label for="plus_one">Plus 1 adult</label>
+  {
+    guest.is_family != true ? (
+      <Fragment slot="lead">
+        <h2 class="gradient-text text-center font-extrabold tracking-tight text-8xl">
+          RSVP
+        </h2>
+        <h6 class="text-secondary text-base" style="padding-left: 10%;">
+          please kindly reply by Khordad 5th
+        </h6>
+        <fieldset class="mx-auto my-5 flex w-5/6 flex-row justify-center">
+          <div class="mx-5 flex basis-1/2 flex-col gap-5 text-left">
+            <label>
+              <input
+                type="radio"
+                id="coming"
+                name="coming"
+                value="true"
+                checked={guest.answer?.coming === true}
+                disabled={guest.answer != null}
+              />
+              Accept with pleasure
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="false"
+                name="coming"
+                id="not-coming"
+                checked={guest.answer?.coming === false}
+                disabled={guest.answer != null}
+              />
+              Decline with regret
+            </label>
           </div>
-        ) : (
-          ""
-        )
-      }
-    </fieldset>
-    <button
-      data-id={guest.id}
-      id="submit"
-      disabled={guest.answer != null}
-      class="w-5/6 text-center lg:w-1/4"
-    >
-      {guest.answer == null ? "Respond to invitation" : "Already responded"}
-      {
-        guest.answer == null ? (
-          <Icon name="mdi:love-letter-open" class="inline size-12" />
-        ) : (
-          <Icon name="mdi:love-letter" class="inline size-12" />
-        )
-      }
-    </button>
-  </Fragment>
+
+          {guest.spouse_first_name == null ? (
+            <div class="mx-5 basis-1/2 text-right">
+              <input
+                type="checkbox"
+                id="plus_one"
+                name="plus_one"
+                checked={guest.answer?.plus_one === true}
+                disabled={guest.answer != null}
+              />
+              <label for="plus_one">Plus 1 adult</label>
+            </div>
+          ) : (
+            ""
+          )}
+        </fieldset>
+        <button
+          data-id={guest.id}
+          id="submit"
+          disabled={guest.answer != null}
+          class="w-5/6 text-center lg:w-1/4"
+        >
+          {guest.answer == null ? "Respond to invitation" : "Already responded"}
+          {guest.answer == null ? (
+            <Icon name="mdi:love-letter-open" class="inline size-12" />
+          ) : (
+            <Icon name="mdi:love-letter" class="inline size-12" />
+          )}
+        </button>
+      </Fragment>
+    ) : (
+      ""
+    )
+  }
 </ContentSection>
 
 <script>
