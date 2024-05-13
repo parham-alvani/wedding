@@ -50,9 +50,10 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				children, err := strconv.Atoi(m.inputs[5].Value())
 				if err != nil {
-					pterm.Error.Printfln("failed to parse number of children %s", err)
-
-					return m, tea.Quit
+					return m, tea.Batch(
+						tea.Printf("failed to parse number of children %s", err),
+						tea.Quit,
+					)
 				}
 
 				var isFamily bool
@@ -63,9 +64,10 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				case "false":
 					isFamily = false
 				default:
-					pterm.Error.Println("failed to parse is family")
-
-					return m, tea.Quit
+					return m, tea.Batch(
+						tea.Println("failed to parse is family"),
+						tea.Quit,
+					)
 				}
 
 				if _, err := m.service.New(
@@ -77,9 +79,10 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					isFamily,
 					children,
 				); err != nil {
-					pterm.Error.Printfln("failed to create the guest %s", err)
-
-					return m, tea.Quit
+					return m, tea.Batch(
+						tea.Printf("failed to create the guest %s", err),
+						tea.Quit,
+					)
 				}
 
 				return m, tea.Quit
