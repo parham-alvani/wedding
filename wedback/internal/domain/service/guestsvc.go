@@ -74,10 +74,6 @@ func (svc GuestSvc) New(
 }
 
 func (svc GuestSvc) Answer(ctx context.Context, id string, coming bool, plusOne bool) error {
-	if !coming && plusOne {
-		return ErrComingRequiredForPlusOne
-	}
-
 	if err := svc.repository.Answer(ctx, id, model.Answer{
 		ID:      0,
 		Coming:  coming,
