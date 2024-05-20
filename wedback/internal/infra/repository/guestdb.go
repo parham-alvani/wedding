@@ -79,6 +79,7 @@ func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
 }
 
 func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) error {
+	// nolint: gosec
 	answer.ID = rand.Int64()
 
 	guest, err := r.Get(ctx, id)
