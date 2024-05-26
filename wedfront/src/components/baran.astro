@@ -1,12 +1,29 @@
 ---
 import { Icon } from "astro-icon/components";
 import ContentSection from "~/components/content-section.astro";
+
+export interface Props {
+  lang?: string;
+}
+
+const { lang } = Astro.props;
 ---
 
 <ContentSection id="baran">
-  <Fragment slot="lead">
-    Hope to see you on Khordad 27th st 6:30 p.m. at Baran mansion garden
-  </Fragment>
+  {
+    lang === "fa" ? (
+      <Fragment slot="lead">
+        یکشنبه ۲۷ خرداد از ساعت ۱۸:۳۰ عمارت باران
+        <br />
+        <br />
+        گرمدره، خیابان سعادتیه، کوچه تیر، پلاک ۲۲
+      </Fragment>
+    ) : (
+      <Fragment slot="lead">
+        Hope to see you on Khordad 27th st 6:30 p.m. at Baran mansion garden
+      </Fragment>
+    )
+  }
   <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
     <a
       href="https://maps.app.goo.gl/tPnYeA5QyvA9LYhEA"
