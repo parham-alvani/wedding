@@ -37,7 +37,7 @@ const { since, lang } = Astro.props;
         }
         <br />
         <br />
-        <astro-count-down data-since={since}>
+        <astro-count-down data-since={since} data-lang={lang}>
           <span></span>
         </astro-count-down>
       </div>
@@ -60,6 +60,7 @@ const { since, lang } = Astro.props;
     minutes: number;
     seconds: number;
     weddingDate: number;
+    lang: string;
 
     private since() {
       let now = new Date().getTime();
@@ -76,7 +77,11 @@ const { since, lang } = Astro.props;
 
         const counter = this.querySelector("span");
         if (counter != null) {
-          counter.textContent = `${this.days.toString().padStart(2, "0")}:${this.hours.toString().padStart(2, "0")}:${this.minutes.toString().padStart(2, "0")}:${this.seconds.toString().padStart(2, "0")}`;
+          if (this.lang === "fa") {
+            counter.textContent = `${this.days.toLocaleString("fa-IR").padStart(2, "۰")}:${this.hours.toLocaleString("fa-IR").padStart(2, "۰")}:${this.minutes.toLocaleString("fa-IR").padStart(2, "۰")}:${this.seconds.toLocaleString("fa-IR").padStart(2, "۰")}`;
+          } else {
+            counter.textContent = `${this.days.toString().padStart(2, "0")}:${this.hours.toString().padStart(2, "0")}:${this.minutes.toString().padStart(2, "0")}:${this.seconds.toString().padStart(2, "0")}`;
+          }
         }
       }
     }
@@ -85,12 +90,18 @@ const { since, lang } = Astro.props;
       super();
 
       const since = this.getAttribute("data-since");
+      const lang = this.getAttribute("data-lang");
 
       this.days = -1;
       this.hours = 0;
       this.minutes = 0;
       this.seconds = 0;
       this.weddingDate = 0;
+      this.lang = "en";
+
+      if (lang === "fa") {
+        this.lang = "fa";
+      }
 
       if (since != null) {
         this.weddingDate = new Date(since).getTime();
