@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'IranNastaliq';
+    src: url('IranNastaliq.woff2') format('woff2'),
+        url('IranNastaliq.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 * {
-  font-family: "Mehr";
+  font-family: "IranNastaliq";
+  letter-spacing: normal !important;
 }
