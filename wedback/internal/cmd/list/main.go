@@ -116,7 +116,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
 				"https://wedding.1995parham.ir/guests/" + guest.ID,
-				strconv.FormatBool(guest.Answer == nil),
+				strconv.FormatBool(guest.Answer == nil && !guest.IsFamily),
 			}
 		}
 
