@@ -98,7 +98,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if guest.PlusOne() {
 						comingGuests += (2 + guest.Children)
 					} else {
-						comingGuests++
+						comingGuests += (1 + guest.Children)
 					}
 				} else {
 					notComingGuests++
