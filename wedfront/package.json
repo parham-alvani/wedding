@@ -13,7 +13,7 @@
     "clean": "rimraf dist .astro node_modules"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.0",
     "prettier-plugin-astro": "^0.14.0",
     "prettier-plugin-tailwindcss": "^0.5.14"
   },
