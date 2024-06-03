@@ -4,7 +4,7 @@ go 1.22.1
 
 require (
 	github.com/charmbracelet/bubbles v0.18.0
-	github.com/charmbracelet/bubbletea v0.26.3
+	github.com/charmbracelet/bubbletea v0.26.4
 	github.com/knadh/koanf/parsers/toml v0.1.0
 	github.com/knadh/koanf/providers/env v0.1.0
 	github.com/knadh/koanf/providers/file v0.1.0
@@ -16,7 +16,7 @@ require (
 	github.com/tidwall/pretty v1.2.1
 	github.com/urfave/cli/v3 v3.0.0-alpha9
 	go.uber.org/automaxprocs v1.5.3
-	go.uber.org/fx v1.21.1
+	go.uber.org/fx v1.22.0
 	go.uber.org/zap v1.27.0
 	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gorm v1.25.10
@@ -29,7 +29,7 @@ require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/lipgloss v0.11.0 // indirect
-	github.com/charmbracelet/x/ansi v0.1.1 // indirect
+	github.com/charmbracelet/x/ansi v0.1.2 // indirect
 	github.com/charmbracelet/x/input v0.1.1 // indirect
 	github.com/charmbracelet/x/term v0.1.1 // indirect
 	github.com/charmbracelet/x/windows v0.1.2 // indirect
@@ -38,7 +38,7 @@ require (
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
-	github.com/go-viper/mapstructure/v2 v2.0.0-alpha.1 // indirect
+	github.com/go-viper/mapstructure/v2 v2.0.0 // indirect
 	github.com/gookit/color v1.5.4 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
