@@ -116,6 +116,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
 				"https://wedding.1995parham.ir/guests/" + guest.ID,
+				strconv.FormatBool(guest.Answer == nil),
 			}
 		}
 
@@ -161,6 +162,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 		{Title: "PlusOne", Width: 10},
 		{Title: "Coming", Width: 10},
 		{Title: "Link", Width: 50},
+		{Title: "Waiting for an answer", Width: 15},
 	}
 
 	// nolint: mnd
