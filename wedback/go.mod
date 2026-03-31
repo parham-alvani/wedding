@@ -17,7 +17,7 @@ require (
 	github.com/urfave/cli/v3 v3.0.0-alpha9
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/fx v1.22.0
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.10
 )
