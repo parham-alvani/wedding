@@ -10,7 +10,7 @@ jobs:
       run:
         working-directory: ./wedback
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version-file: "./wedback/go.mod"
@@ -28,7 +28,7 @@ jobs:
       run:
         working-directory: ./wedback
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version-file: "./wedback/go.mod"
