@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/request"
@@ -16,7 +16,7 @@ type Guest struct {
 	Logger  *zap.Logger
 }
 
-func (h Guest) Page(c echo.Context) error {
+func (h Guest) Page(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	id := c.Param("id")
@@ -35,7 +35,7 @@ func (h Guest) Page(c echo.Context) error {
 	return c.JSON(http.StatusOK, guest)
 }
 
-func (h Guest) Answer(c echo.Context) error {
+func (h Guest) Answer(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	id := c.Param("id")

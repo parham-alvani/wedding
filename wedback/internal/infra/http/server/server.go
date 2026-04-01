@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/handler"
 	"go.uber.org/fx"
@@ -24,17 +24,24 @@ func Provide(lc fx.Lifecycle, logger *zap.Logger, svc service.GuestSvc) *echo.Ec
 		Service: svc,
 	}.Register(app.Group(""))
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	lc.Append(fx.Hook{
 		OnStart: func(_ context.Context) error {
 			go func() {
-				if err := app.Start(":1378"); !errors.Is(err, http.ErrServerClosed) {
+				sc := echo.StartConfig{Address: ":1378"}
+				if err := sc.Start(ctx, app); !errors.Is(err, http.ErrServerClosed) {
 					logger.Fatal("echo initiation failed", zap.Error(err))
 				}
 			}()
 
 			return nil
 		},
-		OnStop: app.Shutdown,
+		OnStop: func(_ context.Context) error {
+			cancel()
+
+			return nil
+		},
 	})
 
 	return app

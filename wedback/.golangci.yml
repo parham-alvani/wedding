@@ -1,6 +1,6 @@
 ---
 linters:
-  enable-all: true
+  default: all
   disable:
     - depguard
     # we don't use json with camel-case
@@ -10,18 +10,18 @@ linters:
     - varnamelen
     - ireturn
 
-linters-settings:
-  wrapcheck:
-    ignoreSigs:
-      - .JSON
-      - .NewHTTPError
-      - .Redirect
-      - .NoContent
-      - .Errorf(
-      - errors.New(
-      - errors.Unwrap(
-      - .Wrap(
-      - .Wrapf(
-      - .WithMessage(
-      - .WithMessagef(
-      - .WithStack(
+  settings:
+    wrapcheck:
+      ignoreSigs:
+        - .JSON
+        - .NewHTTPError
+        - .Redirect
+        - .NoContent
+        - .Errorf(
+        - errors.New(
+        - errors.Unwrap(
+        - .Wrap(
+        - .Wrapf(
+        - .WithMessage(
+        - .WithMessagef(
+        - .WithStack(

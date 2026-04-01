@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/handler"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/fx"
