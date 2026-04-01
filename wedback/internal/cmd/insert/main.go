@@ -2,12 +2,13 @@ package insert
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
-	"strings"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
@@ -20,158 +21,151 @@ import (
 	"go.uber.org/fx"
 )
 
-type guestModel struct {
-	service service.GuestSvc
-	inputs  []textinput.Model
-	prompts []string
-	index   int
-}
+func weddingTheme() *huh.Theme {
+	t := huh.ThemeCharm()
 
-func (m guestModel) Init() tea.Cmd {
-	return textinput.Blink
-}
+	orange := lipgloss.Color("#FF8C00")
 
-// nolint: cyclop, nestif, funlen
-func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var cmd tea.Cmd
+	t.Focused.Title = t.Focused.Title.Foreground(orange)
+	t.Focused.FocusedButton = t.Focused.FocusedButton.Background(orange)
+	t.Focused.SelectSelector = t.Focused.SelectSelector.Foreground(orange)
+	t.Focused.SelectedOption = t.Focused.SelectedOption.Foreground(orange)
+	t.Focused.SelectedPrefix = t.Focused.SelectedPrefix.Foreground(orange)
+	t.Focused.TextInput.Cursor = t.Focused.TextInput.Cursor.Foreground(orange)
+	t.Focused.NextIndicator = t.Focused.NextIndicator.Foreground(orange)
+	t.Focused.MultiSelectSelector = t.Focused.MultiSelectSelector.Foreground(orange)
+	t.Group.Title = t.Group.Title.Foreground(orange)
 
-	if msg, ok := msg.(tea.KeyMsg); ok {
-		// nolint: exhaustive
-		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
-			return m, tea.Quit
-		case tea.KeyTab:
-			m.index = (m.index + 1) % len(m.inputs)
-		case tea.KeyShiftTab:
-			m.index = (m.index - 1) % len(m.inputs)
-		case tea.KeyEnter:
-			if m.index < len(m.inputs)-1 {
-				m.index++
-			} else {
-				children, err := strconv.Atoi(m.inputs[5].Value())
-				if err != nil {
-					return m, tea.Batch(
-						tea.Printf("failed to parse number of children %s", err),
-						tea.Quit,
-					)
-				}
+	softOrange := lipgloss.Color("#FFB347")
 
-				var isFamily bool
+	t.Blurred.Title = t.Blurred.Title.Foreground(softOrange)
+	t.Blurred.TextInput.Placeholder = t.Blurred.TextInput.Placeholder.Foreground(lipgloss.Color("#997040"))
+	t.Blurred.SelectedOption = t.Blurred.SelectedOption.Foreground(softOrange)
+	t.Blurred.FocusedButton = t.Blurred.FocusedButton.Background(softOrange)
+	t.Blurred.NextIndicator = t.Blurred.NextIndicator.Foreground(softOrange)
 
-				switch strings.ToLower(m.inputs[4].Value()) {
-				case "true":
-					isFamily = true
-				case "false":
-					isFamily = false
-				default:
-					return m, tea.Batch(
-						tea.Println("failed to parse is family"),
-						tea.Quit,
-					)
-				}
-
-				if _, err := m.service.New(
-					context.Background(),
-					m.inputs[0].Value(),
-					m.inputs[1].Value(),
-					m.inputs[2].Value(),
-					m.inputs[3].Value(),
-					isFamily,
-					children,
-				); err != nil {
-					return m, tea.Batch(
-						tea.Printf("failed to create the guest %s", err),
-						tea.Quit,
-					)
-				}
-
-				return m, tea.Quit
-			}
-		}
-	}
-
-	for i := range len(m.inputs) {
-		if i == m.index {
-			m.inputs[i].Focus()
-		} else {
-			m.inputs[i].Blur()
-		}
-	}
-
-	m.inputs[m.index], cmd = m.inputs[m.index].Update(msg)
-
-	return m, cmd
-}
-
-func (m guestModel) View() string {
-	view := ""
-
-	var viewSb109 strings.Builder
-	for i := range len(m.inputs) {
-		viewSb109.WriteString(fmt.Sprintf(
-			"%s\n\n%s\n\n",
-			m.prompts[i],
-			m.inputs[i].View(),
-		) + "\n")
-	}
-
-	view += viewSb109.String()
-
-	view += "(esc to quit)"
-
-	return view + "\n"
+	return t
 }
 
 func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
-	fName := textinput.New()
-	fName.Placeholder = "Ali"
-	fName.Focus()
-	fName.CharLimit = 20
-	fName.Width = 20
+	var (
+		firstName        string
+		lastName         string
+		partnerFirstName string
+		partnerLastName  string
+		isFamily         bool
+		children         string
+	)
 
-	lName := textinput.New()
-	lName.Placeholder = "Irani"
-	lName.CharLimit = 20
-	lName.Width = 20
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewInput().
+				Title("First Name").
+				Placeholder("Ali").
+				Value(&firstName).
+				Validate(huh.ValidateNotEmpty()),
+			huh.NewInput().
+				Title("Last Name").
+				Placeholder("Irani").
+				Value(&lastName).
+				Validate(huh.ValidateNotEmpty()),
+		).Title("Guest Information"),
 
-	fPartner := textinput.New()
-	fPartner.Placeholder = "Maryam"
-	fPartner.CharLimit = 20
-	fPartner.Width = 20
+		huh.NewGroup(
+			huh.NewInput().
+				Title("Partner's First Name").
+				Description("Leave empty if no partner").
+				Placeholder("Maryam").
+				Value(&partnerFirstName),
+			huh.NewInput().
+				Title("Partner's Last Name").
+				Placeholder("Akhyani").
+				Value(&partnerLastName).
+				Validate(func(s string) error {
+					if partnerFirstName != "" && s == "" {
+						return errors.New("partner last name is required when first name is provided")
+					}
 
-	lPartner := textinput.New()
-	lPartner.Placeholder = "Akhyani"
-	lPartner.CharLimit = 20
-	lPartner.Width = 20
+					return nil
+				}),
+		).Title("Partner Information"),
 
-	isFamily := textinput.New()
-	isFamily.SetSuggestions([]string{"true", "false"})
-	isFamily.ShowSuggestions = true
-	isFamily.CharLimit = 5
-	isFamily.Width = 5
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title("Is this a family invitation?").
+				Affirmative("Yes").
+				Negative("No").
+				Value(&isFamily),
+			huh.NewInput().
+				Title("Number of Children").
+				Placeholder("0").
+				Value(&children).
+				Validate(func(s string) error {
+					if s == "" {
+						return nil
+					}
 
-	children := textinput.New()
-	children.Placeholder = "0"
-	children.CharLimit = 5
-	children.Width = 5
+					n, err := strconv.Atoi(s)
+					if err != nil {
+						return errors.New("must be a number")
+					}
 
-	m := guestModel{
-		service: svc,
-		inputs:  []textinput.Model{fName, lName, fPartner, lPartner, isFamily, children},
-		prompts: []string{"First Name", "Last Name", "Partner's First Name", "Partner's Last Name", "Is Family?", "Children"},
-		index:   0,
-	}
+					if n < 0 {
+						return errors.New("cannot be negative")
+					}
 
-	p := tea.NewProgram(m, tea.WithAltScreen())
+					return nil
+				}),
+		).Title("Family Details"),
+	).WithTheme(weddingTheme()).
+		WithProgramOptions(tea.WithAltScreen())
 
 	lc.Append(
 		fx.StartHook(func(_ context.Context) error {
 			go func() {
-				if _, err := p.Run(); err != nil {
-					pterm.Fatal.Printfln("execution failed %s", err)
+				defer func() { _ = shutdowner.Shutdown() }()
+
+				if err := form.Run(); err != nil {
+					if errors.Is(err, huh.ErrUserAborted) {
+						return
+					}
+
+					pterm.Fatal.Printfln("form failed: %s", err)
+
+					return
 				}
 
-				_ = shutdowner.Shutdown()
+				numChildren := 0
+				if children != "" {
+					numChildren, _ = strconv.Atoi(children)
+				}
+
+				guest, err := svc.New(
+					context.Background(),
+					firstName,
+					lastName,
+					partnerFirstName,
+					partnerLastName,
+					isFamily,
+					numChildren,
+				)
+				if err != nil {
+					pterm.Error.Printfln("failed to create guest: %s", err)
+
+					return
+				}
+
+				pterm.Success.Printfln("Guest created: %s %s (ID: %s)", guest.FirstName, guest.LastName, guest.ID)
+
+				if guest.SpouseFirstName != nil {
+					pterm.Info.Printfln("Partner: %s %s", *guest.SpouseFirstName, *guest.SpouseLastName)
+				}
+
+				if isFamily {
+					pterm.Info.Printfln("Family invitation with %d children", numChildren)
+				}
+
+				fmt.Println()
 			}()
 
 			return nil

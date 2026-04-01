@@ -7,8 +7,8 @@ import (
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/table"
-	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
@@ -23,15 +23,23 @@ import (
 	"go.uber.org/fx"
 )
 
+var (
+	orange     = lipgloss.Color("#FF8C00")
+	softOrange = lipgloss.Color("#FFB347")
+	dimText    = lipgloss.Color("#997040")
+)
+
 type guestsModel struct {
 	repository guestrepo.Repository
 	wedding    wedding.Config
 
 	isLoading bool
+	width     int
+	height    int
 
 	table   table.Model
 	spinner spinner.Model
-	text    textarea.Model
+	summary string
 }
 
 type guestsListMsg struct {
@@ -64,15 +72,14 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+		m.table.SetHeight(max(m.height-10, 5)) //nolint: mnd
 	case tea.KeyMsg:
-		// nolint: exhaustive
-		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+		switch msg.String() {
+		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
-		case tea.KeyDelete, tea.KeyBackspace:
-			return m, tea.Batch(
-				tea.Printf("Let's not having %s!", m.table.SelectedRow()[0]),
-			)
 		}
 	case guestsListMsg:
 		rows := make([]table.Row, len(msg.guests))
@@ -115,26 +122,21 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				strconv.FormatBool(guest.IsFamily),
 				strconv.Itoa(guest.Children),
 				guest.ID,
-				strconv.FormatBool(guest.PlusOne()),
-				strconv.FormatBool(guest.Coming()),
-				m.wedding.BaseURL + "/guests/" + guest.ID,
-				strconv.FormatBool(guest.Answer == nil && !guest.IsFamily),
+				formatBool(guest.Coming()),
+				formatBool(guest.PlusOne()),
+				formatBool(guest.Answer == nil && !guest.IsFamily),
 			}
 		}
 
 		m.isLoading = false
 		m.table.SetRows(rows)
 
-		m.text.SetValue(
-			fmt.Sprintf(`
-- Not Answered: %d / %d
-- Coming (includes their plus one adult and their children): %d
-- Not Coming: %d`,
-				notAnsweredGuests,
-				len(msg.guests),
-				comingGuests,
-				notComingGuests,
-			),
+		m.summary = fmt.Sprintf(
+			"Total: %d  |  Coming: %d  |  Not Coming: %d  |  Waiting: %d",
+			len(msg.guests),
+			comingGuests,
+			notComingGuests,
+			notAnsweredGuests,
 		)
 	}
 
@@ -145,45 +147,82 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m guestsModel) View() string {
 	if m.isLoading {
-		return fmt.Sprintf("\n\n   %s Loading from database...\n\n", m.spinner.View())
+		return fmt.Sprintf("\n\n   %s Loading guests...\n\n", m.spinner.View())
 	}
 
-	return m.table.View() + "\n\n\n" + m.text.View() + "\n"
+	summaryStyle := lipgloss.NewStyle().
+		Foreground(softOrange).
+		Bold(true).
+		Padding(1, 0) //nolint: mnd
+
+	helpStyle := lipgloss.NewStyle().
+		Foreground(dimText).
+		Italic(true)
+
+	return m.table.View() + "\n" +
+		summaryStyle.Render(m.summary) + "\n" +
+		helpStyle.Render("↑/↓ navigate • q quit")
 }
 
-func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository, weddingCfg wedding.Config) {
-	// nolint: mnd
-	columns := []table.Column{
-		{Title: "First Name", Width: 15},
-		{Title: "Last Name", Width: 15},
-		{Title: "Partner's First Name", Width: 15},
-		{Title: "Partner's Last Name", Width: 15},
-		{Title: "Family", Width: 10},
-		{Title: "Children", Width: 10},
-		{Title: "ID", Width: 10},
-		{Title: "PlusOne", Width: 10},
-		{Title: "Coming", Width: 10},
-		{Title: "Link", Width: 50},
-		{Title: "Waiting for an answer", Width: 15},
+func formatBool(b bool) string {
+	if b {
+		return "✓"
 	}
 
-	// nolint: mnd
+	return "✗"
+}
+
+func weddingTableStyles() table.Styles {
+	s := table.DefaultStyles()
+
+	s.Header = s.Header.
+		BorderForeground(orange).
+		Foreground(orange).
+		Bold(true)
+
+	s.Selected = s.Selected.
+		Foreground(lipgloss.Color("#FFF")).
+		Background(lipgloss.Color("#FF8C00")).
+		Bold(false)
+
+	s.Cell = s.Cell.
+		Foreground(lipgloss.Color("#DDD"))
+
+	return s
+}
+
+// nolint: mnd
+func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository, weddingCfg wedding.Config) {
+	columns := []table.Column{
+		{Title: "First Name", Width: 14},
+		{Title: "Last Name", Width: 14},
+		{Title: "Spouse First", Width: 14},
+		{Title: "Spouse Last", Width: 14},
+		{Title: "Family", Width: 7},
+		{Title: "Kids", Width: 5},
+		{Title: "ID", Width: 12},
+		{Title: "Coming", Width: 7},
+		{Title: "+1", Width: 4},
+		{Title: "Waiting", Width: 8},
+	}
+
+	t := table.New(
+		table.WithColumns(columns),
+		table.WithFocused(true),
+		table.WithHeight(20),
+	)
+	t.SetStyles(weddingTableStyles())
+
+	s := spinner.New()
+	s.Style = lipgloss.NewStyle().Foreground(orange)
+
 	dm := guestsModel{
 		repository: repository,
 		wedding:    weddingCfg,
 		isLoading:  true,
-		spinner:    spinner.New(),
-		table: table.New(
-			table.WithColumns(columns),
-			table.WithFocused(true),
-			table.WithHeight(50),
-		),
-		text: textarea.New(),
+		spinner:    s,
+		table:      t,
 	}
-
-	// nolint: mnd
-	dm.text.SetWidth(200)
-	dm.text.ShowLineNumbers = false
 
 	p := tea.NewProgram(dm, tea.WithAltScreen())
 
