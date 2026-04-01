@@ -20,8 +20,7 @@ export const wedding = {
         instagram: "https://instagram.com/elahe.dstn",
       },
     },
-    lastNamePersian:
-      "\u062F\u0627\u0633\u062A\u0627\u0646 - \u0627\u0644\u0648\u0627\u0646\u06CC",
+    lastNamePersian: "\u062F\u0627\u0633\u062A\u0627\u0646 - \u0627\u0644\u0648\u0627\u0646\u06CC",
   },
   dates: {
     wedding: "Jun 16, 2024 18:30:00+03:30",
@@ -42,8 +41,7 @@ export const wedding = {
         "\u06CC\u06A9\u0634\u0646\u0628\u0647 \u06F2\u06F7 \u062E\u0631\u062F\u0627\u062F \u0627\u0632 \u0633\u0627\u0639\u062A \u06F1\u06F8:\u06F3\u06F0 \u0639\u0645\u0627\u0631\u062A \u0628\u0627\u0631\u0627\u0646",
       addressPersian:
         "\u06AF\u0631\u0645\u062F\u0631\u0647\u060C \u062E\u06CC\u0627\u0628\u0627\u0646 \u0633\u0639\u0627\u062F\u062A\u06CC\u0647\u060C \u06A9\u0648\u0686\u0647 \u062A\u06CC\u0631\u060C \u067E\u0644\u0627\u06A9 \u06F2\u06F2",
-      descriptionEnglish:
-        "Hope to see you on Khordad 27th st 6:30 p.m. at Baran mansion garden",
+      descriptionEnglish: "Hope to see you on Khordad 27th st 6:30 p.m. at Baran mansion garden",
       googleMapsUrl: "https://maps.app.goo.gl/tPnYeA5QyvA9LYhEA",
       neshanUrl: "https://nshn.ir/32_bvZnM5x5OAH",
       googleMapsEmbed:

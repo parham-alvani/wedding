@@ -16,9 +16,17 @@ build:
 serve:
     node dist/server/entry.mjs
 
-# Format code with Prettier
+# Format code with Biome
 format:
-    pnpm format
+    pnpm run format
+
+# Lint and format with Biome
+lint:
+    pnpm run lint
+
+# Fix all auto-fixable issues
+check:
+    pnpm run check
 
 # Clean build artifacts and dependencies
 clean:

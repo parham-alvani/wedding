@@ -38,7 +38,7 @@ test:
 # Run all linters
 lint:
     just back::lint
-    just front::format
+    just front::lint
 
 # Clean all build artifacts
 clean:

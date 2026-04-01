@@ -1,12 +1,12 @@
 ---
 import Baran from "~/components/baran.astro";
-import Splash from "~/components/splash.astro";
 import GuestSection from "~/components/guest.astro";
+import Splash from "~/components/splash.astro";
 import "~/styles/english.css";
-import { type Guest } from "~/types";
 import { config } from "astro.config";
-import { wedding } from "~/wedding.config";
 import Base from "~/layouts/Base.astro";
+import type { Guest } from "~/types";
+import { wedding } from "~/wedding.config";
 
 const { id } = Astro.params;
 

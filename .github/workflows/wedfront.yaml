@@ -37,8 +37,7 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: ./wedfront/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run format
-      - run: '[[ -z $(git status -s) ]]'
+      - run: pnpm run lint
 
   build:
     name: build
