@@ -1,9 +1,10 @@
 # Wedding RSVP Website
 
 <div align="center">
-
-![Banner](docs/banner.webp)
-
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/parham-alvani/wedding/wedback.yaml?logo=github&style=for-the-badge&label=Backend">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/parham-alvani/wedding/wedfront.yaml?logo=github&style=for-the-badge&label=Frontend">
+  <br>
+  <img alt="Banner" src="docs/banner.webp">
 </div>
 
 ## Introduction
