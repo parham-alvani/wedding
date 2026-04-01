@@ -106,13 +106,16 @@ func (m guestModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m guestModel) View() string {
 	view := ""
 
+	var viewSb109 strings.Builder
 	for i := range len(m.inputs) {
-		view += fmt.Sprintf(
+		viewSb109.WriteString(fmt.Sprintf(
 			"%s\n\n%s\n\n",
 			m.prompts[i],
 			m.inputs[i].View(),
-		) + "\n"
+		) + "\n")
 	}
+
+	view += viewSb109.String()
 
 	view += "(esc to quit)"
 

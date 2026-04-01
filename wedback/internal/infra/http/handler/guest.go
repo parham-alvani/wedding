@@ -32,7 +32,7 @@ func (h Guest) Page(c *echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return c.JSON(http.StatusOK, guest)
+	return c.JSON(http.StatusOK, guest) // nolint: wrapcheck
 }
 
 func (h Guest) Answer(c *echo.Context) error {
@@ -61,7 +61,7 @@ func (h Guest) Answer(c *echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, nil) // nolint: wrapcheck
 }
 
 func (h Guest) Register(g *echo.Group) {

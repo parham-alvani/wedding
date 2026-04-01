@@ -24,12 +24,12 @@ func Provide(lc fx.Lifecycle, logger *zap.Logger, svc service.GuestSvc) *echo.Ec
 		Service: svc,
 	}.Register(app.Group(""))
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(context.Background()) // nolint: gosec
 
 	lc.Append(fx.Hook{
 		OnStart: func(_ context.Context) error {
 			go func() {
-				sc := echo.StartConfig{Address: ":1378"}
+				sc := echo.StartConfig{Address: ":1378"} // nolint: exhaustruct
 				if err := sc.Start(ctx, app); !errors.Is(err, http.ErrServerClosed) {
 					logger.Fatal("echo initiation failed", zap.Error(err))
 				}

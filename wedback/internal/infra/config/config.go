@@ -27,10 +27,10 @@ const (
 type Config struct {
 	fx.Out
 
-	Logger    logger.Config    `json:"logger,omitempty"    koanf:"logger"`
-	Database  db.Config        `json:"database,omitempty"  koanf:"database"`
-	Generator generator.Config `json:"generator,omitempty" koanf:"generator"`
-	Wedding   wedding.Config   `json:"wedding,omitempty"   koanf:"wedding"`
+	Logger    logger.Config    `json:"logger"    koanf:"logger"`
+	Database  db.Config        `json:"database"  koanf:"database"`
+	Generator generator.Config `json:"generator" koanf:"generator"`
+	Wedding   wedding.Config   `json:"wedding"   koanf:"wedding"`
 }
 
 func Provide() Config {
