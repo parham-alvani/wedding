@@ -26,12 +26,16 @@ jobs:
         working-directory: ./wedfront
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
         with:
-          node-version: 22
+          package_json_file: ./wedfront/package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ./wedfront/package.json
           cache: "pnpm"
-          cache-dependency-path: "./wedfront/pnpm-lock.yaml"
+          cache-dependency-path: ./wedfront/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm run format
       - run: '[[ -z $(git status -s) ]]'
@@ -44,11 +48,15 @@ jobs:
         working-directory: ./wedfront
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
         with:
-          node-version: 22
+          package_json_file: ./wedfront/package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ./wedfront/package.json
           cache: "pnpm"
-          cache-dependency-path: "./wedfront/pnpm-lock.yaml"
+          cache-dependency-path: ./wedfront/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
