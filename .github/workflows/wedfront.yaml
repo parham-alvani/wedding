@@ -1,6 +1,21 @@
+---
 name: wedfront
 on:
-  - push
+  push:
+    paths:
+      - "wedfront/**"
+      - ".github/workflows/wedfront.yaml"
+  pull_request:
+    paths:
+      - "wedfront/**"
+      - ".github/workflows/wedfront.yaml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
@@ -10,15 +25,16 @@ jobs:
       run:
         working-directory: ./wedfront
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: "npm"
           cache-dependency-path: "./wedfront/package-lock.json"
-      - run: npm install
+      - run: npm ci
       - run: npm run format
       - run: '[[ -z $(git status -s) ]]'
+
   build:
     name: build
     runs-on: ubuntu-latest
@@ -26,11 +42,11 @@ jobs:
       run:
         working-directory: ./wedfront
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: "npm"
           cache-dependency-path: "./wedfront/package-lock.json"
-      - run: npm install
+      - run: npm ci
       - run: npm run build
