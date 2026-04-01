@@ -19,20 +19,20 @@ func Execute() {
 	// nolint: exhaustruct
 	cmd := &cli.Command{
 		Name:        "wedback",
-		Description: "Parham and Elahe's Wedding Backend",
+		Description: "Parham and Elaheh's Wedding Backend (fork and customize for your own wedding!)",
 		Authors: []any{
 			"Parham Alvani <parham.alvani@gmail.com>",
-			"Elahe Dastan <elahe.dstn@gmail.com>",
+			"Elaheh Dastan <elahe.dstn@gmail.com>",
 		},
-		Before: func(_ context.Context, _ *cli.Command) error {
-			pterm.DefaultCenter.Println("Elahe and Parham's Wedding")
+		Before: func(ctx context.Context, _ *cli.Command) (context.Context, error) {
+			pterm.DefaultCenter.Println("Elaheh and Parham's Wedding")
 
 			s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("Wedding")).Srender()
 			pterm.DefaultCenter.Println(s)
 
 			pterm.DefaultCenter.WithCenterEachLineSeparately().Println("Parham Alvani\nApril 2024")
 
-			return nil
+			return ctx, nil
 		},
 		Commands: []*cli.Command{
 			serve.Register(),

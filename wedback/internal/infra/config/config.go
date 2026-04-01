@@ -13,6 +13,7 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/wedding"
 	"github.com/tidwall/pretty"
 	"go.uber.org/fx"
 )
@@ -29,6 +30,7 @@ type Config struct {
 	Logger    logger.Config    `json:"logger,omitempty"    koanf:"logger"`
 	Database  db.Config        `json:"database,omitempty"  koanf:"database"`
 	Generator generator.Config `json:"generator,omitempty" koanf:"generator"`
+	Wedding   wedding.Config   `json:"wedding,omitempty"   koanf:"wedding"`
 }
 
 func Provide() Config {

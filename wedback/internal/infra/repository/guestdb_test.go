@@ -120,6 +120,43 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	require.True(guest.PlusOne())
 }
 
+func (s *GuestDBTestSuite) TestUpdate() {
+	require := s.Require()
+
+	require.NoError(s.repo.Create(context.Background(), model.Guest{
+		ID:              "update-me",
+		FirstName:       "Ali",
+		LastName:        "Irani",
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		IsFamily:        false,
+		Children:        0,
+		Answer:          nil,
+	}))
+
+	spouseFirst := "Maryam"
+	spouseLast := "Akhyani"
+
+	require.NoError(s.repo.Update(context.Background(), model.Guest{
+		ID:              "update-me",
+		FirstName:       "Ali",
+		LastName:        "Irani",
+		SpouseFirstName: &spouseFirst,
+		SpouseLastName:  &spouseLast,
+		IsFamily:        true,
+		Children:        2,
+		Answer:          nil,
+	}))
+
+	guest, err := s.repo.Get(context.Background(), "update-me")
+	require.NoError(err)
+
+	require.True(guest.IsFamily)
+	require.Equal(2, guest.Children)
+	require.NotNil(guest.SpouseFirstName)
+	require.Equal("Maryam", *guest.SpouseFirstName)
+}
+
 func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 	require := s.Require()
 

@@ -6,6 +6,7 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/wedding"
 )
 
 // Default return default configuration.
@@ -25,6 +26,11 @@ func Default() Config {
 		},
 		Generator: generator.Config{
 			Type: "simple",
+		},
+		Wedding: wedding.Config{
+			HusbandName: "Parham Alvani",
+			WifeName:    "Elaheh Dastan",
+			BaseURL:     "https://wedding.1995parham.ir",
 		},
 	}
 }

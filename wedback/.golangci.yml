@@ -9,19 +9,6 @@ linters:
     # it should improve to support more known patterns
     - varnamelen
     - ireturn
-    # deprecated linters
-    - maligned
-    - scopelint
-    - golint
-    - ifshort
-    - interfacer
-    - exhaustivestruct
-    - nosnakecase
-    - varcheck
-    - deadcode
-    - structcheck
-    - gomnd
-    - execinquery
 
 linters-settings:
   wrapcheck:

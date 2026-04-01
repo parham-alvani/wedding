@@ -12,22 +12,23 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logtag"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type GuestDB struct {
-	db     *db.DB
+	g      gorm.Interface[model.Guest]
 	logger *zap.Logger
 }
 
 func ProvideGuestDB(db *db.DB, logger *zap.Logger) *GuestDB {
 	return &GuestDB{
-		db:     db,
+		g:      gorm.G[model.Guest](db.DB),
 		logger: logger.Named("repository.guestdb"),
 	}
 }
 
 func (r *GuestDB) Create(ctx context.Context, guest model.Guest) error {
-	if err := r.db.DB.WithContext(ctx).Save(&guest).Error; err != nil {
+	if err := r.g.Create(ctx, &guest); err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			return guestrepo.ErrDuplicateGuestByName
 		}
@@ -41,9 +42,8 @@ func (r *GuestDB) Create(ctx context.Context, guest model.Guest) error {
 }
 
 func (r *GuestDB) Get(ctx context.Context, id string) (model.Guest, error) {
-	var guest model.Guest
-
-	if err := r.db.DB.WithContext(ctx).Where("guests.id = ?", id).Joins("Answer").First(&guest).Error; err != nil {
+	guest, err := r.g.Joins(clause.LeftJoin.Association("Answer"), nil).Where("guests.id = ?", id).First(ctx)
+	if err != nil {
 		r.logger.Error("fetching guest from database failed", zap.Error(err), zap.String(logtag.Operation, "get"))
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -57,9 +57,8 @@ func (r *GuestDB) Get(ctx context.Context, id string) (model.Guest, error) {
 }
 
 func (r *GuestDB) List(ctx context.Context) ([]model.Guest, error) {
-	var guests []model.Guest
-
-	if err := r.db.DB.WithContext(ctx).Joins("Answer").Find(&guests).Error; err != nil {
+	guests, err := r.g.Joins(clause.LeftJoin.Association("Answer"), nil).Find(ctx)
+	if err != nil {
 		r.logger.Error("fetching guests from database failed", zap.Error(err), zap.String(logtag.Operation, "list"))
 
 		return nil, fmt.Errorf("fetching guests from database failed %w", err)
@@ -69,7 +68,7 @@ func (r *GuestDB) List(ctx context.Context) ([]model.Guest, error) {
 }
 
 func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
-	if err := r.db.DB.WithContext(ctx).Save(guest).Error; err != nil {
+	if _, err := r.g.Where("id = ?", guest.ID).Updates(ctx, guest); err != nil {
 		r.logger.Error("updating guest failed", zap.Error(err), zap.String(logtag.Operation, "update"))
 
 		return fmt.Errorf("updating guest failed %w", err)
@@ -91,7 +90,7 @@ func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) er
 
 	guest.Answer = &answer
 
-	if err := r.db.DB.WithContext(ctx).Updates(&guest).Error; err != nil {
+	if _, err := r.g.Where("id = ?", guest.ID).Updates(ctx, guest); err != nil {
 		r.logger.Error("answer creation failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
 
 		return fmt.Errorf("answer creation failed %w", err)

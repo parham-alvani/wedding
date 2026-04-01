@@ -17,6 +17,7 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/wedding"
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
@@ -24,6 +25,7 @@ import (
 
 type guestsModel struct {
 	repository guestrepo.Repository
+	wedding    wedding.Config
 
 	isLoading bool
 
@@ -115,7 +117,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				guest.ID,
 				strconv.FormatBool(guest.PlusOne()),
 				strconv.FormatBool(guest.Coming()),
-				"https://wedding.1995parham.ir/guests/" + guest.ID,
+				m.wedding.BaseURL + "/guests/" + guest.ID,
 				strconv.FormatBool(guest.Answer == nil && !guest.IsFamily),
 			}
 		}
@@ -149,7 +151,7 @@ func (m guestsModel) View() string {
 	return m.table.View() + "\n\n\n" + m.text.View() + "\n"
 }
 
-func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository) {
+func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository, weddingCfg wedding.Config) {
 	// nolint: mnd
 	columns := []table.Column{
 		{Title: "First Name", Width: 15},
@@ -168,6 +170,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 	// nolint: mnd
 	dm := guestsModel{
 		repository: repository,
+		wedding:    weddingCfg,
 		isLoading:  true,
 		spinner:    spinner.New(),
 		table: table.New(
