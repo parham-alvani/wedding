@@ -5,9 +5,10 @@ import "~/styles/index.css";
 import "~/styles/persian.css";
 import Baran from "~/components/baran.astro";
 import WeddingSection from "~/components/wedding.astro";
+import { title, wedding } from "~/wedding.config";
 
 const { generator, site } = Astro;
-const description = "Elahe & Parham Wedding";
+const description = title;
 ---
 
 <!doctype html>
@@ -23,11 +24,11 @@ const description = "Elahe & Parham Wedding";
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={generator} />
 
-    <title>Elahe & Parham Wedding</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
 
     <!-- social media -->
-    <meta property="og:title" content="Elahe & Parham Wedding" />
+    <meta property="og:title" content={title} />
     <meta property="og:type" content="website" />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site} />
@@ -36,7 +37,7 @@ const description = "Elahe & Parham Wedding";
   <body
     class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
   >
-    <Splash since="Jun 16, 2024 18:30:00+03:30" lang="fa" />
+    <Splash since={wedding.dates.wedding} lang="fa" />
     <div class="columns-1 px-8 py-8">
       <WeddingSection />
       <Baran lang="fa" />

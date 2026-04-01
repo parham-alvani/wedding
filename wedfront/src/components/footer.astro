@@ -2,29 +2,32 @@
 import { Icon } from "astro-icon/components";
 import HeroImage from "~/components/hero-image.astro";
 import type { FooterLink } from "~/types";
+import { wedding } from "~/wedding.config";
 
-const parhamLinks: Array<FooterLink> = [
+const { husband, wife } = wedding.couple;
+
+const husbandLinks: Array<FooterLink> = [
   {
-    url: "https://github.com/elahe-dastan",
-    description: "Parham Alvani's Github",
+    url: husband.socials.github,
+    description: `${husband.name} ${husband.lastName}'s Github`,
     icon: "skill-icons:github-light",
   },
   {
-    url: "https://instagram.com/1995parham",
-    description: "Parham Alvani's Instagram",
+    url: husband.socials.instagram,
+    description: `${husband.name} ${husband.lastName}'s Instagram`,
     icon: "skill-icons:instagram",
   },
 ];
 
-const elaheLinks: Array<FooterLink> = [
+const wifeLinks: Array<FooterLink> = [
   {
-    url: "https://github.com/elahe-dastan",
-    description: "Elahe Dastan's Github",
+    url: wife.socials.github,
+    description: `${wife.name} ${wife.lastName}'s Github`,
     icon: "skill-icons:github-light",
   },
   {
-    url: "https://instagram.com/elahe.dstn",
-    description: "Elahe Dastan's Instagram",
+    url: wife.socials.instagram,
+    description: `${wife.name} ${wife.lastName}'s Instagram`,
     icon: "skill-icons:instagram",
   },
 ];
@@ -37,12 +40,12 @@ const elaheLinks: Array<FooterLink> = [
   <ul class="relative grid grid-cols-3 gap-4">
     <li class="m-auto">
       <span class="flex items-center justify-center text-center">
-        Parham<br />
-        🐼
+        {husband.name}<br />
+        {husband.emoji}
       </span>
     </li>
     {
-      parhamLinks.map((link) => (
+      husbandLinks.map((link) => (
         <li>
           <a class="flex size-16 items-center justify-center" href={link.url}>
             <span class="sr-only">{link.description}</span>
@@ -56,12 +59,12 @@ const elaheLinks: Array<FooterLink> = [
   <ul class="relative grid grid-cols-3 gap-4">
     <li class="m-auto">
       <span class="flex items-center justify-center text-center">
-        Elahe<br />
-        🌰
+        {wife.name}<br />
+        {wife.emoji}
       </span>
     </li>
     {
-      elaheLinks.map((link) => (
+      wifeLinks.map((link) => (
         <li>
           <a class="flex size-16 items-center justify-center" href={link.url}>
             <span class="sr-only">{link.description}</span>

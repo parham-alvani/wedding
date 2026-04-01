@@ -1,5 +1,6 @@
 ---
 import ContentSection from "~/components/content-section.astro";
+import { wedding } from "~/wedding.config";
 ---
 
 <ContentSection id="engaged">
@@ -11,7 +12,7 @@ import ContentSection from "~/components/content-section.astro";
       <p class="text-center">عشق بهانه آغاز بود، بهانه سبز باهم زیستن</p>
       <br />
       <br />
-      <p class="text-left">داستان - الوانی</p>
+      <p class="text-left">{wedding.couple.lastNamePersian}</p>
       <br />
     </div>
   </Fragment>

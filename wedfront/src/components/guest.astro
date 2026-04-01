@@ -2,12 +2,14 @@
 import { Icon } from "astro-icon/components";
 import ContentSection from "~/components/content-section.astro";
 import { type Guest } from "~/types";
+import { wedding } from "~/wedding.config";
 
 export interface Props {
   guest: Guest;
 }
 
 const { guest } = Astro.props;
+const { husband, wife } = wedding.couple;
 ---
 
 <ContentSection id="guest">
@@ -24,7 +26,7 @@ const { guest } = Astro.props;
       to see you in our ceremony where we want to celebrate love<br />
       <br />
       Best, <br />
-      Elahe & Parham
+      {wife.name} & {husband.name}
     </p>
   </Fragment>
   {

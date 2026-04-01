@@ -9,6 +9,7 @@ import "~/styles/english.css";
 import { type Guest } from "~/types";
 import { config } from "astro.config";
 import Player from "~/components/player.astro";
+import { title, wedding } from "~/wedding.config";
 
 const { id } = Astro.params;
 
@@ -19,7 +20,7 @@ if (resp.status != 200) {
 
 const guest: Guest = await resp.json();
 const { generator, site } = Astro;
-const description = "Elahe & Parham Wedding";
+const description = title;
 ---
 
 <!doctype html>
@@ -34,7 +35,7 @@ const description = "Elahe & Parham Wedding";
     <meta name="description" content={description} />
 
     <!-- social media -->
-    <meta property="og:title" content="Elahe & Parham Wedding" />
+    <meta property="og:title" content={title} />
     <meta property="og:type" content="website" />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site} />
@@ -43,7 +44,7 @@ const description = "Elahe & Parham Wedding";
   <body
     class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
   >
-    <Splash since="Jun 16, 2024 18:30:00+03:30" />
+    <Splash since={wedding.dates.wedding} />
     <div class="columns-1 px-8 py-8">
       <GuestSection guest={guest} />
       <Baran />

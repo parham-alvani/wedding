@@ -20,7 +20,7 @@ export { config };
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://parham-alvani.github.com/wedding",
+  site: process.env.WEDFRONT_SITE_URL || "https://parham-alvani.github.com/wedding",
   output: "server",
   integrations: [tailwind(), icon()],
   adapter: node({

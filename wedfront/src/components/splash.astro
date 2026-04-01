@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import HeroImage from "~/components/hero-image.astro";
+import { wedding } from "~/wedding.config";
 
 export interface Props {
   since: string;
@@ -8,6 +9,7 @@ export interface Props {
 }
 
 const { since, lang } = Astro.props;
+const { husband, wife } = wedding.couple;
 ---
 
 <section class="relative h-full">
@@ -23,15 +25,15 @@ const { since, lang } = Astro.props;
         {
           lang === "fa" ? (
             <Fragment>
-              الهه
+              {wife.namePersian}
               <br /> و
-              <br /> پرهام
+              <br /> {husband.namePersian}
             </Fragment>
           ) : (
             <Fragment>
-              Elahe
+              {wife.name}
               <br /> and,
-              <br /> Parham
+              <br /> {husband.name}
             </Fragment>
           )
         }

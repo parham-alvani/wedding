@@ -6,9 +6,10 @@ import "~/styles/persian.css";
 import Noghre from "~/components/noghre.astro";
 import EngagedSection from "~/components/engaged.astro";
 import Player from "~/components/player.astro";
+import { title, wedding } from "~/wedding.config";
 
 const { generator, site } = Astro;
-const description = "Elahe & Parham Wedding";
+const description = title;
 ---
 
 <!doctype html>
@@ -24,11 +25,11 @@ const description = "Elahe & Parham Wedding";
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={generator} />
 
-    <title>Elahe & Parham Wedding</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
 
     <!-- social media -->
-    <meta property="og:title" content="Elahe & Parham Wedding" />
+    <meta property="og:title" content={title} />
     <meta property="og:type" content="website" />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site} />
@@ -37,8 +38,8 @@ const description = "Elahe & Parham Wedding";
   <body
     class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
   >
-    <Splash since="May 10, 2024 19:00:00+03:00" lang="fa" />
-    <Player music="Too-Soon.mp3" />
+    <Splash since={wedding.dates.engaged} lang="fa" />
+    <Player music={wedding.music.engaged} />
     <div class="columns-1 px-8 py-8">
       <EngagedSection />
       <Noghre />

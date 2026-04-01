@@ -4,9 +4,10 @@ import Player from "~/components/player.astro";
 import Splash from "~/components/splash.astro";
 import "~/styles/index.css";
 import "~/styles/english.css";
+import { title } from "~/wedding.config";
 
 const { generator, site } = Astro;
-const description = "Elahe & Parham Wedding";
+const description = title;
 ---
 
 <!doctype html>
@@ -17,11 +18,11 @@ const description = "Elahe & Parham Wedding";
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={generator} />
 
-    <title>Elahe & Parham Wedding</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
 
     <!-- social media -->
-    <meta property="og:title" content="Elahe & Parham Wedding" />
+    <meta property="og:title" content={title} />
     <meta property="og:type" content="website" />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site} />
