@@ -3,7 +3,6 @@ package insert
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strconv"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,6 +18,12 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
+)
+
+var (
+	errPartnerLastNameRequired = errors.New("partner last name is required when first name is provided")
+	errMustBeNumber            = errors.New("must be a number")
+	errCannotBeNegative        = errors.New("cannot be negative")
 )
 
 func weddingTheme() *huh.Theme {
@@ -47,27 +52,27 @@ func weddingTheme() *huh.Theme {
 	return t
 }
 
-func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
-	var (
-		firstName        string
-		lastName         string
-		partnerFirstName string
-		partnerLastName  string
-		isFamily         bool
-		children         string
-	)
+type guestForm struct {
+	firstName        string
+	lastName         string
+	partnerFirstName string
+	partnerLastName  string
+	isFamily         bool
+	children         string
+}
 
-	form := huh.NewForm(
+func (gf *guestForm) build() *huh.Form { //nolint: funlen
+	return huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
 				Title("First Name").
 				Placeholder("Ali").
-				Value(&firstName).
+				Value(&gf.firstName).
 				Validate(huh.ValidateNotEmpty()),
 			huh.NewInput().
 				Title("Last Name").
 				Placeholder("Irani").
-				Value(&lastName).
+				Value(&gf.lastName).
 				Validate(huh.ValidateNotEmpty()),
 		).Title("Guest Information"),
 
@@ -76,14 +81,14 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 				Title("Partner's First Name").
 				Description("Leave empty if no partner").
 				Placeholder("Maryam").
-				Value(&partnerFirstName),
+				Value(&gf.partnerFirstName),
 			huh.NewInput().
 				Title("Partner's Last Name").
 				Placeholder("Akhyani").
-				Value(&partnerLastName).
+				Value(&gf.partnerLastName).
 				Validate(func(s string) error {
-					if partnerFirstName != "" && s == "" {
-						return errors.New("partner last name is required when first name is provided")
+					if gf.partnerFirstName != "" && s == "" {
+						return errPartnerLastNameRequired
 					}
 
 					return nil
@@ -95,11 +100,11 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 				Title("Is this a family invitation?").
 				Affirmative("Yes").
 				Negative("No").
-				Value(&isFamily),
+				Value(&gf.isFamily),
 			huh.NewInput().
 				Title("Number of Children").
 				Placeholder("0").
-				Value(&children).
+				Value(&gf.children).
 				Validate(func(s string) error {
 					if s == "" {
 						return nil
@@ -107,11 +112,11 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 
 					n, err := strconv.Atoi(s)
 					if err != nil {
-						return errors.New("must be a number")
+						return errMustBeNumber
 					}
 
 					if n < 0 {
-						return errors.New("cannot be negative")
+						return errCannotBeNegative
 					}
 
 					return nil
@@ -119,9 +124,31 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 		).Title("Family Details"),
 	).WithTheme(weddingTheme()).
 		WithProgramOptions(tea.WithAltScreen())
+}
+
+func (gf *guestForm) numChildren() int {
+	if gf.children == "" {
+		return 0
+	}
+
+	n, _ := strconv.Atoi(gf.children)
+
+	return n
+}
+
+func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
+	gf := &guestForm{
+		firstName:        "",
+		lastName:         "",
+		partnerFirstName: "",
+		partnerLastName:  "",
+		isFamily:         false,
+		children:         "",
+	}
+	form := gf.build()
 
 	lc.Append(
-		fx.StartHook(func(_ context.Context) error {
+		fx.StartHook(func(ctx context.Context) error {
 			go func() {
 				defer func() { _ = shutdowner.Shutdown() }()
 
@@ -135,19 +162,14 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 					return
 				}
 
-				numChildren := 0
-				if children != "" {
-					numChildren, _ = strconv.Atoi(children)
-				}
-
 				guest, err := svc.New(
-					context.Background(),
-					firstName,
-					lastName,
-					partnerFirstName,
-					partnerLastName,
-					isFamily,
-					numChildren,
+					ctx,
+					gf.firstName,
+					gf.lastName,
+					gf.partnerFirstName,
+					gf.partnerLastName,
+					gf.isFamily,
+					gf.numChildren(),
 				)
 				if err != nil {
 					pterm.Error.Printfln("failed to create guest: %s", err)
@@ -161,11 +183,9 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 					pterm.Info.Printfln("Partner: %s %s", *guest.SpouseFirstName, *guest.SpouseLastName)
 				}
 
-				if isFamily {
-					pterm.Info.Printfln("Family invitation with %d children", numChildren)
+				if gf.isFamily {
+					pterm.Info.Printfln("Family invitation with %d children", gf.numChildren())
 				}
-
-				fmt.Println()
 			}()
 
 			return nil

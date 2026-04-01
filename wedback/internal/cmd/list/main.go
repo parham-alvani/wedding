@@ -23,10 +23,10 @@ import (
 	"go.uber.org/fx"
 )
 
-var (
-	orange     = lipgloss.Color("#FF8C00")
-	softOrange = lipgloss.Color("#FFB347")
-	dimText    = lipgloss.Color("#997040")
+const (
+	colorOrange     = lipgloss.Color("#FF8C00")
+	colorSoftOrange = lipgloss.Color("#FFB347")
+	colorDimText    = lipgloss.Color("#997040")
 )
 
 type guestsModel struct {
@@ -151,12 +151,12 @@ func (m guestsModel) View() string {
 	}
 
 	summaryStyle := lipgloss.NewStyle().
-		Foreground(softOrange).
+		Foreground(colorSoftOrange).
 		Bold(true).
 		Padding(1, 0) //nolint: mnd
 
 	helpStyle := lipgloss.NewStyle().
-		Foreground(dimText).
+		Foreground(colorDimText).
 		Italic(true)
 
 	return m.table.View() + "\n" +
@@ -176,8 +176,8 @@ func weddingTableStyles() table.Styles {
 	s := table.DefaultStyles()
 
 	s.Header = s.Header.
-		BorderForeground(orange).
-		Foreground(orange).
+		BorderForeground(colorOrange).
+		Foreground(colorOrange).
 		Bold(true)
 
 	s.Selected = s.Selected.
@@ -214,14 +214,17 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 	t.SetStyles(weddingTableStyles())
 
 	s := spinner.New()
-	s.Style = lipgloss.NewStyle().Foreground(orange)
+	s.Style = lipgloss.NewStyle().Foreground(colorOrange)
 
 	dm := guestsModel{
 		repository: repository,
 		wedding:    weddingCfg,
 		isLoading:  true,
+		width:      0,
+		height:     0,
 		spinner:    s,
 		table:      t,
+		summary:    "",
 	}
 
 	p := tea.NewProgram(dm, tea.WithAltScreen())
