@@ -37,11 +37,17 @@ const { husband, wife } = wedding.couple;
             </Fragment>
           )
         }
-        <br />
-        <br />
-        <astro-count-down data-since={since} data-lang={lang}>
-          <span></span>
-        </astro-count-down>
+        {
+          since && (
+            <Fragment>
+              <br />
+              <br />
+              <astro-count-down data-since={since} data-lang={lang}>
+                <span></span>
+              </astro-count-down>
+            </Fragment>
+          )
+        }
       </div>
     </h2>
   </div>
@@ -67,23 +73,31 @@ const { husband, wife } = wedding.couple;
     private since() {
       let now = new Date().getTime();
 
-      let until = this.weddingDate - now;
+      let diff = this.weddingDate - now;
 
-      if (until > 0) {
-        this.days = Math.floor(until / (1000 * 60 * 60 * 24));
+      const counter = this.querySelector("span");
+      if (counter == null) return;
+
+      if (diff > 0) {
+        this.days = Math.floor(diff / (1000 * 60 * 60 * 24));
         this.hours = Math.floor(
-          (until % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
         );
-        this.minutes = Math.floor((until % (1000 * 60 * 60)) / (1000 * 60));
-        this.seconds = Math.floor((until % (1000 * 60)) / 1000);
+        this.minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        this.seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        const counter = this.querySelector("span");
-        if (counter != null) {
-          if (this.lang === "fa") {
-            counter.textContent = `${this.days.toLocaleString("fa-IR").padStart(2, "۰")}:${this.hours.toLocaleString("fa-IR").padStart(2, "۰")}:${this.minutes.toLocaleString("fa-IR").padStart(2, "۰")}:${this.seconds.toLocaleString("fa-IR").padStart(2, "۰")}`;
-          } else {
-            counter.textContent = `${this.days.toString().padStart(2, "0")}:${this.hours.toString().padStart(2, "0")}:${this.minutes.toString().padStart(2, "0")}:${this.seconds.toString().padStart(2, "0")}`;
-          }
+        if (this.lang === "fa") {
+          counter.textContent = `${this.days.toLocaleString("fa-IR").padStart(2, "۰")}:${this.hours.toLocaleString("fa-IR").padStart(2, "۰")}:${this.minutes.toLocaleString("fa-IR").padStart(2, "۰")}:${this.seconds.toLocaleString("fa-IR").padStart(2, "۰")}`;
+        } else {
+          counter.textContent = `${this.days.toString().padStart(2, "0")}:${this.hours.toString().padStart(2, "0")}:${this.minutes.toString().padStart(2, "0")}:${this.seconds.toString().padStart(2, "0")}`;
+        }
+      } else {
+        let elapsed = Math.floor(-diff / (1000 * 60 * 60 * 24));
+
+        if (this.lang === "fa") {
+          counter.textContent = `${elapsed.toLocaleString("fa-IR")} روز از آن روز گذشت`;
+        } else {
+          counter.textContent = `${elapsed} days since our special day`;
         }
       }
     }

@@ -24,4 +24,9 @@ const guest: Guest = await resp.json();
     <GuestSection guest={guest} />
     <Baran />
   </div>
+  <script>
+    setTimeout(() => {
+      document.getElementById("guest")?.scrollIntoView({ behavior: "smooth" });
+    }, 1500);
+  </script>
 </Base>
