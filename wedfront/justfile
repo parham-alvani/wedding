@@ -1,0 +1,29 @@
+# Wedding Frontend (Astro)
+
+# Install dependencies
+install:
+    pnpm install
+
+# Start development server
+dev:
+    pnpm dev
+
+# Build for production
+build:
+    pnpm build
+
+# Start production server (run build first)
+serve:
+    node dist/server/entry.mjs
+
+# Format code with Prettier
+format:
+    pnpm format
+
+# Clean build artifacts and dependencies
+clean:
+    pnpm clean
+
+# Preview production build locally
+preview:
+    pnpm preview

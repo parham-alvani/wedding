@@ -116,7 +116,14 @@ const { husband, wife } = wedding.couple;
         headers: {
           "Content-Type": "application/json",
         },
-      }).then(() => window.location.reload());
+      })
+        .then((resp) => {
+          if (!resp.ok) throw new Error("Failed to submit RSVP");
+          window.location.reload();
+        })
+        .catch(() => {
+          alert("Something went wrong. Please try again.");
+        });
     };
 
     submitBtn.onclick = submit;

@@ -1,46 +1,16 @@
 ---
-import "@fontsource-variable/inter";
 import Splash from "~/components/splash.astro";
-import "~/styles/index.css";
 import "~/styles/persian.css";
 import Baran from "~/components/baran.astro";
 import WeddingSection from "~/components/wedding.astro";
-import { title, wedding } from "~/wedding.config";
-
-const { generator, site } = Astro;
-const description = title;
+import { wedding } from "~/wedding.config";
+import Base from "~/layouts/Base.astro";
 ---
 
-<!doctype html>
-<html
-  lang="fa"
-  dir="rtl"
-  class="h-full motion-safe:scroll-smooth"
-  data-theme="light"
->
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="generator" content={generator} />
-
-    <title>{title}</title>
-    <meta name="description" content={description} />
-
-    <!-- social media -->
-    <meta property="og:title" content={title} />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={site} />
-    <meta name="twitter:card" content="summary_large_image" />
-  </head>
-  <body
-    class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
-  >
-    <Splash since={wedding.dates.wedding} lang="fa" />
-    <div class="columns-1 px-8 py-8">
-      <WeddingSection />
-      <Baran lang="fa" />
-    </div>
-  </body>
-</html>
+<Base lang="fa" dir="rtl">
+  <Splash since={wedding.dates.wedding} lang="fa" />
+  <div class="columns-1 px-8 py-8">
+    <WeddingSection />
+    <Baran lang="fa" />
+  </div>
+</Base>

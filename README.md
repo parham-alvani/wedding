@@ -38,30 +38,39 @@ The following are the tasks and things we are doing for our wedding.
 
 ## Running the Project
 
+This project uses [just](https://github.com/casey/just) as a command runner. Install it first, then:
+
+```bash
+# Install all dependencies
+just install
+
+# Start both frontend and backend for development
+just dev
+
+# Build everything for production
+just build
+
+# Run all tests
+just test
+```
+
 ### Backend (WedBack)
 
-The backend is a Go application that manages guests and serves the API.
+The backend is a Go application that manages guests and serves the API on `:1378`.
 
 ```bash
-cd wedback
-go build -o wedback ./cmd/wedback
+just back serve       # Build and start the server
+just back insert      # Add a new guest (interactive TUI)
+just back list        # List all guests with RSVP status
+just back test        # Run tests
+just back lint        # Run linter
 ```
 
-#### Start the server
+Configuration can be provided via `config.toml` or environment variables prefixed with `wedback_`.
 
-```bash
-./wedback serve
-```
+#### Adding a new guest
 
-The server listens on `:1378` by default. Configuration can be provided via `config.toml` or environment variables prefixed with `wedback_`.
-
-#### Add a new guest
-
-```bash
-./wedback insert
-```
-
-This opens an interactive TUI where you fill in:
+`just back insert` opens an interactive TUI where you fill in:
 
 1. First Name
 2. Last Name
@@ -72,14 +81,6 @@ This opens an interactive TUI where you fill in:
 
 Use `Tab` / `Shift+Tab` to navigate between fields and `Enter` to confirm.
 
-#### List all guests
-
-```bash
-./wedback list
-```
-
-Displays a table of all guests with their RSVP status.
-
 ### Frontend (WedFront)
 
 <div align="center">
@@ -88,22 +89,18 @@ Displays a table of all guests with their RSVP status.
 
 </div>
 
+The frontend runs as a standalone Astro Node.js server (SSR). It proxies API requests to the backend internally.
+
 ```bash
-cd wedfront
-npm install
+just front install    # Install pnpm dependencies
+just front dev        # Start dev server at localhost:4321
+just front build      # Build for production
+just front serve      # Start production server
+just front format     # Format code with Prettier
+just front clean      # Remove node_modules and build output
 ```
 
-| Command                | Action                                            |
-| :--------------------- | :------------------------------------------------ |
-| `npm run dev`          | Start local dev server at `localhost:4321`        |
-| `npm run build`        | Build your production site to `./dist/`           |
-| `npm run preview`      | Preview your build locally, before deploying      |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check`  |
-| `npm run astro --help` | Get help using the Astro CLI                      |
-| `npm run format`       | Format code with [Prettier](https://prettier.io/) |
-| `npm run clean`        | Remove `node_modules` and build output            |
-
-The frontend expects the backend to be running. Set `WEDFRONT_BACKEND_URL` to point to the backend (defaults to `http://127.0.0.1:1378`).
+Set `WEDFRONT_BACKEND_URL` to point to the backend (defaults to `http://127.0.0.1:1378`).
 
 ## Customization
 

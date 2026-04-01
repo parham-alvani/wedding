@@ -1,29 +1,33 @@
-import tailwind from "@astrojs/tailwind";
 import icon from "astro-icon";
 import { defineConfig } from "astro/config";
-import { loadEnv } from "vite";
 import node from "@astrojs/node";
-const { WEDFRONT_BACKEND_URL, WEDFRONT_BACKEND_PUBLIC_URL } = loadEnv(
-  process.env.NODE_ENV || "development",
-  process.cwd(),
-  "",
-);
+
+const backendUrl =
+  process.env.WEDFRONT_BACKEND_URL || "http://127.0.0.1:1378";
+
 interface Config {
   backend_url: string;
-  backend_public_url: string;
 }
 const config: Config = {
-  backend_url: WEDFRONT_BACKEND_URL || "http://127.0.0.1:1378",
-  backend_public_url: WEDFRONT_BACKEND_PUBLIC_URL || "http://127.0.0.1:1378",
+  backend_url: backendUrl,
 };
 export { config };
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.WEDFRONT_SITE_URL || "https://parham-alvani.github.com/wedding",
+  site:
+    process.env.WEDFRONT_SITE_URL ||
+    "https://parham-alvani.github.com/wedding",
   output: "server",
-  integrations: [tailwind(), icon()],
+  integrations: [icon()],
   adapter: node({
-    mode: "middleware",
+    mode: "standalone",
   }),
+  vite: {
+    build: {
+      rollupOptions: {
+        external: ["@astrojs/compiler-rs"],
+      },
+    },
+  },
 });

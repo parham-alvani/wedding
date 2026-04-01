@@ -3,3 +3,7 @@
 @import "@fontsource/dancing-script";
 @import "@fontsource/vazirmatn/arabic-400.css";
 @import "mehr";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

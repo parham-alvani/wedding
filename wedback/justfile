@@ -1,0 +1,34 @@
+# Wedding Backend (Go)
+
+# Build the binary
+build:
+    go build -o wedback ./cmd/wedback
+
+# Start the server
+serve: build
+    ./wedback serve
+
+# Run all tests
+test:
+    go test -v -race ./...
+
+# Run tests with coverage
+cover:
+    go test -coverprofile=coverage.out ./...
+    go tool cover -html=coverage.out -o coverage.html
+
+# Run linter
+lint:
+    golangci-lint run --timeout=30m
+
+# Insert a new guest (interactive TUI)
+insert: build
+    ./wedback insert
+
+# List all guests
+list: build
+    ./wedback list
+
+# Clean build artifacts
+clean:
+    rm -f wedback coverage.out coverage.html
