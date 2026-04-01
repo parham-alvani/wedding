@@ -11,7 +11,8 @@
 We (Elaheh and Parham) are going to get married.
 This repository will provide the invitation card and details of the ceremony.
 
-This project is also designed as a **template** for anyone who wants to create their own wedding RSVP website. Fork it and customize it for your own wedding!
+> [!note]
+> This project is also designed as a **template** for anyone who wants to create their own wedding RSVP website. Fork it and customize it for your own wedding!
 
 ## How does it happen?
 
@@ -26,6 +27,7 @@ The following are the tasks and things we are doing for our wedding.
 - Noghreh Wedding
 - Rajian
 - Boho Floral Design Studio - 1
+- Boho Floral Design Studio - 2
 - Kourosh Ceremonial Services
 - Aida Mokhtary
 - Ajoodaniyeh Mansion
