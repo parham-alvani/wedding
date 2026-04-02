@@ -6,7 +6,12 @@ a,
 }
 
 .gradient-text {
-  background-image: linear-gradient(to bottom right, #8a6d3b, oklch(72% 0.061 343.231), oklch(65% 0.01 258.338));
+  background-image: linear-gradient(
+    to bottom right,
+    #8a6d3b,
+    oklch(72% 0.061 343.231),
+    oklch(65% 0.01 258.338)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -80,7 +85,9 @@ input[type="radio"]:checked {
   top: 0;
   border-style: solid;
   border-width: 1.5rem;
-  border-color: var(--color-background) var(--color-background) color-mix(in srgb, var(--color-primary) 50%, transparent) color-mix(in srgb, var(--color-primary) 50%, transparent);
+  border-color: var(--color-background) var(--color-background)
+    color-mix(in srgb, var(--color-primary) 50%, transparent)
+    color-mix(in srgb, var(--color-primary) 50%, transparent);
   transition: all 3s;
 }
 
