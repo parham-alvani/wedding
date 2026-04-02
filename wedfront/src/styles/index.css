@@ -1,9 +1,16 @@
-@import "global.css";
-@import "theme.css";
+@import "tailwindcss";
+@import "theme.css" layer(base);
+@import "global.css" layer(components);
 @import "@fontsource/dancing-script";
 @import "@fontsource/vazirmatn/arabic-400.css";
 @import "mehr";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-text-default: var(--color-text);
+  --color-text-offset: var(--color-text-offset);
+  --color-background-default: var(--color-background);
+  --color-background-offset: var(--color-background-offset);
+  --color-border-default: var(--color-border);
+}

@@ -35,7 +35,7 @@ const { husband, wife } = wedding.couple;
         <h2 class="gradient-text text-center font-extrabold tracking-tight text-8xl">
           RSVP
         </h2>
-        <fieldset class="mx-auto my-5 flex w-5/6 flex-row justify-center">
+        <fieldset class="mx-auto my-5 flex w-5/6 flex-row justify-center" aria-label="RSVP options">
           <div class="mx-5 flex basis-1/2 flex-col gap-5 text-left">
             <label>
               <input
@@ -77,10 +77,12 @@ const { husband, wife } = wedding.couple;
           )}
         </fieldset>
         <button
+          type="button"
           data-id={guest.id}
           id="submit"
           disabled={guest.answer != null}
           class="w-5/6 text-center lg:w-1/4"
+          aria-label={guest.answer == null ? "Respond to invitation" : "Already responded"}
         >
           {guest.answer == null ? "Respond to invitation" : "Already responded"}
           {guest.answer == null ? (
@@ -132,7 +134,7 @@ const { husband, wife } = wedding.couple;
 
 <style>
   #submit {
-    background-color: rgba(190, 161, 113, 0.5);
+    background-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
     padding: 0.5rem;
     border-radius: 10px;
   }

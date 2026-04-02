@@ -1,9 +1,9 @@
 [data-theme="light"] {
   --color-primary: #ab8b57;
-  --color-secondary: theme("colors.gray.500");
-  --color-text: theme("colors.gray.900");
-  --color-text-offset: theme("colors.gray.600");
+  --color-secondary: oklch(55.1% 0.027 264.364);
+  --color-text: oklch(21% 0.034 264.665);
+  --color-text-offset: oklch(44.6% 0.03 256.802);
   --color-background: #e5e1d8;
-  --color-background-offset: theme("colors.gray.100");
-  --color-border: theme("colors.gray.900" / 10%);
+  --color-background-offset: oklch(96.7% 0.003 264.542);
+  --color-border: oklch(21% 0.034 264.665 / 10%);
 }
