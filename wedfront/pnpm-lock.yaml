@@ -51,8 +51,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       micromodal:
-        specifier: ^0.4.10
-        version: 0.4.10
+        specifier: ^0.6.1
+        version: 0.6.1
       postcss:
         specifier: ^8.5.8
         version: 8.5.8
@@ -1524,8 +1524,8 @@ packages:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
 
-  micromodal@0.4.10:
-    resolution: {integrity: sha512-BUrEnzMPFBwK8nOE4xUDYHLrlGlLULQVjpja99tpJQPSUEWgw3kTLp1n1qv0HmKU29AiHE7Y7sMLiRziDK4ghQ==}
+  micromodal@0.6.1:
+    resolution: {integrity: sha512-rw1fOptxQe3XGDm9xil9hBC2ylPb1kKZyYv4FlK54R/7L+KG+D8SQxPL5L8OlEXAhBDHckeoULYxWSYU9rg/RA==}
     engines: {node: '>=10'}
 
   mime-db@1.54.0:
@@ -3853,7 +3853,7 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.2
 
-  micromodal@0.4.10: {}
+  micromodal@0.6.1: {}
 
   mime-db@1.54.0: {}
 
