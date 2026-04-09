@@ -29,7 +29,7 @@
     "@iconify-json/skill-icons": "^1.2.4",
     "@iconify-json/wpf": "^1.2.0",
     "@tailwindcss/postcss": "^4.2.2",
-    "astro": "^6.1.3",
+    "astro": "^6.1.5",
     "astro-icon": "^1.1.5",
     "mehr": "^2.0.1",
     "postcss": "^8.5.8",
