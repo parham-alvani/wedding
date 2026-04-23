@@ -19,7 +19,7 @@
     "clean": "rimraf dist .astro node_modules"
   },
   "dependencies": {
-    "@astrojs/node": "^10.0.5",
+    "@astrojs/node": "^10.0.6",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource/dancing-script": "^5.2.8",
     "@fontsource/vazirmatn": "^5.2.8",
