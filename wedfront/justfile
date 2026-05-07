@@ -35,3 +35,7 @@ clean:
 # Preview production build locally
 preview:
     pnpm preview
+
+# Update Node dependencies to latest versions
+update:
+    pnpm update --latest

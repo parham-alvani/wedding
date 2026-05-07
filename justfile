@@ -44,3 +44,8 @@ lint:
 clean:
     just front::clean
     just back::clean
+
+# Update all dependencies (frontend Node + backend Go)
+update:
+    just front::update
+    just back::update

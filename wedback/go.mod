@@ -12,7 +12,7 @@ require (
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/providers/structs v1.0.0
 	github.com/knadh/koanf/v2 v2.3.4
-	github.com/labstack/echo/v5 v5.1.0
+	github.com/labstack/echo/v5 v5.1.1
 	github.com/pterm/pterm v0.12.83
 	github.com/stretchr/testify v1.11.1
 	github.com/tidwall/pretty v1.2.1
@@ -26,7 +26,7 @@ require (
 
 require (
 	atomicgo.dev/cursor v0.2.0 // indirect
-	atomicgo.dev/keyboard v0.2.9 // indirect
+	atomicgo.dev/keyboard v0.2.10 // indirect
 	atomicgo.dev/schedule v0.1.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
@@ -43,9 +43,9 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/fatih/structs v1.1.0 // indirect
-	github.com/fsnotify/fsnotify v1.10.0 // indirect
+	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/gookit/color v1.6.0 // indirect
+	github.com/gookit/color v1.6.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/knadh/koanf/maps v0.1.2 // indirect

@@ -32,3 +32,8 @@ list: build
 # Clean build artifacts
 clean:
     rm -f wedback coverage.out coverage.html
+
+# Update Go dependencies to latest versions
+update:
+    go get -u ./...
+    go mod tidy
