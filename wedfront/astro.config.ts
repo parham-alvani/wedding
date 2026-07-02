@@ -1,4 +1,5 @@
 import node from "@astrojs/node";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
 
@@ -22,6 +23,7 @@ export default defineConfig({
     mode: "standalone",
   }),
   vite: {
+    plugins: [tailwindcss()],
     build: {
       rollupOptions: {
         external: ["@astrojs/compiler-rs"],
