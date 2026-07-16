@@ -31,7 +31,7 @@ jobs:
         with:
           package_json_file: ./wedfront/package.json
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version-file: ./wedfront/package.json
           cache: "pnpm"
@@ -52,7 +52,7 @@ jobs:
         with:
           package_json_file: ./wedfront/package.json
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version-file: ./wedfront/package.json
           cache: "pnpm"
