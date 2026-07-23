@@ -26,7 +26,7 @@ jobs:
         working-directory: ./wedback
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version-file: "./wedback/go.mod"
       - name: golangci-lint
@@ -44,7 +44,7 @@ jobs:
         working-directory: ./wedback
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version-file: "./wedback/go.mod"
       - run: go test -v -race -coverprofile=coverage.out ./...
