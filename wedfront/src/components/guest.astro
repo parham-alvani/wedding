@@ -10,22 +10,25 @@ export interface Props {
 
 const { guest } = Astro.props;
 const { husband, wife } = wedding.couple;
+const { body, signOff, rsvp } = wedding.guestLetter;
+
+const greeting =
+  guest.spouse_first_name == null
+    ? `Dear ${guest.first_name},`
+    : `Dear ${guest.first_name} & ${guest.spouse_first_name}`;
+
+const answered = guest.answer != null;
 ---
 
 <ContentSection id="guest">
   <Fragment slot="pre-content">
     <p class="letter-pocket text-3xl">
-      {
-        guest.spouse_first_name == null
-          ? `Dear ${guest.first_name},`
-          : `Dear ${guest.first_name} & ${guest.spouse_first_name}`
-      }
+      {greeting}
       <br />
       <br />
-      &nbsp; We've planned the most special day of our life and we'd be thrilled to
-      see you in our ceremony where we want to celebrate love<br />
+      &nbsp; {body}<br />
       <br />
-      Best, <br />
+      {signOff} <br />
       {wife.name} & {husband.name}
     </p>
   </Fragment>
@@ -33,9 +36,12 @@ const { husband, wife } = wedding.couple;
     guest.is_family != true ? (
       <Fragment slot="lead">
         <h2 class="gradient-text text-center font-extrabold tracking-tight text-8xl">
-          RSVP
+          {rsvp.heading}
         </h2>
-        <fieldset class="mx-auto my-5 flex w-5/6 flex-row justify-center" aria-label="RSVP options">
+        <fieldset
+          class="mx-auto my-5 flex w-5/6 flex-row justify-center"
+          aria-label={rsvp.heading}
+        >
           <div class="mx-5 flex basis-1/2 flex-col gap-5 text-left">
             <label>
               <input
@@ -44,9 +50,9 @@ const { husband, wife } = wedding.couple;
                 name="coming"
                 value="true"
                 checked={guest.answer?.coming === true}
-                disabled={guest.answer != null}
+                disabled={answered}
               />
-              Accept with pleasure
+              {rsvp.accept}
             </label>
             <label>
               <input
@@ -55,41 +61,38 @@ const { husband, wife } = wedding.couple;
                 name="coming"
                 id="not-coming"
                 checked={guest.answer?.coming === false}
-                disabled={guest.answer != null}
+                disabled={answered}
               />
-              Decline with regret
+              {rsvp.decline}
             </label>
           </div>
 
-          {guest.spouse_first_name == null ? (
+          {guest.spouse_first_name == null && (
             <div class="mx-5 basis-1/2 text-right">
               <input
                 type="checkbox"
                 id="plus_one"
                 name="plus_one"
                 checked={guest.answer?.plus_one === true}
-                disabled={guest.answer != null}
+                disabled={answered}
               />
-              <label for="plus_one">Plus 1 adult</label>
+              <label for="plus_one">{rsvp.plusOne}</label>
             </div>
-          ) : (
-            ""
           )}
         </fieldset>
         <button
           type="button"
           data-id={guest.id}
           id="submit"
-          disabled={guest.answer != null}
+          disabled={answered}
           class="w-5/6 text-center lg:w-1/4"
-          aria-label={guest.answer == null ? "Respond to invitation" : "Already responded"}
+          aria-label={answered ? rsvp.submitted : rsvp.submit}
         >
-          {guest.answer == null ? "Respond to invitation" : "Already responded"}
-          {guest.answer == null ? (
-            <Icon name="mdi:love-letter-open" class="inline size-12" />
-          ) : (
-            <Icon name="mdi:love-letter" class="inline size-12" />
-          )}
+          {answered ? rsvp.submitted : rsvp.submit}
+          <Icon
+            name={answered ? "mdi:love-letter" : "mdi:love-letter-open"}
+            class="inline size-12"
+          />
         </button>
       </Fragment>
     ) : (
@@ -109,11 +112,14 @@ const { husband, wife } = wedding.couple;
         "plus_one",
       ) as HTMLInputElement;
 
+      submitBtn.setAttribute("disabled", "true");
+
       fetch(`/api/guest/${id}/answer`, {
         method: "POST",
         body: JSON.stringify({
           coming: comingChk.checked,
-          plus_one: plusOneChk == null ? true : plusOneChk.checked, // when there is no plus one button, means we are on a couple page.
+          // No plus-one control means this is a couple's page.
+          plus_one: plusOneChk == null ? true : plusOneChk.checked,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -124,6 +130,7 @@ const { husband, wife } = wedding.couple;
           window.location.reload();
         })
         .catch(() => {
+          submitBtn.removeAttribute("disabled");
           alert("Something went wrong. Please try again.");
         });
     };
@@ -137,5 +144,9 @@ const { husband, wife } = wedding.couple;
     background-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
     padding: 0.5rem;
     border-radius: 10px;
+  }
+
+  #submit:disabled {
+    opacity: 0.75;
   }
 </style>

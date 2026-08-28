@@ -29,6 +29,18 @@ insert: build
 list: build
     ./wedback list
 
+# Bulk import guests from a CSV file
+import file: build
+    ./wedback import "{{file}}"
+
+# Parse a CSV file and report what would be imported, without writing
+import-check file: build
+    ./wedback import --dry-run "{{file}}"
+
+# Export every guest and their RSVP as CSV (stdout when no file is given)
+export file="": build
+    ./wedback export "{{file}}"
+
 # Clean build artifacts
 clean:
     rm -f wedback coverage.out coverage.html

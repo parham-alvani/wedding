@@ -4,6 +4,8 @@
 @import "@fontsource/dancing-script";
 @import "@fontsource/vazirmatn/arabic-400.css";
 @import "mehr";
+@import "english.css";
+@import "ceremony.css";
 
 @theme {
   --color-primary: var(--color-primary);

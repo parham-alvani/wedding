@@ -1,0 +1,26 @@
+# wedback configuration.
+#
+# Every key here can also be set through the environment with a `wedback_`
+# prefix, using `__` to descend into a section:
+#
+#   wedback_wedding__husband_name="..."   ->  [wedding] husband_name
+#   wedback_database__dsn="/data/wed.db"  ->  [database] dsn
+#
+# Precedence is defaults < config.toml < environment.
+
+[logger]
+level = "debug"
+
+[database]
+dsn = "wedding.db"
+debug = true
+
+[generator]
+# How guest invitation IDs are produced. "simple" is a 10-character random key.
+type = "simple"
+
+[wedding]
+husband_name = "Parham Alvani"
+wife_name = "Elaheh Dastan"
+# Used to build the per-guest invitation links that `wedback list` prints.
+base_url = "https://wedding.1995parham.ir"

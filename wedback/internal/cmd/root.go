@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime/debug"
 
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/csvio"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/insert"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/list"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/serve"
@@ -25,12 +26,16 @@ func Execute() {
 			"Elaheh Dastan <elahe.dstn@gmail.com>",
 		},
 		Before: func(ctx context.Context, _ *cli.Command) (context.Context, error) {
-			pterm.DefaultCenter.Println("Elaheh and Parham's Wedding")
+			// The banner is decoration, not data: keeping it on stderr means
+			// `wedback export > guests.csv` produces a clean CSV.
+			center := pterm.DefaultCenter.WithWriter(os.Stderr)
+
+			center.Println("Elaheh and Parham's Wedding")
 
 			s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("Wedding")).Srender()
-			pterm.DefaultCenter.Println(s)
+			center.Println(s)
 
-			pterm.DefaultCenter.WithCenterEachLineSeparately().Println("Parham Alvani\nApril 2024")
+			center.WithCenterEachLineSeparately().Println("Parham Alvani\nApril 2024")
 
 			return ctx, nil
 		},
@@ -38,6 +43,8 @@ func Execute() {
 			serve.Register(),
 			list.Register(),
 			insert.Register(),
+			csvio.RegisterImport(),
+			csvio.RegisterExport(),
 		},
 		Version: func() string {
 			revision := ""

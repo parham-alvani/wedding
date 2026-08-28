@@ -2,6 +2,8 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
+	"io/fs"
 	"log"
 	"strings"
 
@@ -21,6 +23,8 @@ import (
 const (
 	// prefix indicates environment variables prefix.
 	prefix = "wedback_"
+	// configFile is the optional TOML file loaded on top of the defaults.
+	configFile = "config.toml"
 )
 
 // Config holds all configurations.
@@ -41,9 +45,14 @@ func Provide() Config {
 		log.Fatalf("error loading default: %s", err)
 	}
 
-	// load configuration from file
-	if err := k.Load(file.Provider("config.toml"), toml.Parser()); err != nil {
-		log.Printf("error loading config.toml: %s", err)
+	// load configuration from file, which is optional: running without one is
+	// a supported setup, but a malformed one is a mistake worth stopping for.
+	if err := k.Load(file.Provider(configFile), toml.Parser()); err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			log.Printf("no %s found, using defaults and environment variables", configFile)
+		} else {
+			log.Fatalf("error loading %s: %s", configFile, err)
+		}
 	}
 
 	// load environment variables
@@ -65,18 +74,23 @@ func Provide() Config {
 		log.Fatalf("error unmarshalling config: %s", err)
 	}
 
-	indent, err := json.MarshalIndent(instance, "", "\t")
-	if err != nil {
-		panic(err)
-	}
+	// The full configuration dump is useful when something is misconfigured but
+	// is pure noise in front of every list/import/export run, so it follows the
+	// configured log level.
+	if instance.Logger.Level == "debug" {
+		indent, err := json.MarshalIndent(instance, "", "\t")
+		if err != nil {
+			panic(err)
+		}
 
-	indent = pretty.Color(indent, nil)
+		indent = pretty.Color(indent, nil)
 
-	log.Printf(`
+		log.Printf(`
 ================ Loaded Configuration ================
 %s
 ======================================================
 	`, string(indent))
+	}
 
 	return instance
 }

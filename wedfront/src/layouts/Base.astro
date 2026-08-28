@@ -1,6 +1,7 @@
 ---
 import "@fontsource-variable/inter";
 import "~/styles/index.css";
+import Footer from "~/components/footer.astro";
 import { title as defaultTitle } from "~/wedding.config";
 
 export interface Props {
@@ -41,5 +42,6 @@ const { generator, site } = Astro;
     class="h-full overflow-x-hidden bg-default text-default text-base selection:bg-secondary selection:text-white"
   >
     <slot />
+    <Footer />
   </body>
 </html>

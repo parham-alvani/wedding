@@ -1,18 +1,19 @@
 ---
-import Splash from "~/components/splash.astro";
-import "~/styles/persian.css";
-import EngagedSection from "~/components/engaged.astro";
-import Noghre from "~/components/noghre.astro";
+import Invitation from "~/components/engaged.astro";
 import Player from "~/components/player.astro";
+import Splash from "~/components/splash.astro";
+import Venue from "~/components/venue.astro";
 import Base from "~/layouts/Base.astro";
 import { wedding } from "~/wedding.config";
+
+const { lang, dir } = wedding.ceremony;
 ---
 
-<Base lang="fa" dir="rtl">
-  <Splash since={wedding.dates.engaged} lang="fa" />
+<Base lang={lang} dir={dir}>
+  <Splash since={wedding.dates.engaged} lang={lang} />
   <Player music={wedding.music.engaged} />
   <div class="columns-1 px-8 py-8">
-    <EngagedSection />
-    <Noghre />
+    <Invitation />
+    <Venue id="engagement-venue" venue={wedding.venues.engagement} local />
   </div>
 </Base>

@@ -1,0 +1,4 @@
+# pnpm >=10 reads build-script allowlists from here rather than package.json.
+onlyBuiltDependencies:
+  - esbuild
+  - sharp

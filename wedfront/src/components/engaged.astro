@@ -1,17 +1,24 @@
 ---
 import ContentSection from "~/components/content-section.astro";
+import { wedding } from "~/wedding.config";
+
+const { lines, signature } = wedding.invitations.engagement;
 ---
 
-<ContentSection id="engaged">
+<ContentSection id="engagement">
   <Fragment slot="pre-content">
     <div class="letter-pocket text-3xl">
       <br />
-      <p class="text-right">&nbsp; به سنت عشق گرد هم می‌آییم</p>
-      <br />
-      <br />
-      <p class="text-left">&nbsp; آنجا که دوست داشتن تنها کلام زندگی است</p>
-      <br />
-      <br />
+      {
+        lines.map((line, i) => (
+          <Fragment>
+            <p class={i % 2 === 0 ? "text-right" : "text-left"}>&nbsp; {line}</p>
+            <br />
+            <br />
+          </Fragment>
+        ))
+      }
+      {signature && <p class="text-left">{signature}</p>}
     </div>
   </Fragment>
 </ContentSection>

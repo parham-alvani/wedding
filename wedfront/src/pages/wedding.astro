@@ -1,16 +1,17 @@
 ---
 import Splash from "~/components/splash.astro";
-import "~/styles/persian.css";
-import Baran from "~/components/baran.astro";
-import WeddingSection from "~/components/wedding.astro";
+import Venue from "~/components/venue.astro";
+import Invitation from "~/components/wedding.astro";
 import Base from "~/layouts/Base.astro";
 import { wedding } from "~/wedding.config";
+
+const { lang, dir } = wedding.ceremony;
 ---
 
-<Base lang="fa" dir="rtl">
-  <Splash since={wedding.dates.wedding} lang="fa" />
+<Base lang={lang} dir={dir}>
+  <Splash since={wedding.dates.wedding} lang={lang} />
   <div class="columns-1 px-8 py-8">
-    <WeddingSection />
-    <Baran lang="fa" />
+    <Invitation />
+    <Venue id="wedding-venue" venue={wedding.venues.wedding} local />
   </div>
 </Base>

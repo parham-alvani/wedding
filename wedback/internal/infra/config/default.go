@@ -9,7 +9,11 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/infra/wedding"
 )
 
-// Default return default configuration.
+// Default returns the default configuration.
+//
+// The wedding section holds deliberately generic placeholders: forks that
+// never write a config.toml should see obvious dummy values rather than
+// somebody else's names silently baked into their invitations.
 func Default() Config {
 	// nolint: exhaustruct, mnd
 	return Config{
@@ -28,9 +32,9 @@ func Default() Config {
 			Type: "simple",
 		},
 		Wedding: wedding.Config{
-			HusbandName: "Parham Alvani",
-			WifeName:    "Elaheh Dastan",
-			BaseURL:     "https://wedding.1995parham.ir",
+			HusbandName: "Partner One",
+			WifeName:    "Partner Two",
+			BaseURL:     "http://127.0.0.1:4321",
 		},
 	}
 }

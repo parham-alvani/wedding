@@ -6,72 +6,56 @@ import { wedding } from "~/wedding.config";
 
 const { husband, wife } = wedding.couple;
 
-const husbandLinks: Array<FooterLink> = [
-  {
-    url: husband.socials.github,
-    description: `${husband.name} ${husband.lastName}'s Github`,
-    icon: "skill-icons:github-light",
-  },
-  {
-    url: husband.socials.instagram,
-    description: `${husband.name} ${husband.lastName}'s Instagram`,
-    icon: "skill-icons:instagram",
-  },
-];
+function linksFor(person: typeof husband): Array<FooterLink> {
+  const who = `${person.name} ${person.lastName}`;
 
-const wifeLinks: Array<FooterLink> = [
-  {
-    url: wife.socials.github,
-    description: `${wife.name} ${wife.lastName}'s Github`,
-    icon: "skill-icons:github-light",
-  },
-  {
-    url: wife.socials.instagram,
-    description: `${wife.name} ${wife.lastName}'s Instagram`,
-    icon: "skill-icons:instagram",
-  },
-];
+  return [
+    {
+      url: person.socials.github,
+      description: `${who}'s Github`,
+      icon: "skill-icons:github-light",
+    },
+    {
+      url: person.socials.instagram,
+      description: `${who}'s Instagram`,
+      icon: "skill-icons:instagram",
+    },
+  ];
+}
+
+const people = [husband, wife].map((person) => ({
+  person,
+  links: linksFor(person),
+}));
 ---
 
-<footer class="relative flex h-64 items-center justify-center">
+<footer
+  class="relative flex flex-col items-center justify-center gap-8 py-10 sm:h-64 sm:flex-row sm:gap-24 sm:py-0"
+>
   <div class="absolute inset-0 overflow-hidden opacity-40">
-    <HeroImage choice="none" />
+    <HeroImage />
   </div>
-  <ul class="relative grid grid-cols-3 gap-4">
-    <li class="m-auto">
-      <span class="flex items-center justify-center text-center">
-        {husband.name}<br />
-        {husband.emoji}
-      </span>
-    </li>
-    {
-      husbandLinks.map((link) => (
+  {
+    people.map(({ person, links }) => (
+      <ul class="relative flex items-center gap-3 sm:gap-4">
         <li>
-          <a class="flex size-16 items-center justify-center" href={link.url}>
-            <span class="sr-only">{link.description}</span>
-            <Icon class="size-full" name={link.icon} />
-          </a>
+          <span class="flex flex-col items-center justify-center text-center">
+            {person.name}
+            <span>{person.emoji}</span>
+          </span>
         </li>
-      ))
-    }
-  </ul>
-  <div class="grid grid-cols-2 gap-40"></div>
-  <ul class="relative grid grid-cols-3 gap-4">
-    <li class="m-auto">
-      <span class="flex items-center justify-center text-center">
-        {wife.name}<br />
-        {wife.emoji}
-      </span>
-    </li>
-    {
-      wifeLinks.map((link) => (
-        <li>
-          <a class="flex size-16 items-center justify-center" href={link.url}>
-            <span class="sr-only">{link.description}</span>
-            <Icon class="size-full" name={link.icon} />
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+        {links.map((link) => (
+          <li>
+            <a
+              class="flex size-12 items-center justify-center sm:size-16"
+              href={link.url}
+            >
+              <span class="sr-only">{link.description}</span>
+              <Icon class="size-full" name={link.icon} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    ))
+  }
 </footer>

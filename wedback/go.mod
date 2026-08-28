@@ -1,6 +1,6 @@
 module github.com/parham-alvani/wedding/wedback
 
-go 1.26
+go 1.27
 
 require (
 	github.com/charmbracelet/bubbles v1.0.0

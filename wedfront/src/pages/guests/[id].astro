@@ -1,9 +1,8 @@
 ---
-import Baran from "~/components/baran.astro";
+import { config } from "astro.config";
 import GuestSection from "~/components/guest.astro";
 import Splash from "~/components/splash.astro";
-import "~/styles/english.css";
-import { config } from "astro.config";
+import Venue from "~/components/venue.astro";
 import Base from "~/layouts/Base.astro";
 import type { Guest } from "~/types";
 import { wedding } from "~/wedding.config";
@@ -22,7 +21,7 @@ const guest: Guest = await resp.json();
   <Splash since={wedding.dates.wedding} />
   <div class="columns-1 px-8 py-8">
     <GuestSection guest={guest} />
-    <Baran />
+    <Venue id="wedding-venue" venue={wedding.venues.wedding} />
   </div>
   <script>
     setTimeout(() => {

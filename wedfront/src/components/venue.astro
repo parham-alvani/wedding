@@ -1,0 +1,68 @@
+---
+import { Icon } from "astro-icon/components";
+import ContentSection from "~/components/content-section.astro";
+
+interface Venue {
+  name: string;
+  when: string;
+  address: string;
+  whenEnglish: string;
+  maps: { google: string; neshan: string; embed: string };
+}
+
+export interface Props {
+  id: string;
+  venue: Venue;
+  /** Render the ceremony-locale text instead of the English one-liner. */
+  local?: boolean;
+}
+
+const { id, venue, local = false } = Astro.props;
+---
+
+<ContentSection id={id}>
+  <Fragment slot="lead">
+    {
+      local ? (
+        <Fragment>
+          {venue.when}
+          <br />
+          <br />
+          {venue.address}
+        </Fragment>
+      ) : (
+        venue.whenEnglish
+      )
+    }
+  </Fragment>
+
+  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+    <a
+      href={venue.maps.google}
+      class="flex items-center justify-center gap-3 px-6 py-4"
+    >
+      <span class="sr-only">{venue.name} on Google Maps</span>
+      <Icon name="logos:google-maps" class="size-12" />
+    </a>
+    {
+      venue.maps.neshan && (
+        <a
+          href={venue.maps.neshan}
+          class="flex items-center justify-center gap-3 px-6 py-4"
+        >
+          <span class="sr-only">{venue.name} on Neshan</span>
+          <Icon name="neshan" class="size-12" />
+        </a>
+      )
+    }
+  </div>
+
+  <iframe
+    class="border-4 border-primary"
+    src={venue.maps.embed}
+    title={`Map of ${venue.name}`}
+    height="450"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+</ContentSection>

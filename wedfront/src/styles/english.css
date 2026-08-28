@@ -1,3 +1,4 @@
-:root {
+/* Latin pages: the landing page and the per-guest invitations. */
+html[lang="en"] {
   font-family: "Dancing Script";
 }

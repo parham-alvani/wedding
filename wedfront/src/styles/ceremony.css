@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "IranNastaliq";
+  src:
+    url("/IranNastaliq.woff2") format("woff2"),
+    url("/IranNastaliq.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Ceremony pages (see `ceremony.lang` in wedding.config.ts). Scoped by `lang`
+ * rather than `:root` so it cannot override the Latin pages — the dev server
+ * injects every page's CSS into every page, so two `:root` font rules would
+ * fight and the load order would decide the winner.
+ */
+html:not([lang="en"]) {
+  font-family: "IranNastaliq";
+  letter-spacing: normal !important;
+  font-weight: 100 !important;
+}

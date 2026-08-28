@@ -4,12 +4,15 @@ import HeroImage from "~/components/hero-image.astro";
 import { wedding } from "~/wedding.config";
 
 export interface Props {
+  /** ISO date the countdown runs to. Empty renders no counter. */
   since: string;
+  /** BCP-47 tag. Anything other than "en" uses the couple's local names. */
   lang?: string;
 }
 
-const { since, lang } = Astro.props;
+const { since, lang = "en" } = Astro.props;
 const { husband, wife } = wedding.couple;
+const local = lang !== "en";
 ---
 
 <section class="relative h-full">
@@ -23,11 +26,11 @@ const { husband, wife } = wedding.couple;
         class="gradient-text text-center font-extrabold tracking-tighter text-8xl"
       >
         {
-          lang === "fa" ? (
+          local ? (
             <Fragment>
-              {wife.namePersian}
+              {wife.nameLocal}
               <br /> و
-              <br /> {husband.namePersian}
+              <br /> {husband.nameLocal}
             </Fragment>
           ) : (
             <Fragment>
@@ -63,67 +66,54 @@ const { husband, wife } = wedding.couple;
 
 <script>
   class AstroCountDown extends HTMLElement {
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-    weddingDate: number;
-    lang: string;
+    private weddingDate: number;
+    private lang: string;
 
-    private since() {
-      let now = new Date().getTime();
+    private static readonly SECOND = 1000;
+    private static readonly MINUTE = 60 * AstroCountDown.SECOND;
+    private static readonly HOUR = 60 * AstroCountDown.MINUTE;
+    private static readonly DAY = 24 * AstroCountDown.HOUR;
 
-      let diff = this.weddingDate - now;
+    private pad(n: number): string {
+      // Locale digits (e.g. Persian) still need padding to two characters.
+      return n.toLocaleString(this.lang).padStart(2, (0).toLocaleString(this.lang));
+    }
 
+    private render() {
       const counter = this.querySelector("span");
       if (counter == null) return;
 
+      const diff = this.weddingDate - Date.now();
+
       if (diff > 0) {
-        this.days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        this.hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        this.minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        this.seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const days = Math.floor(diff / AstroCountDown.DAY);
+        const hours = Math.floor((diff % AstroCountDown.DAY) / AstroCountDown.HOUR);
+        const minutes = Math.floor((diff % AstroCountDown.HOUR) / AstroCountDown.MINUTE);
+        const seconds = Math.floor((diff % AstroCountDown.MINUTE) / AstroCountDown.SECOND);
 
-        if (this.lang === "fa") {
-          counter.textContent = `${this.days.toLocaleString("fa-IR").padStart(2, "۰")}:${this.hours.toLocaleString("fa-IR").padStart(2, "۰")}:${this.minutes.toLocaleString("fa-IR").padStart(2, "۰")}:${this.seconds.toLocaleString("fa-IR").padStart(2, "۰")}`;
-        } else {
-          counter.textContent = `${this.days.toString().padStart(2, "0")}:${this.hours.toString().padStart(2, "0")}:${this.minutes.toString().padStart(2, "0")}:${this.seconds.toString().padStart(2, "0")}`;
-        }
-      } else {
-        let elapsed = Math.floor(-diff / (1000 * 60 * 60 * 24));
-
-        if (this.lang === "fa") {
-          counter.textContent = `${elapsed.toLocaleString("fa-IR")} روز از آن روز گذشت`;
-        } else {
-          counter.textContent = `${elapsed} days since our special day`;
-        }
+        counter.textContent = [days, hours, minutes, seconds]
+          .map((n) => this.pad(n))
+          .join(":");
+        return;
       }
+
+      const elapsed = Math.floor(-diff / AstroCountDown.DAY);
+      counter.textContent =
+        this.lang === "en"
+          ? `${elapsed} days since our special day`
+          : `${elapsed.toLocaleString(this.lang)} روز از آن روز گذشت`;
     }
 
     constructor() {
       super();
 
+      this.lang = this.getAttribute("data-lang") ?? "en";
       const since = this.getAttribute("data-since");
-      const lang = this.getAttribute("data-lang");
-
-      this.days = -1;
-      this.hours = 0;
-      this.minutes = 0;
-      this.seconds = 0;
-      this.weddingDate = 0;
-      this.lang = "en";
-
-      if (lang === "fa") {
-        this.lang = "fa";
-      }
+      this.weddingDate = since != null ? new Date(since).getTime() : 0;
 
       if (since != null) {
-        this.weddingDate = new Date(since).getTime();
-
-        this.since();
-        setInterval(() => this.since(), 1000);
+        this.render();
+        setInterval(() => this.render(), AstroCountDown.SECOND);
       }
     }
   }
