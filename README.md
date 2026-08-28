@@ -37,6 +37,12 @@ they answer, the choice is locked in:
 | :---------------------------------------------------------: | :-----------------------------------------------------------: |
 | <img alt="Guest RSVP form" src="docs/screenshots/guest-rsvp.webp" width="420"> | <img alt="Guest already responded" src="docs/screenshots/guest-answered.webp" width="420"> |
 
+Every page closes with the couple's links:
+
+<div align="center">
+  <img alt="Footer" src="docs/screenshots/footer.webp" width="700">
+</div>
+
 Guests are managed from the terminal — two Bubble Tea TUIs for browsing and
 adding people one at a time, and a CSV importer for a whole list at once:
 
