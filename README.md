@@ -15,6 +15,36 @@ This repository will provide the invitation card and details of the ceremony.
 > [!note]
 > This project is also designed as a **template** for anyone who wants to create their own wedding RSVP website. Fork it and customize it for your own wedding!
 
+## Screenshots
+
+The site has an English landing page and Persian invitation pages, plus a per-guest RSVP page
+generated from a private link.
+
+|                        Home (English)                         |                    Wedding (Persian)                    |
+| :-----------------------------------------------------------: | :-----------------------------------------------------: |
+| <img alt="Home page" src="docs/screenshots/home.webp" width="420"> | <img alt="Wedding page" src="docs/screenshots/wedding-splash.webp" width="420"> |
+
+Both ceremony pages carry the invitation text, the venue address, and Google Maps / Neshan links:
+
+|                       Wedding invitation                        |                     Engagement invitation                     |
+| :-------------------------------------------------------------: | :-----------------------------------------------------------: |
+| <img alt="Wedding invitation" src="docs/screenshots/wedding-invitation.webp" width="420"> | <img alt="Engagement invitation" src="docs/screenshots/engagement-invitation.webp" width="420"> |
+
+Each guest gets a personalised page at `/guests/<id>`. Non-family guests see an RSVP form; once
+they answer, the choice is locked in:
+
+|                          RSVP form                          |                       After responding                        |
+| :---------------------------------------------------------: | :-----------------------------------------------------------: |
+| <img alt="Guest RSVP form" src="docs/screenshots/guest-rsvp.webp" width="420"> | <img alt="Guest already responded" src="docs/screenshots/guest-answered.webp" width="420"> |
+
+Guests are managed from the terminal with two Bubble Tea TUIs:
+
+<div align="center">
+  <img alt="just back list" src="docs/screenshots/cli-list.webp" width="700">
+  <br><br>
+  <img alt="just back insert" src="docs/screenshots/cli-insert.webp" width="560">
+</div>
+
 ## How does it happen?
 
 The following are the tasks and things we are doing for our wedding.
