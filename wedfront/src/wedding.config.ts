@@ -34,6 +34,17 @@ export const wedding = {
   dates: {
     wedding: "Jun 16, 2024 18:30:00+03:30",
     engaged: "May 10, 2024 19:00:00+03:00",
+    /**
+     * After this moment the RSVP form is replaced by a closed notice. Leave
+     * empty to keep it open forever. Keep it in step with
+     * `wedding.rsvp_deadline` in the backend, which does the enforcing.
+     */
+    rsvpDeadline: "",
+  },
+
+  /** How long each ceremony runs, for the "add to calendar" links. */
+  calendar: {
+    durationHours: 5,
   },
 
   site: {
@@ -73,12 +84,18 @@ export const wedding = {
   guestLetter: {
     body: "We've planned the most special day of our life and we'd be thrilled to see you in our ceremony where we want to celebrate love",
     signOff: "Best,",
+    /** Shown instead of the form once the deadline has passed. */
+    rsvpClosed: "The RSVP has closed. Please call us and we will sort it out.",
+    /** Shown under the form while guests can still change their answer. */
+    changeHint: "Changed your mind? You can update this until the RSVP closes.",
+    addToCalendar: "Add to calendar",
     rsvp: {
       heading: "RSVP",
       accept: "Accept with pleasure",
       decline: "Decline with regret",
       plusOne: "Plus 1 adult",
       submit: "Respond to invitation",
+      update: "Update your answer",
       submitted: "Already responded",
     },
   },

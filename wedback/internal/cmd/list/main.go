@@ -9,14 +9,9 @@ import (
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/app"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/wedding"
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
@@ -32,6 +27,10 @@ const (
 type guestsModel struct {
 	repository guestrepo.Repository
 	wedding    wedding.Config
+
+	// onlyWaiting hides everyone who has already replied. Family guests count
+	// as attending without replying, so they are never waiting.
+	onlyWaiting bool
 
 	isLoading bool
 	width     int
@@ -82,13 +81,14 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case guestsListMsg:
-		rows := make([]table.Row, len(msg.guests))
+		guests := m.filter(msg.guests)
+		rows := make([]table.Row, len(guests))
 
 		comingGuests := 0
 		notComingGuests := 0
 		notAnsweredGuests := 0
 
-		for i, guest := range msg.guests {
+		for i, guest := range guests {
 			spouseFirstName := ""
 			if guest.SpouseFirstName != nil {
 				spouseFirstName = *guest.SpouseFirstName
@@ -133,7 +133,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		m.summary = fmt.Sprintf(
 			"Total: %d  |  Coming: %d  |  Not Coming: %d  |  Waiting: %d",
-			len(msg.guests),
+			len(guests),
 			comingGuests,
 			notComingGuests,
 			notAnsweredGuests,
@@ -164,6 +164,24 @@ func (m guestsModel) View() string {
 		helpStyle.Render("↑/↓ navigate • q quit")
 }
 
+// filter applies the --waiting flag. Family guests count as attending without
+// replying, so they are never waiting.
+func (m guestsModel) filter(guests []model.Guest) []model.Guest {
+	if !m.onlyWaiting {
+		return guests
+	}
+
+	waiting := make([]model.Guest, 0, len(guests))
+
+	for _, guest := range guests {
+		if guest.Answer == nil && !guest.IsFamily {
+			waiting = append(waiting, guest)
+		}
+	}
+
+	return waiting
+}
+
 func formatBool(b bool) string {
 	if b {
 		return "✓"
@@ -192,7 +210,13 @@ func weddingTableStyles() table.Styles {
 }
 
 // nolint: mnd
-func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Repository, weddingCfg wedding.Config) {
+func main(
+	lc fx.Lifecycle,
+	shutdowner fx.Shutdowner,
+	repository guestrepo.Repository,
+	weddingCfg wedding.Config,
+	onlyWaiting bool,
+) {
 	columns := []table.Column{
 		{Title: "First Name", Width: 14},
 		{Title: "Last Name", Width: 14},
@@ -217,14 +241,15 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 	s.Style = lipgloss.NewStyle().Foreground(colorOrange)
 
 	dm := guestsModel{
-		repository: repository,
-		wedding:    weddingCfg,
-		isLoading:  true,
-		width:      0,
-		height:     0,
-		spinner:    s,
-		table:      t,
-		summary:    "",
+		repository:  repository,
+		wedding:     weddingCfg,
+		onlyWaiting: onlyWaiting,
+		isLoading:   true,
+		width:       0,
+		height:      0,
+		spinner:     s,
+		table:       t,
+		summary:     "",
 	}
 
 	p := tea.NewProgram(dm, tea.WithAltScreen())
@@ -249,22 +274,22 @@ func Register() *cli.Command {
 	//nolint: exhaustruct_v5
 	return &cli.Command{
 		Name:        "list",
-		Description: "List all guests",
-		Action: func(_ context.Context, _ *cli.Command) error {
-			fx.New(
-				fx.NopLogger,
-				fx.Provide(config.Provide),
-				fx.Provide(logger.Provide),
-				fx.Provide(db.Provide),
-				fx.Provide(
-					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
-				),
-				fx.Provide(generator.Provide),
-				fx.Provide(service.ProvideGuestSvc),
-				fx.Invoke(main),
-			).Run()
+		Description: "List all guests with their RSVP status",
+		Flags: []cli.Flag{
+			//nolint: exhaustruct_v5
+			&cli.BoolFlag{
+				Name:  "waiting",
+				Usage: "only show guests who have not replied yet",
+			},
+		},
+		Action: func(_ context.Context, cmd *cli.Command) error {
+			onlyWaiting := cmd.Bool("waiting")
 
-			return nil
+			return app.Run(
+				app.Providers(),
+				fx.Supply(onlyWaiting),
+				fx.Invoke(main),
+			)
 		},
 	}
 }

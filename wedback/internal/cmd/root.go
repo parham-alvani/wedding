@@ -9,12 +9,27 @@ import (
 
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/csvio"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/insert"
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/invite"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/list"
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/reset"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/serve"
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 	"github.com/urfave/cli/v3"
 )
+
+// commands lists every subcommand wedback exposes.
+func commands() []*cli.Command {
+	return []*cli.Command{
+		serve.Register(),
+		list.Register(),
+		insert.Register(),
+		csvio.RegisterImport(),
+		csvio.RegisterExport(),
+		invite.Register(),
+		reset.Register(),
+	}
+}
 
 func Execute() {
 	// nolint: exhaustruct_v5
@@ -39,13 +54,7 @@ func Execute() {
 
 			return ctx, nil
 		},
-		Commands: []*cli.Command{
-			serve.Register(),
-			list.Register(),
-			insert.Register(),
-			csvio.RegisterImport(),
-			csvio.RegisterExport(),
-		},
+		Commands: commands(),
 		Version: func() string {
 			revision := ""
 			timestamp := ""

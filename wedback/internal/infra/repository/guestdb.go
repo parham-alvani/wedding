@@ -17,12 +17,14 @@ import (
 
 type GuestDB struct {
 	g      gorm.Interface[model.Guest]
+	a      gorm.Interface[model.Answer]
 	logger *zap.Logger
 }
 
 func ProvideGuestDB(db *db.DB, logger *zap.Logger) *GuestDB {
 	return &GuestDB{
 		g:      gorm.G[model.Guest](db.DB),
+		a:      gorm.G[model.Answer](db.DB),
 		logger: logger.Named("repository.guestdb"),
 	}
 }
@@ -78,9 +80,6 @@ func (r *GuestDB) Update(ctx context.Context, guest model.Guest) error {
 }
 
 func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) error {
-	// nolint: gosec
-	answer.ID = rand.Int64()
-
 	guest, err := r.Get(ctx, id)
 	if err != nil {
 		r.logger.Error("guest fetching failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
@@ -88,12 +87,53 @@ func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) er
 		return fmt.Errorf("guest fetching failed %w", err)
 	}
 
-	guest.Answer = &answer
+	answer.GuestID = guest.ID
 
-	if _, err := r.g.Where("id = ?", guest.ID).Updates(ctx, guest); err != nil {
+	// An existing reply is updated in place rather than inserted again: the
+	// unique index on guest_id would reject a second row, and a guest who
+	// changes their mind should not have to be reset first.
+	if guest.Answer != nil {
+		answer.ID = guest.Answer.ID
+
+		// Select is required so that answering "false" is written: Updates
+		// skips zero-valued struct fields otherwise.
+		if _, err := r.a.
+			Where("guest_id = ?", guest.ID).
+			Select("coming", "plus_one").
+			Updates(ctx, answer); err != nil {
+			r.logger.Error("answer update failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
+
+			return fmt.Errorf("answer update failed %w", err)
+		}
+
+		return nil
+	}
+
+	// nolint: gosec
+	answer.ID = rand.Int64()
+
+	if err := r.a.Create(ctx, &answer); err != nil {
 		r.logger.Error("answer creation failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
 
 		return fmt.Errorf("answer creation failed %w", err)
+	}
+
+	return nil
+}
+
+func (r *GuestDB) ResetAnswer(ctx context.Context, id string) error {
+	if _, err := r.g.Where("id = ?", id).First(ctx); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return guestrepo.ErrGuestNotFound
+		}
+
+		return fmt.Errorf("guest fetching failed %w", err)
+	}
+
+	if _, err := r.a.Where("guest_id = ?", id).Delete(ctx); err != nil {
+		r.logger.Error("answer reset failed", zap.Error(err), zap.String(logtag.Operation, "reset"))
+
+		return fmt.Errorf("answer reset failed %w", err)
 	}
 
 	return nil

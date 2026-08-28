@@ -22,5 +22,18 @@ type = "simple"
 [wedding]
 husband_name = "Parham Alvani"
 wife_name = "Elaheh Dastan"
-# Used to build the per-guest invitation links that `wedback list` prints.
+# Used to build the per-guest invitation links that `list`, `invite` and
+# `export` print.
 base_url = "https://wedding.1995parham.ir"
+
+# After this RFC 3339 moment guests can no longer answer or change their
+# answer. Leave empty to keep the RSVP open. Keep it in step with
+# `dates.rsvpDeadline` in wedfront/src/wedding.config.ts, which only decides
+# what the page says; this value is what actually enforces it.
+rsvp_deadline = ""
+
+# The message `wedback invite` renders per guest. A Go text/template over
+# .Names, .FirstName, .LastName, .SpouseFirstName, .SpouseLastName, .Link,
+# .ID, .IsFamily, .Children, .Husband, .Wife, .Answered and .Coming.
+# Leave empty for the built-in English default.
+invite_template = """"""

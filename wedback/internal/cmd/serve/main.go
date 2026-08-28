@@ -4,14 +4,8 @@ import (
 	"context"
 
 	"github.com/labstack/echo/v5"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/app"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/server"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -28,21 +22,11 @@ func Register() *cli.Command {
 		Name:        "serve",
 		Description: "Run server to serve the requests",
 		Action: func(_ context.Context, _ *cli.Command) error {
-			fx.New(
-				fx.NopLogger,
-				fx.Provide(config.Provide),
-				fx.Provide(logger.Provide),
-				fx.Provide(db.Provide),
-				fx.Provide(
-					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
-				),
-				fx.Provide(generator.Provide),
-				fx.Provide(service.ProvideGuestSvc),
+			return app.Run(
+				app.Providers(),
 				fx.Provide(server.Provide),
 				fx.Invoke(main),
-			).Run()
-
-			return nil
+			)
 		},
 	}
 }

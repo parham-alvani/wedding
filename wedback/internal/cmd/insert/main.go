@@ -8,13 +8,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/app"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
@@ -201,20 +196,10 @@ func Register() *cli.Command {
 		Aliases:     []string{"new"},
 		Description: "Insert a new guest",
 		Action: func(_ context.Context, _ *cli.Command) error {
-			fx.New(
-				fx.NopLogger,
-				fx.Provide(config.Provide),
-				fx.Provide(logger.Provide),
-				fx.Provide(db.Provide),
-				fx.Provide(
-					fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
-				),
-				fx.Provide(generator.Provide),
-				fx.Provide(service.ProvideGuestSvc),
+			return app.Run(
+				app.Providers(),
 				fx.Invoke(main),
-			).Run()
-
-			return nil
+			)
 		},
 	}
 }

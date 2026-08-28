@@ -30,12 +30,19 @@ Both ceremony pages carry the invitation text, the venue address, and Google Map
 | :-------------------------------------------------------------: | :-----------------------------------------------------------: |
 | <img alt="Wedding invitation" src="docs/screenshots/wedding-invitation.webp" width="420"> | <img alt="Engagement invitation" src="docs/screenshots/engagement-invitation.webp" width="420"> |
 
-Each guest gets a personalised page at `/guests/<id>`. Non-family guests see an RSVP form; once
-they answer, the choice is locked in:
+Each guest gets a personalised page at `/guests/<id>`. Non-family guests see an
+RSVP form, and can change their answer for as long as the RSVP is open:
 
 |                          RSVP form                          |                       After responding                        |
 | :---------------------------------------------------------: | :-----------------------------------------------------------: |
 | <img alt="Guest RSVP form" src="docs/screenshots/guest-rsvp.webp" width="420"> | <img alt="Guest already responded" src="docs/screenshots/guest-answered.webp" width="420"> |
+
+Once `wedding.rsvp_deadline` passes, the form is replaced by a closed notice and
+the backend refuses further answers:
+
+<div align="center">
+  <img alt="RSVP closed" src="docs/screenshots/guest-closed.webp" width="700">
+</div>
 
 Every page closes with the couple's links:
 
@@ -52,6 +59,16 @@ adding people one at a time, and a CSV importer for a whole list at once:
   <img alt="just back import" src="docs/screenshots/cli-import.webp" width="700">
   <br><br>
   <img alt="just back insert" src="docs/screenshots/cli-insert.webp" width="560">
+</div>
+
+`just back remind` renders a ready-to-send message for everyone who has not
+replied yet, and `just back qr` writes a QR code per guest that points at their
+own page — for the printed cards:
+
+<div align="center">
+  <img alt="just back remind" src="docs/screenshots/cli-invite.webp" width="640">
+  <br><br>
+  <img alt="A guest's QR code" src="docs/screenshots/cli-qr.webp" width="180">
 </div>
 
 ## How does it happen?
@@ -102,9 +119,14 @@ The backend is a Go application that manages guests and serves the API on `:1378
 just back serve                  # Build and start the server
 just back insert                 # Add a new guest (interactive TUI)
 just back list                   # List all guests with RSVP status
+just back waiting                # List only the guests who have not replied
 just back import guests.csv      # Bulk import guests from CSV
 just back import-check guests.csv# Parse the CSV and report, without writing
 just back export rsvps.csv       # Export every guest and their RSVP
+just back invite                 # Render each guest's message and link
+just back remind                 # Same, but only for guests still waiting
+just back qr ./qr                # A QR code per guest, for printed cards
+just back reset <guest-id>       # Clear one guest's RSVP so they can redo it
 just back test                   # Run tests
 just back lint                   # Run linter
 ```
@@ -150,6 +172,43 @@ than aborting the run.
 answer and link, which is the easiest way to read RSVPs in a spreadsheet. The
 export can be fed straight back into `import`.
 
+#### Sending the invitations
+
+Every guest has their own RSVP link, and copying a hundred of them by hand is
+the most tedious part of running the site. `just back invite` renders a ready
+message per guest:
+
+```
+Dear Ali & Maryam,
+
+Elaheh and Parham would love to have you at their wedding.
+Please let us know whether you can make it: https://…/guests/aK3nQ7pLx2
+```
+
+Set `wedding.invite_template` in `config.toml` to change the wording. It is a
+Go [text/template](https://pkg.go.dev/text/template) over `.Names`,
+`.FirstName`, `.LastName`, `.SpouseFirstName`, `.SpouseLastName`, `.Link`,
+`.ID`, `.IsFamily`, `.Children`, `.Husband`, `.Wife`, `.Answered` and
+`.Coming` — so it works just as well in Persian.
+
+Messages go to stdout, so they pipe: `just back invite > invites.txt`.
+
+- `just back remind` renders only the guests who have not replied. Family
+  guests count as attending without replying, so they are never chased.
+- `just back qr ./qr` writes a `<guest-id>.png` QR code per guest, pointing at
+  that guest's page — handy on a printed card, where nobody wants to type a URL.
+- `just back invite <guest-id>` does a single guest.
+
+#### When someone changes their mind
+
+Guests can update their answer in place for as long as the RSVP is open; the
+reply is overwritten rather than added, so there is only ever one answer per
+guest. To put someone back in the waiting list, `just back reset <guest-id>`.
+
+Set `wedding.rsvp_deadline` to an RFC 3339 timestamp to close the RSVP. After
+it passes the backend refuses new answers with `403` and the invitation page
+shows a closed notice instead of the form. Leave it empty to never close.
+
 ### Frontend (WedFront)
 
 <div align="center">
@@ -171,6 +230,9 @@ just front clean      # Remove node_modules and build output
 
 Set `WEDFRONT_BACKEND_URL` to point to the backend (defaults to `http://127.0.0.1:1378`).
 
+`/wedding.ics` serves the ceremony as a calendar file, linked from every guest
+page as "Add to calendar".
+
 ## Customization
 
 To use this project for your own wedding, fork the repository and edit the
@@ -189,7 +251,12 @@ export const wedding = {
     wife:    { name: "...", nameLocal: "...", lastName: "...", emoji: "...", socials: { ... } },
     lastNameLocal: "...",
   },
-  dates: { wedding: "Jun 16, 2024 18:30:00+03:30", engaged: "May 10, 2024 19:00:00+03:00" },
+  dates: {
+    wedding: "Jun 16, 2024 18:30:00+03:30",
+    engaged: "May 10, 2024 19:00:00+03:00",
+    rsvpDeadline: "",           // what the page says; the backend enforces it
+  },
+  calendar: { durationHours: 5 },   // for the /wedding.ics link
   site: { url: "...", github: "..." },
   music: { ceremony: "...", engaged: "..." },
 
@@ -242,6 +309,20 @@ wife_name = "Partner Name"
 base_url = "https://your-wedding-site.com"
 ```
 
-Or set `wedback_wedding__husband_name`, `wedback_wedding__wife_name`, and
-`wedback_wedding__base_url` in the environment. `base_url` is what the guest
-links printed by `import`, `list` and `export` are built from.
+Or set the matching `wedback_wedding__*` environment variables. `base_url` is
+what the guest links printed by `import`, `list`, `invite` and `export` are
+built from.
+
+Two more keys live in the same section:
+
+```toml
+# Closes the RSVP. Empty means it never closes.
+rsvp_deadline = "2024-06-01T23:59:59+03:30"
+
+# The message `wedback invite` renders per guest; empty uses the built-in one.
+invite_template = """"""
+```
+
+`rsvp_deadline` is the one that actually enforces the cutoff —
+`dates.rsvpDeadline` in the frontend only decides what the page says, so keep
+the two in step.

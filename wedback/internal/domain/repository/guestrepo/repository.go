@@ -17,5 +17,10 @@ type Repository interface {
 	Update(ctx context.Context, guest model.Guest) error
 	Get(ctx context.Context, id string) (model.Guest, error)
 	List(ctx context.Context) ([]model.Guest, error)
-	Answer(ctx context.Context, id string, aswer model.Answer) error
+	// Answer records a guest's reply, replacing any earlier one so a guest
+	// can change their mind.
+	Answer(ctx context.Context, id string, answer model.Answer) error
+	// ResetAnswer removes a guest's reply, putting them back in the waiting
+	// list. Resetting a guest who never answered is not an error.
+	ResetAnswer(ctx context.Context, id string) error
 }

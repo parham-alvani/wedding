@@ -127,6 +127,87 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	require.True(guest.PlusOne())
 }
 
+// A guest who changes their mind must overwrite their reply rather than
+// insert a second one, which the unique index on guest_id would reject.
+func (s *GuestDBTestSuite) TestAnswerIsReplacedNotDuplicated() {
+	require := s.Require()
+	ctx := context.Background()
+
+	// nolint: exhaustruct_v5
+	require.NoError(s.repo.Create(ctx, model.Guest{
+		ID:              testGuestID,
+		FirstName:       testFirstName,
+		LastName:        testLastName,
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		Answer:          nil,
+	}))
+
+	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
+		ID: 0, GuestID: "", Coming: true, PlusOne: true,
+	}))
+
+	// Answering "not coming" writes zero values, which a naive struct update
+	// would silently skip.
+	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
+		ID: 0, GuestID: "", Coming: false, PlusOne: false,
+	}))
+
+	guest, err := s.repo.Get(ctx, testGuestID)
+	require.NoError(err)
+	require.NotNil(guest.Answer)
+	require.False(guest.Answer.Coming)
+	require.False(guest.Answer.PlusOne)
+
+	var answers int64
+	require.NoError(s.db.DB.Table("answers").Where("guest_id = ?", testGuestID).Count(&answers).Error)
+	require.EqualValues(1, answers, "a changed answer must reuse the same row")
+
+	// And back again.
+	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
+		ID: 0, GuestID: "", Coming: true, PlusOne: false,
+	}))
+
+	guest, err = s.repo.Get(ctx, testGuestID)
+	require.NoError(err)
+	require.True(guest.Answer.Coming)
+	require.False(guest.Answer.PlusOne)
+}
+
+func (s *GuestDBTestSuite) TestResetAnswer() {
+	require := s.Require()
+	ctx := context.Background()
+
+	// nolint: exhaustruct_v5
+	require.NoError(s.repo.Create(ctx, model.Guest{
+		ID:              testGuestID,
+		FirstName:       testFirstName,
+		LastName:        testLastName,
+		SpouseFirstName: nil,
+		SpouseLastName:  nil,
+		Answer:          nil,
+	}))
+
+	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
+		ID: 0, GuestID: "", Coming: true, PlusOne: true,
+	}))
+
+	require.NoError(s.repo.ResetAnswer(ctx, testGuestID))
+
+	guest, err := s.repo.Get(ctx, testGuestID)
+	require.NoError(err)
+	require.Nil(guest.Answer, "the guest is back in the waiting list")
+
+	// Resetting twice is not an error.
+	require.NoError(s.repo.ResetAnswer(ctx, testGuestID))
+}
+
+func (s *GuestDBTestSuite) TestResetAnswerUnknownGuest() {
+	require := s.Require()
+
+	require.ErrorIs(s.repo.ResetAnswer(context.Background(), "nope"), guestrepo.ErrGuestNotFound)
+}
+
 func (s *GuestDBTestSuite) TestUpdate() {
 	require := s.Require()
 

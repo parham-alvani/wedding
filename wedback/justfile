@@ -29,6 +29,26 @@ insert: build
 list: build
     ./wedback list
 
+# List only the guests who have not replied yet
+waiting: build
+    ./wedback list --waiting
+
+# Render each guest's invitation message and personal RSVP link
+invite *args: build
+    ./wedback invite {{args}}
+
+# Render invitations only for guests who have not replied yet
+remind: build
+    ./wedback invite --waiting
+
+# Write a QR code per guest into the given directory
+qr dir="qr": build
+    ./wedback invite --qr-dir "{{dir}}"
+
+# Clear a guest's RSVP so they can answer again
+reset id: build
+    ./wedback reset "{{id}}"
+
 # Bulk import guests from a CSV file
 import file: build
     ./wedback import "{{file}}"

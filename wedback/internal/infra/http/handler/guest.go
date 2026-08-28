@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v5"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
@@ -58,13 +59,32 @@ func (h Guest) Answer(c *echo.Context) error {
 			return echo.ErrNotFound
 		}
 
+		// The guest did nothing wrong, they are simply too late; say so
+		// rather than returning an opaque 500.
+		if errors.Is(err, service.ErrRSVPClosed) {
+			return echo.NewHTTPError(http.StatusForbidden, service.ErrRSVPClosed.Error())
+		}
+
 		return echo.ErrInternalServerError
 	}
 
 	return c.JSON(http.StatusOK, nil) // nolint: wrapcheck
 }
 
+// Deadline reports whether the RSVP is closed and when it closes, so the
+// frontend can render the invitation accordingly.
+func (h Guest) Deadline(c *echo.Context) error {
+	resp := map[string]any{"closed": h.Service.RSVPClosed()}
+
+	if deadline := h.Service.Deadline(); !deadline.IsZero() {
+		resp["deadline"] = deadline.Format(time.RFC3339)
+	}
+
+	return c.JSON(http.StatusOK, resp) // nolint: wrapcheck
+}
+
 func (h Guest) Register(g *echo.Group) {
 	g.POST("/guest/:id/answer", h.Answer)
 	g.GET("/guest/:id", h.Page)
+	g.GET("/rsvp", h.Deadline)
 }

@@ -15,12 +15,24 @@ if (!resp.ok) {
 }
 
 const guest: Guest = await resp.json();
+
+// The backend owns the deadline; asking it keeps the two from drifting apart.
+// If the lookup fails the form stays open — the POST is still checked there.
+let closed = false;
+try {
+  const rsvp = await fetch(`${config.backend_url}/rsvp`);
+  if (rsvp.ok) {
+    closed = ((await rsvp.json()) as { closed?: boolean }).closed === true;
+  }
+} catch {
+  closed = false;
+}
 ---
 
 <Base title={guest.first_name}>
   <Splash since={wedding.dates.wedding} />
   <div class="columns-1 px-8 py-8">
-    <GuestSection guest={guest} />
+    <GuestSection guest={guest} closed={closed} />
     <Venue id="wedding-venue" venue={wedding.venues.wedding} />
   </div>
   <script>

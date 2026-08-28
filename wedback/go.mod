@@ -14,6 +14,7 @@ require (
 	github.com/knadh/koanf/v2 v2.3.6
 	github.com/labstack/echo/v5 v5.3.1
 	github.com/pterm/pterm v0.12.83
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.12.1
 	github.com/tidwall/pretty v1.2.1
 	github.com/urfave/cli/v3 v3.11.0

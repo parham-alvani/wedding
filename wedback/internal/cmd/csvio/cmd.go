@@ -5,14 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/app"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/config"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/db"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/generator"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/logger"
-	"github.com/parham-alvani/wedding/wedback/internal/infra/repository"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/wedding"
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
@@ -162,20 +158,6 @@ func runExport(p exportParams, path string, withLinks bool) {
 	}))
 }
 
-func providers() fx.Option {
-	return fx.Options(
-		fx.NopLogger,
-		fx.Provide(config.Provide),
-		fx.Provide(logger.Provide),
-		fx.Provide(db.Provide),
-		fx.Provide(
-			fx.Annotate(repository.ProvideGuestDB, fx.As(new(guestrepo.Repository))),
-		),
-		fx.Provide(generator.Provide),
-		fx.Provide(service.ProvideGuestSvc),
-	)
-}
-
 // RegisterImport registers the bulk import command.
 func RegisterImport() *cli.Command {
 	//nolint: exhaustruct_v5
@@ -198,11 +180,9 @@ func RegisterImport() *cli.Command {
 
 			dryRun := cmd.Bool("dry-run")
 
-			fx.New(providers(), fx.Invoke(func(p importParams) {
+			return app.Run(app.Providers(), fx.Invoke(func(p importParams) {
 				runImport(p, path, dryRun)
-			})).Run()
-
-			return nil
+			}))
 		},
 	}
 }
@@ -223,11 +203,9 @@ func RegisterExport() *cli.Command {
 			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
-			fx.New(providers(), fx.Invoke(func(p exportParams) {
+			return app.Run(app.Providers(), fx.Invoke(func(p exportParams) {
 				runExport(p, cmd.Args().First(), cmd.Bool("links"))
-			})).Run()
-
-			return nil
+			}))
 		},
 	}
 }

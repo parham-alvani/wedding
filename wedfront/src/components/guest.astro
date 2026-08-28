@@ -6,11 +6,13 @@ import { wedding } from "~/wedding.config";
 
 export interface Props {
   guest: Guest;
+  /** True once the RSVP deadline has passed; the backend enforces it too. */
+  closed?: boolean;
 }
 
-const { guest } = Astro.props;
+const { guest, closed = false } = Astro.props;
 const { husband, wife } = wedding.couple;
-const { body, signOff, rsvp } = wedding.guestLetter;
+const { body, signOff, rsvp, rsvpClosed, changeHint, addToCalendar } = wedding.guestLetter;
 
 const greeting =
   guest.spouse_first_name == null
@@ -18,6 +20,13 @@ const greeting =
     : `Dear ${guest.first_name} & ${guest.spouse_first_name}`;
 
 const answered = guest.answer != null;
+// An answered guest may still change their mind until the deadline; only a
+// closed RSVP locks the form.
+const locked = closed;
+
+// Answered guests keep an actionable button until the RSVP closes, so the
+// label has to say what pressing it will do.
+const label = locked ? rsvp.submitted : answered ? rsvp.update : rsvp.submit;
 ---
 
 <ContentSection id="guest">
@@ -38,6 +47,7 @@ const answered = guest.answer != null;
         <h2 class="gradient-text text-center font-extrabold tracking-tight text-8xl">
           {rsvp.heading}
         </h2>
+        {locked && <p class="mx-auto my-4 w-5/6 text-center">{rsvpClosed}</p>}
         <fieldset
           class="mx-auto my-5 flex w-5/6 flex-row justify-center"
           aria-label={rsvp.heading}
@@ -50,7 +60,7 @@ const answered = guest.answer != null;
                 name="coming"
                 value="true"
                 checked={guest.answer?.coming === true}
-                disabled={answered}
+                disabled={locked}
               />
               {rsvp.accept}
             </label>
@@ -61,7 +71,7 @@ const answered = guest.answer != null;
                 name="coming"
                 id="not-coming"
                 checked={guest.answer?.coming === false}
-                disabled={answered}
+                disabled={locked}
               />
               {rsvp.decline}
             </label>
@@ -74,7 +84,7 @@ const answered = guest.answer != null;
                 id="plus_one"
                 name="plus_one"
                 checked={guest.answer?.plus_one === true}
-                disabled={answered}
+                disabled={locked}
               />
               <label for="plus_one">{rsvp.plusOne}</label>
             </div>
@@ -84,16 +94,24 @@ const answered = guest.answer != null;
           type="button"
           data-id={guest.id}
           id="submit"
-          disabled={answered}
+          disabled={locked}
           class="w-5/6 text-center lg:w-1/4"
-          aria-label={answered ? rsvp.submitted : rsvp.submit}
+          aria-label={label}
         >
-          {answered ? rsvp.submitted : rsvp.submit}
+          {label}
           <Icon
             name={answered ? "mdi:love-letter" : "mdi:love-letter-open"}
             class="inline size-12"
           />
         </button>
+        {answered && !locked && (
+          <p class="mx-auto mt-3 w-5/6 text-center text-base">{changeHint}</p>
+        )}
+        <p class="mt-4 text-center text-base">
+          <a href="/wedding.ics" download>
+            {addToCalendar}
+          </a>
+        </p>
       </Fragment>
     ) : (
       ""
