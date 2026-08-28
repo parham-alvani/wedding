@@ -1,13 +1,16 @@
 ---
 import { config } from "astro.config";
 import GuestSection from "~/components/guest.astro";
+import NameGate from "~/components/name-gate.astro";
 import Splash from "~/components/splash.astro";
 import Venue from "~/components/venue.astro";
 import Base from "~/layouts/Base.astro";
 import { ceremoniesFor } from "~/lib/events";
+import { cookieName, verifyToken } from "~/lib/session";
 import type { Guest } from "~/types";
+import { wedding } from "~/wedding.config";
 
-const { id } = Astro.params;
+const { id = "" } = Astro.params;
 
 const resp = await fetch(`${config.backend_url}/guest/${id}`);
 if (!resp.ok) {
@@ -16,16 +19,23 @@ if (!resp.ok) {
 
 const guest: Guest = await resp.json();
 
+// The gate is checked here, before anything is rendered, so an unverified
+// visitor never receives the guest's name, venues or RSVP in the HTML.
+const gated =
+  wedding.guestLetter.verify.enabled && !verifyToken(Astro.cookies.get(cookieName)?.value, id);
+
 // The backend owns the deadline; asking it keeps the two from drifting apart.
 // If the lookup fails the form stays open — the POST is still checked there.
 let closed = false;
-try {
-  const rsvp = await fetch(`${config.backend_url}/rsvp`);
-  if (rsvp.ok) {
-    closed = ((await rsvp.json()) as { closed?: boolean }).closed === true;
+if (!gated) {
+  try {
+    const rsvp = await fetch(`${config.backend_url}/rsvp`);
+    if (rsvp.ok) {
+      closed = ((await rsvp.json()) as { closed?: boolean }).closed === true;
+    }
+  } catch {
+    closed = false;
   }
-} catch {
-  closed = false;
 }
 
 // Guests see only the ceremonies they are invited to, and the countdown runs
@@ -34,19 +44,25 @@ const ceremonies = ceremoniesFor(guest);
 const countdownTo = ceremonies[0]?.date ?? "";
 ---
 
-<Base title={guest.first_name}>
-  <Splash since={countdownTo} />
-  <div class="columns-1 px-8 py-8">
-    <GuestSection guest={guest} closed={closed} />
-    {
-      ceremonies.map((ceremony) => (
-        <Venue id={`${ceremony.key}-venue`} venue={ceremony.venue} />
-      ))
-    }
-  </div>
-  <script>
-    setTimeout(() => {
-      document.getElementById("guest")?.scrollIntoView({ behavior: "smooth" });
-    }, 1500);
-  </script>
-</Base>
+{
+  gated ? (
+    <Base>
+      <NameGate id={id} />
+    </Base>
+  ) : (
+    <Base title={guest.first_name}>
+      <Splash since={countdownTo} />
+      <div class="columns-1 px-8 py-8">
+        <GuestSection guest={guest} closed={closed} />
+        {ceremonies.map((ceremony) => (
+          <Venue id={`${ceremony.key}-venue`} venue={ceremony.venue} />
+        ))}
+      </div>
+      <script>
+        setTimeout(() => {
+          document.getElementById("guest")?.scrollIntoView({ behavior: "smooth" });
+        }, 1500);
+      </script>
+    </Base>
+  )
+}

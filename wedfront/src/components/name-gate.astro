@@ -1,0 +1,106 @@
+---
+import { wedding } from "~/wedding.config";
+
+export interface Props {
+  /** The guest id whose invitation is being opened. */
+  id: string;
+}
+
+const { id } = Astro.props;
+const { verify } = wedding.guestLetter;
+---
+
+<section class="flex h-full flex-col items-center justify-center gap-6 px-8">
+  <h2 class="gradient-text text-center font-extrabold tracking-tight text-6xl">
+    {verify.heading}
+  </h2>
+  <p class="max-w-xl text-center text-base">{verify.prompt}</p>
+
+  <form id="gate" class="flex w-full max-w-md flex-col gap-3" data-id={id}>
+    <input
+      id="gate-name"
+      name="name"
+      type="text"
+      class="gate-input"
+      placeholder={verify.placeholder}
+      autocomplete="name"
+      autocapitalize="words"
+      maxlength="120"
+      required
+    />
+    <button id="gate-submit" type="submit" class="gate-button">
+      {verify.submit}
+    </button>
+    <p id="gate-error" class="text-center text-base" role="alert" hidden></p>
+  </form>
+</section>
+
+<script
+  define:vars={{
+    messages: {
+      wrong: verify.wrong,
+      tooMany: verify.tooMany,
+      failed: verify.failed,
+    },
+  }}
+>
+  const form = document.getElementById("gate");
+  const field = document.getElementById("gate-name");
+  const button = document.getElementById("gate-submit");
+  const error = document.getElementById("gate-error");
+
+  const show = (message) => {
+    error.textContent = message;
+    error.hidden = false;
+  };
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    error.hidden = true;
+    button.disabled = true;
+
+    try {
+      const resp = await fetch(`/api/guest/${form.dataset.id}/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: field.value }),
+      });
+
+      if (resp.ok) {
+        // The cookie is set; reload to get the real invitation.
+        window.location.reload();
+        return;
+      }
+
+      show(resp.status === 429 ? messages.tooMany : messages.wrong);
+    } catch {
+      show(messages.failed);
+    }
+
+    button.disabled = false;
+    field.select();
+  });
+
+  field.focus();
+</script>
+
+<style>
+  .gate-input {
+    background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .gate-button {
+    background-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+    border-radius: 10px;
+    padding: 0.6rem;
+  }
+
+  .gate-button:disabled {
+    opacity: 0.6;
+  }
+</style>

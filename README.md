@@ -216,6 +216,33 @@ Messages go to stdout, so they pipe: `just back invite > invites.txt`.
   that guest's page — handy on a printed card, where nobody wants to type a URL.
 - `just back invite <guest-id>` does a single guest.
 
+#### Who can open an invitation
+
+Invitation links carry a ten-character random id and nothing else, so anyone
+holding the link can open it. Guests forward links, and the couple's own family
+tends to end up in the same group chat as everyone else's.
+
+With `guestLetter.verify.enabled`, the page asks who is opening it before
+showing anything. Either partner's first or last name is accepted, ignoring
+case, spacing and punctuation. The check happens on the server, so an
+unverified visitor never receives the guest's name, venues or RSVP in the HTML
+— only the couple's own names, which are on the public pages anyway.
+
+<div align="center">
+  <img alt="Name gate" src="docs/screenshots/guest-gate.webp" width="560">
+</div>
+
+Once someone gets in, a signed, http-only cookie remembers them for a month so
+they are not asked again. The signature covers the guest id, so a cookie earned
+on one invitation cannot open another. Guesses are limited to ten per
+invitation per ten minutes.
+
+> [!note]
+> This is a soft gate, not a password: anyone who knows whose invitation it is
+> can open it, which is the point. Set `WEDFRONT_SESSION_SECRET` in production
+> so sessions survive a restart — without it a random secret is generated per
+> process and everyone is asked again after a deploy.
+
 #### Tiered invitations
 
 Not everyone is invited to everything. Each guest carries the set of ceremonies
@@ -310,6 +337,9 @@ Set `WEDFRONT_BACKEND_URL` to point to the backend (defaults to `http://127.0.0.
 
 `/wedding.ics` serves the ceremony as a calendar file, linked from every guest
 page as "Add to calendar".
+
+Set `WEDFRONT_SESSION_SECRET` to a long random string when the name gate is
+enabled; see [Who can open an invitation](#who-can-open-an-invitation).
 
 ## Customization
 

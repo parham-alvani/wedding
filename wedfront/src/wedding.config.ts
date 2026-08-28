@@ -82,6 +82,22 @@ export const wedding = {
 
   /** The English letter and RSVP form shown on each guest's page. */
   guestLetter: {
+    /**
+     * Ask visitors to confirm whose invitation this is before showing it.
+     * The page is rendered on the server, so nothing personal reaches the
+     * browser until the name matches. Either partner's first or last name is
+     * accepted. This is a soft gate against a forwarded link, not a password.
+     */
+    verify: {
+      enabled: true,
+      heading: "Who is this?",
+      prompt: "Type your first or last name to open your invitation.",
+      placeholder: "Your name",
+      submit: "Open invitation",
+      wrong: "That name does not match this invitation.",
+      tooMany: "Too many tries. Please wait a few minutes and try again.",
+      failed: "Something went wrong. Please try again.",
+    },
     body: "We've planned the most special day of our life and we'd be thrilled to see you in our ceremony where we want to celebrate love",
     signOff: "Best,",
     /** Shown instead of the form once the deadline has passed. */

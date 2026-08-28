@@ -19,10 +19,7 @@ func Provide(lc fx.Lifecycle, logger *zap.Logger, svc service.GuestSvc) *echo.Ec
 		Logger: logger.Named("handler").Named("healthz"),
 	}.Register(app.Group(""))
 
-	handler.Guest{
-		Logger:  logger.Named("handler").Named("guest"),
-		Service: svc,
-	}.Register(app.Group(""))
+	handler.NewGuest(svc, logger.Named("handler").Named("guest")).Register(app.Group(""))
 
 	ctx, cancel := context.WithCancel(context.Background()) // nolint: gosec
 

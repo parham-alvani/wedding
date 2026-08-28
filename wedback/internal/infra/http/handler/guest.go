@@ -9,12 +9,72 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/domain/repository/guestrepo"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/parham-alvani/wedding/wedback/internal/infra/http/request"
+	"github.com/parham-alvani/wedding/wedback/internal/infra/ratelimit"
 	"go.uber.org/zap"
+)
+
+// verifyLimit bounds guesses at a guest's name. Generous enough that a guest
+// fumbling their own spelling is never locked out, tight enough that working
+// through common surnames is not worth trying.
+const (
+	verifyLimit  = 10
+	verifyWindow = 10 * time.Minute
 )
 
 type Guest struct {
 	Service service.GuestSvc
 	Logger  *zap.Logger
+
+	// attempts bounds name guesses per invitation.
+	attempts *ratelimit.Limiter
+}
+
+// NewGuest builds the guest handler with its attempt limiter.
+func NewGuest(svc service.GuestSvc, logger *zap.Logger) Guest {
+	return Guest{
+		Service:  svc,
+		Logger:   logger,
+		attempts: ratelimit.New(verifyLimit, verifyWindow),
+	}
+}
+
+// Verify checks the name a visitor typed against the invitation. The reply
+// says only yes or no: it never echoes the guest's real name back.
+func (h Guest) Verify(c *echo.Context) error {
+	ctx := c.Request().Context()
+
+	id := c.Param("id")
+
+	var req request.Verify
+
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+
+	if h.attempts != nil && !h.attempts.Allow(id) {
+		return echo.NewHTTPError(http.StatusTooManyRequests, "too many attempts, please try again later")
+	}
+
+	ok, err := h.Service.VerifyName(ctx, id, req.Name)
+	if err != nil {
+		if errors.Is(err, guestrepo.ErrGuestNotFound) {
+			return echo.ErrNotFound
+		}
+
+		h.Logger.Error("failed to verify a guest name", zap.Error(err), zap.String("id", id))
+
+		return echo.ErrInternalServerError
+	}
+
+	if !ok {
+		return echo.NewHTTPError(http.StatusForbidden, "that name does not match this invitation")
+	}
+
+	if h.attempts != nil {
+		h.attempts.Reset(id)
+	}
+
+	return c.JSON(http.StatusOK, map[string]bool{"ok": true}) // nolint: wrapcheck
 }
 
 func (h Guest) Page(c *echo.Context) error {
@@ -91,4 +151,5 @@ func (h Guest) Register(g *echo.Group) {
 	g.POST("/guest/:id/answer", h.Answer)
 	g.GET("/guest/:id", h.Page)
 	g.GET("/rsvp", h.Deadline)
+	g.POST("/guest/:id/verify", h.Verify)
 }
