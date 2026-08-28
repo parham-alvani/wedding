@@ -29,11 +29,12 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: "./wedback/go.mod"
+          cache-dependency-path: "./wedback/go.sum"
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
           working-directory: ./wedback
-          version: v2.11
+          version: v2.13
           args: --timeout=30m
 
   test:
@@ -47,6 +48,7 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: "./wedback/go.mod"
+          cache-dependency-path: "./wedback/go.sum"
       - run: go test -v -race -coverprofile=coverage.out ./...
       - name: Upload coverage
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

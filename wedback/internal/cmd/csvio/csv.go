@@ -144,12 +144,12 @@ func newLookup(header []string) (lookup, error) {
 func parseRow(columns lookup, record []string, line int) (Row, error) {
 	children, err := parseChildren(columns.get(record, "children"), line)
 	if err != nil {
-		return Row{}, err // nolint: exhaustruct
+		return Row{}, err // nolint: exhaustruct_v5
 	}
 
 	isFamily, err := parseFamily(columns.get(record, "is_family"), line)
 	if err != nil {
-		return Row{}, err // nolint: exhaustruct
+		return Row{}, err // nolint: exhaustruct_v5
 	}
 
 	return Row{

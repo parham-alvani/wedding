@@ -17,6 +17,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// Fixture values shared across the suite's cases.
+const (
+	testGuestID   = "unique"
+	testFirstName = "Ali"
+	testLastName  = "Irani"
+)
+
 type GuestDBTestSuite struct {
 	suite.Suite
 
@@ -44,7 +51,7 @@ func (s *GuestDBTestSuite) SetupSuite() {
 func (s *GuestDBTestSuite) TearDownTest() {
 	require := s.Require()
 
-	// nolint: exhaustruct
+	// nolint: exhaustruct_v5
 	stmt := &gorm.Statement{DB: s.db.DB}
 	{
 		require.NoError(stmt.Parse(new(model.Guest)))
@@ -75,17 +82,17 @@ func (s *GuestDBTestSuite) TestNotFound() {
 func (s *GuestDBTestSuite) TestCreate() {
 	require := s.Require()
 
-	// nolint: exhaustruct
+	// nolint: exhaustruct_v5
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
-		ID:              "unique",
-		FirstName:       "Ali",
-		LastName:        "Irani",
+		ID:              testGuestID,
+		FirstName:       testFirstName,
+		LastName:        testLastName,
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
 	}))
 
-	guest, err := s.repo.Get(context.Background(), "unique")
+	guest, err := s.repo.Get(context.Background(), testGuestID)
 	require.NoError(err)
 
 	require.Equal("Ali Irani", guest.FirstName+" "+guest.LastName)
@@ -94,24 +101,24 @@ func (s *GuestDBTestSuite) TestCreate() {
 func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 	require := s.Require()
 
-	// nolint: exhaustruct
+	// nolint: exhaustruct_v5
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
-		ID:              "unique",
-		FirstName:       "Ali",
-		LastName:        "Irani",
+		ID:              testGuestID,
+		FirstName:       testFirstName,
+		LastName:        testLastName,
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
 	}))
 
-	require.NoError(s.repo.Answer(context.Background(), "unique", model.Answer{
+	require.NoError(s.repo.Answer(context.Background(), testGuestID, model.Answer{
 		ID:      0,
 		GuestID: "",
 		PlusOne: true,
 		Coming:  true,
 	}))
 
-	guest, err := s.repo.Get(context.Background(), "unique")
+	guest, err := s.repo.Get(context.Background(), testGuestID)
 	require.NoError(err)
 
 	require.Equal("Ali Irani", guest.FirstName+" "+guest.LastName)
@@ -125,8 +132,8 @@ func (s *GuestDBTestSuite) TestUpdate() {
 
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
 		ID:              "update-me",
-		FirstName:       "Ali",
-		LastName:        "Irani",
+		FirstName:       testFirstName,
+		LastName:        testLastName,
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		IsFamily:        false,
@@ -139,8 +146,8 @@ func (s *GuestDBTestSuite) TestUpdate() {
 
 	require.NoError(s.repo.Update(context.Background(), model.Guest{
 		ID:              "update-me",
-		FirstName:       "Ali",
-		LastName:        "Irani",
+		FirstName:       testFirstName,
+		LastName:        testLastName,
 		SpouseFirstName: &spouseFirst,
 		SpouseLastName:  &spouseLast,
 		IsFamily:        true,
@@ -161,9 +168,9 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 	require := s.Require()
 
 	require.NoError(s.repo.Create(context.Background(), model.Guest{
-		ID:              "unique",
-		FirstName:       "Ali",
-		LastName:        "Irani",
+		ID:              testGuestID,
+		FirstName:       testFirstName,
+		LastName:        testLastName,
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		IsFamily:        false,
@@ -173,8 +180,8 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 
 	require.ErrorIs(s.repo.Create(context.Background(), model.Guest{
 		ID:              "not-unique",
-		FirstName:       "Ali",
-		LastName:        "Irani",
+		FirstName:       testFirstName,
+		LastName:        testLastName,
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		IsFamily:        false,
@@ -197,11 +204,11 @@ func (s *GuestDBTestSuite) TestCreateWithAnswerButWithoutGuest() {
 func (s *GuestDBTestSuite) TestList() {
 	require := s.Require()
 
-	// nolint: exhaustruct
+	// nolint: exhaustruct_v5
 	for i := range 10 {
 		require.NoError(s.repo.Create(context.Background(), model.Guest{
 			ID:        fmt.Sprintf("unique %d", i),
-			FirstName: "Ali",
+			FirstName: testFirstName,
 			LastName:  fmt.Sprintf("Irani %d", i),
 			Answer:    nil,
 		}))

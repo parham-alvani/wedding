@@ -10,5 +10,12 @@ linters:
     - varnamelen
     - ireturn
     - revive
-    - wsl
     - noinlineerr
+    # Opinionated whitespace rules, in both generations.
+    - wsl
+    - wsl_v5
+    # Deprecated originals. Their successors (exhaustruct_v5, gomodguard_v2)
+    # stay enabled through `default: all`; disabling the old ones keeps the
+    # linter from reporting the same finding twice under two names.
+    - exhaustruct
+    - gomodguard

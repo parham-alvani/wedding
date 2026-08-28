@@ -23,7 +23,7 @@ func main(logger *zap.Logger, _ *echo.Echo) {
 
 // Register serve command.
 func Register() *cli.Command {
-	//nolint: exhaustruct
+	//nolint: exhaustruct_v5
 	return &cli.Command{
 		Name:        "serve",
 		Description: "Run server to serve the requests",

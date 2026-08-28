@@ -21,7 +21,7 @@ type DB struct {
 const PingTimeout = 10 * time.Second
 
 func Provide(lc fx.Lifecycle, cfg Config, logger *zap.Logger) (*DB, error) {
-	// nolint: exhaustruct
+	// nolint: exhaustruct_v5
 	db, err := gorm.Open(sqlite.Open(cfg.DSN), &gorm.Config{
 		// enable prepared statements and caching them globally
 		PrepareStmt: true,

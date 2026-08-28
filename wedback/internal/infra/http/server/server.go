@@ -29,7 +29,7 @@ func Provide(lc fx.Lifecycle, logger *zap.Logger, svc service.GuestSvc) *echo.Ec
 	lc.Append(fx.Hook{
 		OnStart: func(_ context.Context) error {
 			go func() {
-				sc := echo.StartConfig{Address: ":1378"} // nolint: exhaustruct
+				sc := echo.StartConfig{Address: ":1378"} // nolint: exhaustruct_v5
 				if err := sc.Start(ctx, app); !errors.Is(err, http.ErrServerClosed) {
 					logger.Fatal("echo initiation failed", zap.Error(err))
 				}

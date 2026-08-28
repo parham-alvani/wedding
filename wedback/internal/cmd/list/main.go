@@ -246,7 +246,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, repository guestrepo.Reposi
 
 // Register list command.
 func Register() *cli.Command {
-	//nolint: exhaustruct
+	//nolint: exhaustruct_v5
 	return &cli.Command{
 		Name:        "list",
 		Description: "List all guests",

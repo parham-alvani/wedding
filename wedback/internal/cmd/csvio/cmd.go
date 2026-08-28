@@ -178,13 +178,13 @@ func providers() fx.Option {
 
 // RegisterImport registers the bulk import command.
 func RegisterImport() *cli.Command {
-	//nolint: exhaustruct
+	//nolint: exhaustruct_v5
 	return &cli.Command{
 		Name:        "import",
 		Usage:       "import <file.csv>",
 		Description: "Bulk import guests from a CSV file (columns: " + strings.Join(Columns(), ", ") + ")",
 		Flags: []cli.Flag{
-			//nolint: exhaustruct
+			//nolint: exhaustruct_v5
 			&cli.BoolFlag{
 				Name:  "dry-run",
 				Usage: "parse and report without writing anything",
@@ -209,13 +209,13 @@ func RegisterImport() *cli.Command {
 
 // RegisterExport registers the CSV export command.
 func RegisterExport() *cli.Command {
-	//nolint: exhaustruct
+	//nolint: exhaustruct_v5
 	return &cli.Command{
 		Name:        "export",
 		Usage:       "export [file.csv]",
 		Description: "Export every guest and their RSVP as CSV (stdout when no file is given)",
 		Flags: []cli.Flag{
-			//nolint: exhaustruct
+			//nolint: exhaustruct_v5
 			&cli.BoolFlag{
 				Name:  "links",
 				Usage: "add a column with each guest's invitation link",

@@ -195,7 +195,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 
 // Register insert command.
 func Register() *cli.Command {
-	//nolint: exhaustruct
+	//nolint: exhaustruct_v5
 	return &cli.Command{
 		Name:        "insert",
 		Aliases:     []string{"new"},

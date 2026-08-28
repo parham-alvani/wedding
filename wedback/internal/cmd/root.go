@@ -17,7 +17,7 @@ import (
 )
 
 func Execute() {
-	// nolint: exhaustruct
+	// nolint: exhaustruct_v5
 	cmd := &cli.Command{
 		Name:        "wedback",
 		Description: "Parham and Elaheh's Wedding Backend (fork and customize for your own wedding!)",

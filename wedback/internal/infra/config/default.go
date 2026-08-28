@@ -15,7 +15,7 @@ import (
 // never write a config.toml should see obvious dummy values rather than
 // somebody else's names silently baked into their invitations.
 func Default() Config {
-	// nolint: exhaustruct, mnd
+	// nolint: exhaustruct_v5, mnd
 	return Config{
 		Logger: logger.Config{
 			Level: "debug",
