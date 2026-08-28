@@ -123,6 +123,15 @@ export const wedding = {
     },
   },
 
+  /**
+   * The ceremonies, in the order they happen. The keys match the backend's
+   * event names, and a guest's page shows only the ones they are invited to.
+   */
+  events: [
+    { key: "engagement", venue: "engagement", date: "engaged" },
+    { key: "wedding", venue: "wedding", date: "wedding" },
+  ],
+
   venues: {
     wedding: {
       name: "Baran Garden Hall",
@@ -143,7 +152,7 @@ export const wedding = {
       name: "Noghre Hall",
       when: "جمعه ۲۱ام اردیبهشت ماه از ساعت ۱۹",
       address: "تهران، اندرزگو، بلوار صبا، نبش خیابان کریمی، پلاک ۳، واحد ۳",
-      whenEnglish: "",
+      whenEnglish: "Hope to see you on Ordibehesht 21st at 7 p.m. at Noghre hall",
       maps: {
         google: "https://maps.app.goo.gl/4r9Rj1sAEYnA4TU37",
         neshan: "https://nshn.ir/3f_bvvw15xu2SY",

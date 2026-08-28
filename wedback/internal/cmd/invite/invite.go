@@ -44,6 +44,11 @@ type Invitation struct {
 	// Answered reports whether this guest has already replied.
 	Answered bool
 	Coming   bool
+	// Events is the ceremonies this guest is invited to, and Invited maps
+	// each ceremony name to whether they are, so a template can branch:
+	//   {{ if .Invited.engagement }}…{{ end }}
+	Events  []string
+	Invited map[string]bool
 }
 
 // Rendered pairs a guest with their finished message.
@@ -73,6 +78,13 @@ func NewInvitation(guest model.Guest, baseURL, husband, wife string) Invitation 
 		spouseLast = *guest.SpouseLastName
 	}
 
+	events := guest.InvitedEvents()
+	invited := make(map[string]bool, len(model.AllEvents()))
+
+	for _, event := range model.AllEvents() {
+		invited[string(event)] = guest.InvitedTo(event)
+	}
+
 	return Invitation{
 		ID:              guest.ID,
 		FirstName:       guest.FirstName,
@@ -87,6 +99,8 @@ func NewInvitation(guest model.Guest, baseURL, husband, wife string) Invitation 
 		Wife:            wife,
 		Answered:        guest.Answer != nil,
 		Coming:          guest.Coming(),
+		Events:          model.EventNames(events),
+		Invited:         invited,
 	}
 }
 

@@ -36,6 +36,8 @@ type options struct {
 	guestID     string
 	qrDir       string
 	separator   string
+	// event narrows the run to guests invited to one ceremony.
+	event model.Event
 }
 
 // selectGuests narrows the list down to what the flags asked for.
@@ -51,7 +53,19 @@ func selectGuests(guests []model.Guest, opts options) []model.Guest {
 	}
 
 	if opts.onlyWaiting {
-		return Waiting(guests)
+		guests = Waiting(guests)
+	}
+
+	if opts.event != "" {
+		invited := make([]model.Guest, 0, len(guests))
+
+		for _, guest := range guests {
+			if guest.InvitedTo(opts.event) {
+				invited = append(invited, guest)
+			}
+		}
+
+		guests = invited
 	}
 
 	return guests
@@ -157,17 +171,34 @@ func Register() *cli.Command {
 			},
 			//nolint: exhaustruct_v5
 			&cli.StringFlag{
+				Name:  "event",
+				Usage: "only guests invited to this ceremony",
+			},
+			//nolint: exhaustruct_v5
+			&cli.StringFlag{
 				Name:  "separator",
 				Usage: "printed between messages",
 				Value: "---",
 			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
+			var event model.Event
+
+			if raw := strings.TrimSpace(cmd.String("event")); raw != "" {
+				parsed, err := model.ParseEvent(raw)
+				if err != nil {
+					return cli.Exit(err.Error(), 1)
+				}
+
+				event = parsed
+			}
+
 			opts := options{
 				onlyWaiting: cmd.Bool("waiting"),
 				guestID:     strings.TrimSpace(cmd.Args().First()),
 				qrDir:       cmd.String("qr-dir"),
 				separator:   cmd.String("separator"),
+				event:       event,
 			}
 
 			return app.Run(app.Providers(), fx.Invoke(func(p params) { run(p, opts) }))

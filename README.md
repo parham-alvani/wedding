@@ -67,6 +67,8 @@ adding people one at a time, and a CSV importer for a whole list at once:
   <img alt="just back insert" src="docs/screenshots/cli-insert.webp" width="560">
 </div>
 
+The **Invited** column shows each guest's tier.
+
 `just back notes` collects what guests wrote, ready to hand to the caterer and
 the DJ:
 
@@ -141,6 +143,7 @@ just back remind                 # Same, but only for guests still waiting
 just back qr ./qr                # A QR code per guest, for printed cards
 just back reset <guest-id>       # Clear one guest's RSVP so they can redo it
 just back notes                  # Dietary requirements and song requests
+just back invite-event wedding   # Invitations for one ceremony's guests only
 just back test                   # Run tests
 just back lint                   # Run linter
 ```
@@ -212,6 +215,42 @@ Messages go to stdout, so they pipe: `just back invite > invites.txt`.
 - `just back qr ./qr` writes a `<guest-id>.png` QR code per guest, pointing at
   that guest's page — handy on a printed card, where nobody wants to type a URL.
 - `just back invite <guest-id>` does a single guest.
+
+#### Tiered invitations
+
+Not everyone is invited to everything. Each guest carries the set of ceremonies
+they belong to, in an `events` column:
+
+```csv
+first_name,last_name,events
+Ali,Irani,"engagement wedding"
+Sara,Tehrani,wedding
+Nima,Karimi,engagement
+Reza,Shirazi,
+```
+
+Leaving it blank invites the guest to every ceremony, so a guest list that
+predates tiering — or a wedding that does not tier at all — needs no changes.
+`just back insert` asks with everything pre-selected, and `just back list`
+shows an **Invited** column.
+
+A guest's page then shows only the ceremonies they are invited to: their venue,
+their map, and a countdown to the first one rather than always to the wedding.
+`just back invite-event engagement` renders invitations for just that group, and
+the invite template can branch on it:
+
+```
+{{ if .Invited.engagement }}Join us for the engagement on …{{ end }}
+{{ if .Invited.wedding }}…and the wedding at Baran garden.{{ end }}
+```
+
+The ceremonies themselves are listed in `wedding.config.ts` under `events`,
+each mapping a key onto a venue and a date. The keys must match the backend's,
+which are `engagement` and `wedding`.
+
+> [!note]
+> The public `/wedding` and `/engaged` pages are unchanged — they are open
+> invitations. Tiering applies to the per-guest pages.
 
 #### Dietary requirements and song requests
 
@@ -311,6 +350,13 @@ export const wedding = {
     body: "...", signOff: "Best,",
     rsvp: { heading: "RSVP", accept: "...", decline: "...", plusOne: "...", submit: "...", submitted: "..." },
   },
+  // The ceremonies, in order; a guest's page shows only the ones they are
+  // invited to. Keys must match the backend's event names.
+  events: [
+    { key: "engagement", venue: "engagement", date: "engaged" },
+    { key: "wedding", venue: "wedding", date: "wedding" },
+  ],
+
   venues: {
     wedding: {
       name: "...",

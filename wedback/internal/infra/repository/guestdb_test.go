@@ -90,6 +90,7 @@ func (s *GuestDBTestSuite) TestCreate() {
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	guest, err := s.repo.Get(context.Background(), testGuestID)
@@ -109,6 +110,7 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	require.NoError(s.repo.Answer(context.Background(), testGuestID, model.Answer{
@@ -143,6 +145,7 @@ func (s *GuestDBTestSuite) TestAnswerIsReplacedNotDuplicated() {
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
@@ -188,6 +191,7 @@ func (s *GuestDBTestSuite) TestResetAnswer() {
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
@@ -222,6 +226,7 @@ func (s *GuestDBTestSuite) TestUpdate() {
 		IsFamily:        false,
 		Children:        0,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	spouseFirst := "Maryam"
@@ -236,6 +241,7 @@ func (s *GuestDBTestSuite) TestUpdate() {
 		IsFamily:        true,
 		Children:        2,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	guest, err := s.repo.Get(context.Background(), "update-me")
@@ -259,6 +265,7 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 		IsFamily:        false,
 		Children:        0,
 		Answer:          nil,
+		Events:          "",
 	}))
 
 	require.ErrorIs(s.repo.Create(context.Background(), model.Guest{
@@ -270,6 +277,7 @@ func (s *GuestDBTestSuite) TestCreateWithDuplicateName() {
 		IsFamily:        false,
 		Children:        0,
 		Answer:          nil,
+		Events:          "",
 	}), guestrepo.ErrDuplicateGuestByName)
 }
 
@@ -296,6 +304,7 @@ func (s *GuestDBTestSuite) TestList() {
 			FirstName: testFirstName,
 			LastName:  fmt.Sprintf("Irani %d", i),
 			Answer:    nil,
+			Events:    "",
 		}))
 	}
 

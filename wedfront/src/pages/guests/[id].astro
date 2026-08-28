@@ -4,8 +4,8 @@ import GuestSection from "~/components/guest.astro";
 import Splash from "~/components/splash.astro";
 import Venue from "~/components/venue.astro";
 import Base from "~/layouts/Base.astro";
+import { ceremoniesFor } from "~/lib/events";
 import type { Guest } from "~/types";
-import { wedding } from "~/wedding.config";
 
 const { id } = Astro.params;
 
@@ -27,13 +27,22 @@ try {
 } catch {
   closed = false;
 }
+
+// Guests see only the ceremonies they are invited to, and the countdown runs
+// to the first of them rather than always to the wedding.
+const ceremonies = ceremoniesFor(guest);
+const countdownTo = ceremonies[0]?.date ?? "";
 ---
 
 <Base title={guest.first_name}>
-  <Splash since={wedding.dates.wedding} />
+  <Splash since={countdownTo} />
   <div class="columns-1 px-8 py-8">
     <GuestSection guest={guest} closed={closed} />
-    <Venue id="wedding-venue" venue={wedding.venues.wedding} />
+    {
+      ceremonies.map((ceremony) => (
+        <Venue id={`${ceremony.key}-venue`} venue={ceremony.venue} />
+      ))
+    }
   </div>
   <script>
     setTimeout(() => {

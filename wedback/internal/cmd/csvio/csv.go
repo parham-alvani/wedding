@@ -28,6 +28,7 @@ func Columns() []string {
 		"spouse_last_name",
 		"is_family",
 		"children",
+		"events",
 	}
 }
 
@@ -48,6 +49,8 @@ type Row struct {
 	SpouseLastName  string
 	IsFamily        bool
 	Children        int
+	// Events is the raw ceremony list for this guest; empty means all.
+	Events string
 }
 
 // lookup resolves column names to their position in a record.
@@ -152,6 +155,11 @@ func parseRow(columns lookup, record []string, line int) (Row, error) {
 		return Row{}, err // nolint: exhaustruct_v5
 	}
 
+	events := columns.get(record, "events")
+	if _, err := model.ParseEvents(events); err != nil {
+		return Row{}, fmt.Errorf("line %d: %w", line, err) // nolint: exhaustruct_v5
+	}
+
 	return Row{
 		Line:            line,
 		FirstName:       columns.get(record, "first_name"),
@@ -160,6 +168,7 @@ func parseRow(columns lookup, record []string, line int) (Row, error) {
 		SpouseLastName:  columns.get(record, "spouse_last_name"),
 		IsFamily:        isFamily,
 		Children:        children,
+		Events:          events,
 	}, nil
 }
 
@@ -219,6 +228,7 @@ func Export(w io.Writer, guests []model.Guest, baseURL string) error {
 			deref(guest.SpouseLastName),
 			strconv.FormatBool(guest.IsFamily),
 			strconv.Itoa(guest.Children),
+			strings.Join(model.EventNames(guest.InvitedEvents()), " "),
 			strconv.FormatBool(guest.Coming()),
 			strconv.FormatBool(guest.PlusOne()),
 			strconv.FormatBool(guest.Answer != nil),

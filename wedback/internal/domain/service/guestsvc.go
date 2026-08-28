@@ -91,20 +91,31 @@ func (svc GuestSvc) Deadline() time.Time {
 	return svc.deadline
 }
 
-func (svc GuestSvc) New(
-	ctx context.Context,
-	fname string,
-	lname string,
-	partnerFname string,
-	partnerLname string,
-	isFamily bool,
-	children int,
-) (model.Guest, error) {
-	fname = strings.TrimSpace(fname)
-	lname = strings.TrimSpace(lname)
+// NewGuest is everything needed to add a guest to the list.
+type NewGuest struct {
+	FirstName        string
+	LastName         string
+	PartnerFirstName string
+	PartnerLastName  string
+	IsFamily         bool
+	Children         int
+	// Events is the ceremonies this guest is invited to, as a separated list
+	// such as "engagement,wedding". Empty invites them to everything.
+	Events string
+}
+
+func (svc GuestSvc) New(ctx context.Context, in NewGuest) (model.Guest, error) {
+	fname := strings.TrimSpace(in.FirstName)
+	lname := strings.TrimSpace(in.LastName)
 
 	if len(lname) == 0 || len(fname) == 0 {
-		return model.Guest{}, ErrGuestNameRequired
+		return model.Guest{}, ErrGuestNameRequired // nolint: exhaustruct_v5
+	}
+
+	// Parsing normalises the order and rejects a typo before it is stored.
+	events, err := model.ParseEvents(in.Events)
+	if err != nil {
+		return model.Guest{}, err // nolint: exhaustruct_v5, wrapcheck
 	}
 
 	guest := model.Guest{
@@ -114,18 +125,19 @@ func (svc GuestSvc) New(
 		SpouseFirstName: nil,
 		SpouseLastName:  nil,
 		Answer:          nil,
-		IsFamily:        isFamily,
-		Children:        children,
+		IsFamily:        in.IsFamily,
+		Children:        in.Children,
+		Events:          model.FormatEvents(events),
 	}
 
-	partnerFname = strings.TrimSpace(partnerFname)
-	partnerLname = strings.TrimSpace(partnerLname)
+	partnerFname := strings.TrimSpace(in.PartnerFirstName)
+	partnerLname := strings.TrimSpace(in.PartnerLastName)
 
 	if (len(partnerFname) != 0) && (len(partnerLname) != 0) {
 		guest.SpouseFirstName = &partnerFname
 		guest.SpouseLastName = &partnerLname
 	} else if (len(partnerFname) != 0) || (len(partnerLname) != 0) {
-		return model.Guest{}, ErrPartnerNameRequired
+		return model.Guest{}, ErrPartnerNameRequired // nolint: exhaustruct_v5
 	}
 
 	if err := svc.repository.Create(ctx, guest); err != nil {

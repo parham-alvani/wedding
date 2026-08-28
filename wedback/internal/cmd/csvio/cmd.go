@@ -48,15 +48,15 @@ func createRows(ctx context.Context, p importParams, rows []Row) {
 	created, failed := 0, 0
 
 	for _, row := range rows {
-		guest, err := p.Service.New(
-			ctx,
-			row.FirstName,
-			row.LastName,
-			row.SpouseFirstName,
-			row.SpouseLastName,
-			row.IsFamily,
-			row.Children,
-		)
+		guest, err := p.Service.New(ctx, service.NewGuest{
+			FirstName:        row.FirstName,
+			LastName:         row.LastName,
+			PartnerFirstName: row.SpouseFirstName,
+			PartnerLastName:  row.SpouseLastName,
+			IsFamily:         row.IsFamily,
+			Children:         row.Children,
+			Events:           row.Events,
+		})
 		if err != nil {
 			failed++
 

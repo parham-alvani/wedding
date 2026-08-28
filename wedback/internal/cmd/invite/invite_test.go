@@ -12,6 +12,7 @@ import (
 
 func guest(id, first, last string, spouse *string, family bool, answer *model.Answer) model.Guest {
 	return model.Guest{
+		Events:          "",
 		ID:              id,
 		FirstName:       first,
 		LastName:        last,

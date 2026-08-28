@@ -4,18 +4,34 @@ import (
 	"context"
 	"errors"
 	"strconv"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/app"
+	"github.com/parham-alvani/wedding/wedback/internal/domain/model"
 	"github.com/parham-alvani/wedding/wedback/internal/domain/service"
 	"github.com/pterm/pterm"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/fx"
 )
 
+// eventOptions lists the ceremonies, all selected by default: most guests are
+// invited to everything, so the common case needs no keystrokes.
+func eventOptions() []huh.Option[string] {
+	events := model.AllEvents()
+	options := make([]huh.Option[string], 0, len(events))
+
+	for _, event := range events {
+		options = append(options, huh.NewOption(string(event), string(event)).Selected(true))
+	}
+
+	return options
+}
+
 var (
+	errAtLeastOneEvent         = errors.New("a guest must be invited to at least one ceremony")
 	errPartnerLastNameRequired = errors.New("partner last name is required when first name is provided")
 	errMustBeNumber            = errors.New("must be a number")
 	errCannotBeNegative        = errors.New("cannot be negative")
@@ -54,6 +70,7 @@ type guestForm struct {
 	partnerLastName  string
 	isFamily         bool
 	children         string
+	events           []string
 }
 
 func (gf *guestForm) build() *huh.Form { //nolint: funlen
@@ -89,6 +106,21 @@ func (gf *guestForm) build() *huh.Form { //nolint: funlen
 					return nil
 				}),
 		).Title("Partner Information"),
+
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().
+				Title("Invited to").
+				Description("Which ceremonies is this guest invited to?").
+				Options(eventOptions()...).
+				Value(&gf.events).
+				Validate(func(selected []string) error {
+					if len(selected) == 0 {
+						return errAtLeastOneEvent
+					}
+
+					return nil
+				}),
+		).Title("Invitation"),
 
 		huh.NewGroup(
 			huh.NewConfirm().
@@ -139,6 +171,7 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 		partnerLastName:  "",
 		isFamily:         false,
 		children:         "",
+		events:           model.EventNames(model.AllEvents()),
 	}
 	form := gf.build()
 
@@ -157,15 +190,15 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 					return
 				}
 
-				guest, err := svc.New(
-					ctx,
-					gf.firstName,
-					gf.lastName,
-					gf.partnerFirstName,
-					gf.partnerLastName,
-					gf.isFamily,
-					gf.numChildren(),
-				)
+				guest, err := svc.New(ctx, service.NewGuest{
+					FirstName:        gf.firstName,
+					LastName:         gf.lastName,
+					PartnerFirstName: gf.partnerFirstName,
+					PartnerLastName:  gf.partnerLastName,
+					IsFamily:         gf.isFamily,
+					Children:         gf.numChildren(),
+					Events:           strings.Join(gf.events, ","),
+				})
 				if err != nil {
 					pterm.Error.Printfln("failed to create guest: %s", err)
 
@@ -177,6 +210,8 @@ func main(lc fx.Lifecycle, shutdowner fx.Shutdowner, svc service.GuestSvc) {
 				if guest.SpouseFirstName != nil {
 					pterm.Info.Printfln("Partner: %s %s", *guest.SpouseFirstName, *guest.SpouseLastName)
 				}
+
+				pterm.Info.Printfln("Invited to: %s", guest.Events)
 
 				if gf.isFamily {
 					pterm.Info.Printfln("Family invitation with %d children", gf.numChildren())

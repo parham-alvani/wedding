@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/table"
@@ -119,6 +120,7 @@ func (m guestsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				guest.LastName,
 				spouseFirstName,
 				spouseLastName,
+				strings.Join(model.EventNames(guest.InvitedEvents()), ", "),
 				strconv.FormatBool(guest.IsFamily),
 				strconv.Itoa(guest.Children),
 				guest.ID,
@@ -222,6 +224,7 @@ func main(
 		{Title: "Last Name", Width: 14},
 		{Title: "Spouse First", Width: 14},
 		{Title: "Spouse Last", Width: 14},
+		{Title: "Invited", Width: 20},
 		{Title: "Family", Width: 7},
 		{Title: "Kids", Width: 5},
 		{Title: "ID", Width: 12},

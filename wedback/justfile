@@ -41,6 +41,10 @@ invite *args: build
 remind: build
     ./wedback invite --waiting
 
+# Render invitations only for guests invited to one ceremony
+invite-event event: build
+    ./wedback invite --event "{{event}}"
+
 # Write a QR code per guest into the given directory
 qr dir="qr": build
     ./wedback invite --qr-dir "{{dir}}"

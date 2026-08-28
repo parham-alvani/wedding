@@ -69,6 +69,28 @@ func TestParseReportsTrueFileLineAfterBlankLines(t *testing.T) {
 	assert.Equal(t, 5, rows[1].Line, "Nima is on line 5 of the file")
 }
 
+func TestParseEventsColumn(t *testing.T) {
+	t.Parallel()
+
+	rows, err := csvio.Parse(strings.NewReader(
+		"first_name,last_name,events\nAli,Irani,wedding\nSara,Tehrani,\n",
+	))
+	require.NoError(t, err)
+	require.Len(t, rows, 2)
+
+	assert.Equal(t, "wedding", rows[0].Events)
+	assert.Empty(t, rows[1].Events, "blank stays blank; the service expands it to every ceremony")
+}
+
+func TestParseRejectsUnknownEvent(t *testing.T) {
+	t.Parallel()
+
+	_, err := csvio.Parse(strings.NewReader("first_name,last_name,events\nAli,Irani,brunch\n"))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "line 2")
+	assert.Contains(t, err.Error(), "brunch")
+}
+
 func TestParseErrors(t *testing.T) {
 	t.Parallel()
 
@@ -120,6 +142,7 @@ func TestExportRoundTrip(t *testing.T) {
 			SpouseLastName:  &spouseLast,
 			IsFamily:        false,
 			Children:        0,
+			Events:          "",
 			Answer: &model.Answer{
 				ID: 1, Coming: true, PlusOne: true, GuestID: "aK3nQ7pLx2",
 				Dietary: "vegetarian", Song: "Ebi — Shab Nashini",
@@ -137,6 +160,7 @@ func TestExportRoundTrip(t *testing.T) {
 	assert.Contains(t, out, "vegetarian")
 	assert.Contains(t, out, "Ebi — Shab Nashini")
 	assert.Contains(t, out, "dietary,song")
+	assert.Contains(t, out, "engagement wedding", "an untiered guest exports as every ceremony")
 
 	// The export must be re-importable.
 	rows, err := csvio.Parse(strings.NewReader(out))
@@ -152,6 +176,7 @@ func TestExportWithoutLinks(t *testing.T) {
 	var buf bytes.Buffer
 
 	guest := model.Guest{
+		Events:          "",
 		ID:              "x",
 		FirstName:       "A",
 		LastName:        "B",
