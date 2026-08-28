@@ -49,6 +49,10 @@ qr dir="qr": build
 reset id: build
     ./wedback reset "{{id}}"
 
+# Show dietary requirements and song requests left with the RSVPs
+notes *args: build
+    ./wedback notes {{args}}
+
 # Bulk import guests from a CSV file
 import file: build
     ./wedback import "{{file}}"

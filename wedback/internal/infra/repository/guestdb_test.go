@@ -116,6 +116,8 @@ func (s *GuestDBTestSuite) TestCreateWithAnswer() {
 		GuestID: "",
 		PlusOne: true,
 		Coming:  true,
+		Dietary: "",
+		Song:    "",
 	}))
 
 	guest, err := s.repo.Get(context.Background(), testGuestID)
@@ -144,13 +146,13 @@ func (s *GuestDBTestSuite) TestAnswerIsReplacedNotDuplicated() {
 	}))
 
 	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
-		ID: 0, GuestID: "", Coming: true, PlusOne: true,
+		ID: 0, GuestID: "", Coming: true, PlusOne: true, Dietary: "", Song: "",
 	}))
 
 	// Answering "not coming" writes zero values, which a naive struct update
 	// would silently skip.
 	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
-		ID: 0, GuestID: "", Coming: false, PlusOne: false,
+		ID: 0, GuestID: "", Coming: false, PlusOne: false, Dietary: "", Song: "",
 	}))
 
 	guest, err := s.repo.Get(ctx, testGuestID)
@@ -165,7 +167,7 @@ func (s *GuestDBTestSuite) TestAnswerIsReplacedNotDuplicated() {
 
 	// And back again.
 	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
-		ID: 0, GuestID: "", Coming: true, PlusOne: false,
+		ID: 0, GuestID: "", Coming: true, PlusOne: false, Dietary: "", Song: "",
 	}))
 
 	guest, err = s.repo.Get(ctx, testGuestID)
@@ -189,7 +191,7 @@ func (s *GuestDBTestSuite) TestResetAnswer() {
 	}))
 
 	require.NoError(s.repo.Answer(ctx, testGuestID, model.Answer{
-		ID: 0, GuestID: "", Coming: true, PlusOne: true,
+		ID: 0, GuestID: "", Coming: true, PlusOne: true, Dietary: "", Song: "",
 	}))
 
 	require.NoError(s.repo.ResetAnswer(ctx, testGuestID))
@@ -279,6 +281,8 @@ func (s *GuestDBTestSuite) TestCreateWithAnswerButWithoutGuest() {
 		GuestID: "",
 		PlusOne: true,
 		Coming:  true,
+		Dietary: "",
+		Song:    "",
 	}))
 }
 

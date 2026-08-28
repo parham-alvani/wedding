@@ -98,6 +98,29 @@ export const wedding = {
       update: "Update your answer",
       submitted: "Already responded",
     },
+
+    /**
+     * Optional free-text fields on the RSVP. Set `enabled: false` to drop
+     * either one; guests who are marked as family never see the coming /
+     * declining question but still get these, because the kitchen and the DJ
+     * need them just the same.
+     */
+    extras: {
+      dietary: {
+        enabled: true,
+        label: "Anything we should tell the kitchen?",
+        placeholder: "Allergies, vegetarian, …",
+      },
+      song: {
+        enabled: true,
+        label: "A song you would love to hear",
+        placeholder: "Artist — Title",
+      },
+      /** Shown to family guests, who have nothing to RSVP to. */
+      familyHeading: "A couple of things before the night",
+      familySubmit: "Save",
+      familySaved: "Saved — thank you!",
+    },
   },
 
   venues: {

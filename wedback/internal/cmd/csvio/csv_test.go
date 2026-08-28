@@ -120,7 +120,10 @@ func TestExportRoundTrip(t *testing.T) {
 			SpouseLastName:  &spouseLast,
 			IsFamily:        false,
 			Children:        0,
-			Answer:          &model.Answer{ID: 1, Coming: true, PlusOne: true, GuestID: "aK3nQ7pLx2"},
+			Answer: &model.Answer{
+				ID: 1, Coming: true, PlusOne: true, GuestID: "aK3nQ7pLx2",
+				Dietary: "vegetarian", Song: "Ebi — Shab Nashini",
+			},
 		},
 	}
 
@@ -131,6 +134,9 @@ func TestExportRoundTrip(t *testing.T) {
 	assert.Contains(t, out, "Ali,Irani,Maryam,Akhyani")
 	assert.Contains(t, out, "https://example.test/guests/aK3nQ7pLx2")
 	assert.Contains(t, out, "id,first_name,last_name")
+	assert.Contains(t, out, "vegetarian")
+	assert.Contains(t, out, "Ebi — Shab Nashini")
+	assert.Contains(t, out, "dietary,song")
 
 	// The export must be re-importable.
 	rows, err := csvio.Parse(strings.NewReader(out))
@@ -156,6 +162,7 @@ func TestExportWithoutLinks(t *testing.T) {
 		Answer:          nil,
 	}
 
+	// A guest who never replied must not blow up on the note columns.
 	require.NoError(t, csvio.Export(&buf, []model.Guest{guest}, ""))
 
 	assert.NotContains(t, buf.String(), "link")

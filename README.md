@@ -37,6 +37,12 @@ RSVP form, and can change their answer for as long as the RSVP is open:
 | :---------------------------------------------------------: | :-----------------------------------------------------------: |
 | <img alt="Guest RSVP form" src="docs/screenshots/guest-rsvp.webp" width="420"> | <img alt="Guest already responded" src="docs/screenshots/guest-answered.webp" width="420"> |
 
+The form also collects anything the kitchen should know and a song request:
+
+<div align="center">
+  <img alt="RSVP with dietary and song fields" src="docs/screenshots/guest-extras.webp" width="440">
+</div>
+
 Once `wedding.rsvp_deadline` passes, the form is replaced by a closed notice and
 the backend refuses further answers:
 
@@ -59,6 +65,13 @@ adding people one at a time, and a CSV importer for a whole list at once:
   <img alt="just back import" src="docs/screenshots/cli-import.webp" width="700">
   <br><br>
   <img alt="just back insert" src="docs/screenshots/cli-insert.webp" width="560">
+</div>
+
+`just back notes` collects what guests wrote, ready to hand to the caterer and
+the DJ:
+
+<div align="center">
+  <img alt="just back notes" src="docs/screenshots/cli-notes.webp" width="600">
 </div>
 
 `just back remind` renders a ready-to-send message for everyone who has not
@@ -127,6 +140,7 @@ just back invite                 # Render each guest's message and link
 just back remind                 # Same, but only for guests still waiting
 just back qr ./qr                # A QR code per guest, for printed cards
 just back reset <guest-id>       # Clear one guest's RSVP so they can redo it
+just back notes                  # Dietary requirements and song requests
 just back test                   # Run tests
 just back lint                   # Run linter
 ```
@@ -198,6 +212,31 @@ Messages go to stdout, so they pipe: `just back invite > invites.txt`.
 - `just back qr ./qr` writes a `<guest-id>.png` QR code per guest, pointing at
   that guest's page — handy on a printed card, where nobody wants to type a URL.
 - `just back invite <guest-id>` does a single guest.
+
+#### Dietary requirements and song requests
+
+The RSVP carries two optional free-text fields — one for the kitchen and one
+for the playlist. Guests marked as family never see the coming-or-not question,
+but they still get these two, because the caterer and the DJ need them just the
+same.
+
+`just back notes` prints both lists, ready to hand over:
+
+```
+# Dietary requirements
+Guest        | Dietary requirements
+Nima Karimi  | severe nut allergy
+Sara Tehrani | vegetarian
+
+# Song requests
+Guest                  | Song requests
+Nima Karimi            | Googoosh — Do Panjere
+Reza & Nazanin Shirazi | Moein — Bahar
+```
+
+`--only dietary` or `--only songs` narrows it, and both fields are columns in
+`just back export`. Either can be switched off in `guestLetter.extras` in
+`wedfront/src/wedding.config.ts`; answers are capped at 280 characters.
 
 #### When someone changes their mind
 

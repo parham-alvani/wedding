@@ -47,12 +47,12 @@ func (h Guest) Answer(c *echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	if err := h.Service.Answer(
-		ctx,
-		id,
-		req.Coming,
-		req.PlusOne,
-	); err != nil {
+	if err := h.Service.Answer(ctx, id, service.Reply{
+		Coming:  req.Coming,
+		PlusOne: req.PlusOne,
+		Dietary: req.Dietary,
+		Song:    req.Song,
+	}); err != nil {
 		h.Logger.Error("failed to add an answer to a guest from repository", zap.Error(err), zap.String("id", id))
 
 		if errors.Is(err, guestrepo.ErrGuestNotFound) {
@@ -63,6 +63,10 @@ func (h Guest) Answer(c *echo.Context) error {
 		// rather than returning an opaque 500.
 		if errors.Is(err, service.ErrRSVPClosed) {
 			return echo.NewHTTPError(http.StatusForbidden, service.ErrRSVPClosed.Error())
+		}
+
+		if errors.Is(err, service.ErrNoteTooLong) {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
 		return echo.ErrInternalServerError

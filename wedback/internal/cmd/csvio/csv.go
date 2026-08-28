@@ -35,7 +35,7 @@ func Columns() []string {
 func exportColumns() []string {
 	out := append([]string{"id"}, Columns()...)
 
-	return append(out, "coming", "plus_one", "answered")
+	return append(out, "coming", "plus_one", "answered", "dietary", "song")
 }
 
 // Row is one parsed CSV line, ready to hand to the guest service.
@@ -222,6 +222,8 @@ func Export(w io.Writer, guests []model.Guest, baseURL string) error {
 			strconv.FormatBool(guest.Coming()),
 			strconv.FormatBool(guest.PlusOne()),
 			strconv.FormatBool(guest.Answer != nil),
+			note(guest, func(a *model.Answer) string { return a.Dietary }),
+			note(guest, func(a *model.Answer) string { return a.Song }),
 		}
 
 		if baseURL != "" {
@@ -250,6 +252,15 @@ func isBlank(record []string) bool {
 	}
 
 	return true
+}
+
+// note reads a field off a guest's answer, tolerating guests who never replied.
+func note(guest model.Guest, get func(*model.Answer) string) string {
+	if guest.Answer == nil {
+		return ""
+	}
+
+	return get(guest.Answer)
 }
 
 func deref(s *string) string {

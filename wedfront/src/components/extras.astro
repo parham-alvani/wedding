@@ -1,0 +1,54 @@
+---
+import type { Guest } from "~/types";
+import { wedding } from "~/wedding.config";
+
+export interface Props {
+  guest: Guest;
+  /** True once the RSVP has closed; the fields become read-only. */
+  locked?: boolean;
+}
+
+const { guest, locked = false } = Astro.props;
+const { dietary, song } = wedding.guestLetter.extras;
+
+const fields = [
+  { key: "dietary", config: dietary, value: guest.answer?.dietary ?? "" },
+  { key: "song", config: song, value: guest.answer?.song ?? "" },
+].filter((field) => field.config.enabled);
+---
+
+{
+  fields.length > 0 && (
+    <div class="mx-auto my-5 flex w-5/6 flex-col gap-4 text-left lg:w-2/3">
+      {fields.map((field) => (
+        <label class="flex flex-col gap-1 text-base">
+          <span>{field.config.label}</span>
+          <input
+            type="text"
+            id={field.key}
+            name={field.key}
+            class="extra-input"
+            value={field.value}
+            placeholder={field.config.placeholder}
+            maxlength="280"
+            disabled={locked}
+          />
+        </label>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .extra-input {
+    background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    width: 100%;
+  }
+
+  .extra-input:disabled {
+    opacity: 0.6;
+  }
+</style>

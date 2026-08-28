@@ -7,6 +7,8 @@ export interface FooterLink {
 export interface Answer {
   coming: boolean;
   plus_one: boolean;
+  dietary?: string;
+  song?: string;
 }
 
 export interface Guest {

@@ -11,6 +11,7 @@ import (
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/insert"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/invite"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/list"
+	"github.com/parham-alvani/wedding/wedback/internal/cmd/notes"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/reset"
 	"github.com/parham-alvani/wedding/wedback/internal/cmd/serve"
 	"github.com/pterm/pterm"
@@ -27,6 +28,7 @@ func commands() []*cli.Command {
 		csvio.RegisterImport(),
 		csvio.RegisterExport(),
 		invite.Register(),
+		notes.Register(),
 		reset.Register(),
 	}
 }

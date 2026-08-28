@@ -95,11 +95,11 @@ func (r *GuestDB) Answer(ctx context.Context, id string, answer model.Answer) er
 	if guest.Answer != nil {
 		answer.ID = guest.Answer.ID
 
-		// Select is required so that answering "false" is written: Updates
-		// skips zero-valued struct fields otherwise.
+		// Select is required so that answering "false", or clearing a note,
+		// is written: Updates skips zero-valued struct fields otherwise.
 		if _, err := r.a.
 			Where("guest_id = ?", guest.ID).
-			Select("coming", "plus_one").
+			Select("coming", "plus_one", "dietary", "song").
 			Updates(ctx, answer); err != nil {
 			r.logger.Error("answer update failed", zap.Error(err), zap.String(logtag.Operation, "answer"))
 

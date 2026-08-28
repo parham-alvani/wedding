@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ContentSection from "~/components/content-section.astro";
+import Extras from "~/components/extras.astro";
 import type { Guest } from "~/types";
 import { wedding } from "~/wedding.config";
 
@@ -12,7 +13,9 @@ export interface Props {
 
 const { guest, closed = false } = Astro.props;
 const { husband, wife } = wedding.couple;
-const { body, signOff, rsvp, rsvpClosed, changeHint, addToCalendar } = wedding.guestLetter;
+const { body, signOff, rsvp, rsvpClosed, changeHint, addToCalendar, extras } = wedding.guestLetter;
+
+const anyExtras = extras.dietary.enabled || extras.song.enabled;
 
 const greeting =
   guest.spouse_first_name == null
@@ -90,6 +93,7 @@ const label = locked ? rsvp.submitted : answered ? rsvp.update : rsvp.submit;
             </div>
           )}
         </fieldset>
+        <Extras guest={guest} locked={locked} />
         <button
           type="button"
           data-id={guest.id}
@@ -114,7 +118,30 @@ const label = locked ? rsvp.submitted : answered ? rsvp.update : rsvp.submit;
         </p>
       </Fragment>
     ) : (
-      ""
+      anyExtras && (
+        <Fragment slot="lead">
+          <h2 class="text-center font-extrabold tracking-tight text-4xl">
+            {extras.familyHeading}
+          </h2>
+          <Extras guest={guest} locked={locked} />
+          <button
+            type="button"
+            data-id={guest.id}
+            data-family="true"
+            id="submit"
+            disabled={locked}
+            class="w-5/6 text-center lg:w-1/4"
+          >
+            {extras.familySubmit}
+            <Icon name="mdi:love-letter-open" class="inline size-12" />
+          </button>
+          <p class="mt-4 text-center text-base">
+            <a href="/wedding.ics" download>
+              {addToCalendar}
+            </a>
+          </p>
+        </Fragment>
+      )
     )
   }
 </ContentSection>
@@ -124,20 +151,34 @@ const label = locked ? rsvp.submitted : answered ? rsvp.update : rsvp.submit;
   if (submitBtn != null) {
     const id = submitBtn.getAttribute("data-id");
 
+    const value = (elementId: string) =>
+      (document.getElementById(elementId) as HTMLInputElement | null)?.value ?? "";
+
     const submit = () => {
       const comingChk = document.getElementById("coming") as HTMLInputElement;
       const plusOneChk = document.getElementById(
         "plus_one",
       ) as HTMLInputElement;
+      // Family guests have no coming/declining question: they are attending.
+      const isFamily = submitBtn.getAttribute("data-family") === "true";
 
       submitBtn.setAttribute("disabled", "true");
 
       fetch(`/api/guest/${id}/answer`, {
         method: "POST",
         body: JSON.stringify({
-          coming: comingChk.checked,
-          // No plus-one control means this is a couple's page.
-          plus_one: plusOneChk == null ? true : plusOneChk.checked,
+          coming: isFamily ? true : comingChk.checked,
+          // Family guests have no plus-one control and must not claim one:
+          // Guest.PlusOne already grants it to those with a partner, and
+          // sending true here would count a single guest as two.
+          // For everyone else, a missing control means a couple's page.
+          plus_one: isFamily
+            ? false
+            : plusOneChk == null
+              ? true
+              : plusOneChk.checked,
+          dietary: value("dietary"),
+          song: value("song"),
         }),
         headers: {
           "Content-Type": "application/json",

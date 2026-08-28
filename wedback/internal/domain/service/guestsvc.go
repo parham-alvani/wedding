@@ -18,7 +18,37 @@ var (
 	ErrPartnerNameRequired      = errors.New("first name and last name are required for a guest's partner")
 	ErrComingRequiredForPlusOne = errors.New("guest should come to have plus one")
 	ErrRSVPClosed               = errors.New("the rsvp deadline has passed")
+	ErrNoteTooLong              = errors.New("note is too long")
 )
+
+// MaxNoteLength caps the free-text fields a guest can submit. Invitation links
+// are unauthenticated, so the fields are bounded on the way in.
+const MaxNoteLength = 280
+
+// Reply is everything a guest tells us when they answer.
+type Reply struct {
+	Coming  bool
+	PlusOne bool
+	// Dietary is what the kitchen needs to know; Song is a request for the
+	// night. Both are optional free text.
+	Dietary string
+	Song    string
+}
+
+// normalise trims the free-text fields and rejects anything oversized.
+func (r Reply) normalise() (Reply, error) {
+	r.Dietary = strings.TrimSpace(r.Dietary)
+	r.Song = strings.TrimSpace(r.Song)
+
+	for field, value := range map[string]string{"dietary": r.Dietary, "song": r.Song} {
+		if len(value) > MaxNoteLength {
+			return r, fmt.Errorf("%w: %s is %d characters, the limit is %d",
+				ErrNoteTooLong, field, len(value), MaxNoteLength)
+		}
+	}
+
+	return r, nil
+}
 
 type GuestSvc struct {
 	repository guestrepo.Repository
@@ -105,15 +135,22 @@ func (svc GuestSvc) New(
 	return guest, nil
 }
 
-func (svc GuestSvc) Answer(ctx context.Context, id string, coming bool, plusOne bool) error {
+func (svc GuestSvc) Answer(ctx context.Context, id string, reply Reply) error {
 	if svc.RSVPClosed() {
 		return ErrRSVPClosed
 	}
 
+	reply, err := reply.normalise()
+	if err != nil {
+		return err
+	}
+
 	if err := svc.repository.Answer(ctx, id, model.Answer{
 		ID:      0,
-		Coming:  coming,
-		PlusOne: plusOne,
+		Coming:  reply.Coming,
+		PlusOne: reply.PlusOne,
+		Dietary: reply.Dietary,
+		Song:    reply.Song,
 		GuestID: "",
 	}); err != nil {
 		return fmt.Errorf("answer creation failed %w", err)

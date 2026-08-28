@@ -47,7 +47,7 @@ func TestNamesCombineCouples(t *testing.T) {
 func TestWaitingExcludesFamilyAndAnswered(t *testing.T) {
 	t.Parallel()
 
-	answered := &model.Answer{ID: 1, Coming: true, PlusOne: false, GuestID: "c"}
+	answered := &model.Answer{ID: 1, Coming: true, PlusOne: false, GuestID: "c", Dietary: "", Song: ""}
 
 	guests := []model.Guest{
 		guest("a", "Sara", "Tehrani", nil, false, nil),   // waiting
