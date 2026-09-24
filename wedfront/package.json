@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": ">=22"
   },
@@ -29,7 +29,7 @@
     "@iconify-json/skill-icons": "^1.2.4",
     "@iconify-json/wpf": "^1.2.0",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.3.3",
+    "astro": "^7.3.4",
     "astro-icon": "^1.2.0",
     "mehr": "^2.0.1",
     "postcss": "^8.5.28",
