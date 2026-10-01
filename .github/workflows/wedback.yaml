@@ -34,7 +34,7 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           working-directory: ./wedback
-          version: v2.13
+          version: v2.14
           args: --timeout=30m
 
   test:
