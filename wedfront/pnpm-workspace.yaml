@@ -2,3 +2,8 @@
 onlyBuiltDependencies:
   - esbuild
   - sharp
+# rolldown 1.2.13 (pulled in by vite 8.3.3) emits an unterminated string for
+# astro's serverIslandPlaceholderMap and `astro build` fails with PARSE_ERROR.
+# Drop this once a newer rolldown builds cleanly.
+overrides:
+  rolldown: 1.2.12
