@@ -84,8 +84,8 @@ github.com/knadh/koanf/providers/structs v1.0.1 h1:2HIjxQ6n6x9cuMYSKXusWoIwmwvGX
 github.com/knadh/koanf/providers/structs v1.0.1/go.mod h1:kjo5TFtgpaZORlpoJqcbeLowM2cINodv8kX+oFAeQ1w=
 github.com/knadh/koanf/v2 v2.4.1 h1:MK2JDkLy4UGzEUkW1CCCKQftd9+M+NX8hAZ2axbf/jo=
 github.com/knadh/koanf/v2 v2.4.1/go.mod h1:gRb40VRAbd4iJMYYD5IxZ6hfuopFcXBpc9bbQpZwo28=
-github.com/labstack/echo/v5 v5.4.0 h1:iY674460IvSmUcj7MziL3YrgyTClghz5BpdZoKiGxR4=
-github.com/labstack/echo/v5 v5.4.0/go.mod h1:4iEGNQiPPZnkfYpNR/L6fINd3NLiGWUD5+eBotFALas=
+github.com/labstack/echo/v5 v5.4.2 h1:6Jk4ur2Sc7R6vH3DflrvfWmyrf9xX0yosFKBn+/8nZA=
+github.com/labstack/echo/v5 v5.4.2/go.mod h1:4iEGNQiPPZnkfYpNR/L6fINd3NLiGWUD5+eBotFALas=
 github.com/lithammer/fuzzysearch v1.1.8 h1:/HIuJnjHuXS8bKaiTMeeDlW2/AyIWk2brx1V8LFgLN4=
 github.com/lithammer/fuzzysearch v1.1.8/go.mod h1:IdqeyBClc3FFqSzYq/MXESsS4S0FsZ5ajtkr5xPLts4=
 github.com/lucasb-eyer/go-colorful v1.4.1 h1:1EO+WB73+EH8EVbzlrG3KLAfEypQWVHIBqlTf+2hNss=
