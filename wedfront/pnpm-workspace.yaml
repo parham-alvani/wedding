@@ -2,3 +2,6 @@
 onlyBuiltDependencies:
   - esbuild
   - sharp
+# rolldown's wasm32-wasi binding pins @emnapi/* to a 2.0 beta; we never run on wasm32.
+overrides:
+  '@rolldown/binding-wasm32-wasi': '-'
