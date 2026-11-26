@@ -16,7 +16,7 @@ require (
 	github.com/pterm/pterm v0.12.84
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.12.1
-	github.com/tidwall/pretty v1.3.0
+	github.com/tidwall/pretty v1.3.1
 	github.com/urfave/cli/v3 v3.14.0
 	go.uber.org/automaxprocs v1.6.0
 	go.uber.org/fx v1.24.0
